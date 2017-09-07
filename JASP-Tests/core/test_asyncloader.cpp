@@ -18,8 +18,7 @@
 #include "textfileread_test.h"
 
 
-void TestAsyncloader::initTestCase()
-{
+void TestAsyncloader::initTestCase() {
 	if(boost::filesystem::exists(TESTFILE_FOLDER "textfileread_test")) {
 		folderPathFound = true;
 	} else {
@@ -29,17 +28,15 @@ void TestAsyncloader::initTestCase()
 
 void TestAsyncloader::cleanupTestCase() {}
 
-void TestAsyncloader::init()
-{
+void TestAsyncloader::init() {
 	fe = new FileEvent();
 	dsp = new DataSetPackage();
 	asl = new AsyncLoader();
 }
 
-void TestAsyncloader::cleanup()
-{
+void TestAsyncloader::cleanup() {
+	// delete the dataSet from the shared memory
 	if(dsp->dataSet != NULL) {
-		// destroy all the objects created and delete the dataSet from the shared memory
 		SharedMemory::deleteDataSet(dsp->dataSet);
 	}
 
@@ -48,8 +45,34 @@ void TestAsyncloader::cleanup()
 	asl->~AsyncLoader();
 }
 
-void TestAsyncloader::asyncloaderTester_data()
-{
+void TestAsyncloader::test_loadPackage_ideal() {
+	QString full_path = QString(TESTFILE_FOLDER "csvimporter_test/").append(filename);
+
+	fe->setPath(full_path);
+	asl->loadTask(fe, dsp);
+	asl->_thread.quit();  // TODO: Maybe this is not required
+}
+
+void TestAsyncloader::test_loadPackage_exceptions() {
+
+}
+
+void TestAsyncloader::test_filechecksum() {
+
+}
+
+void TestAsyncloader::test_saveTask() {
+
+}
+
+void TestAsyncloader::test_progressHandler() {
+
+}
+
+
+
+
+void TestAsyncloader::asyncloaderTester_data() {
 	if(folderPathFound) {
 		QTest::addColumn<QString>("filename");
 		boost::filesystem::path _path(TESTFILE_FOLDER "textfileread_test");
@@ -57,47 +80,14 @@ void TestAsyncloader::asyncloaderTester_data()
 		//add files to be tested in a folder "Resources/TestFiles/spssimporter_test/spss_files"
 		for (auto i = boost::filesystem::directory_iterator(_path); i != boost::filesystem::directory_iterator(); i++)
 		{
-			if (!boost::filesystem::is_directory(i->path())) //we eliminate directories
+			if (!boost::filesystem::is_directory(i->path()))  //we eliminate directories
 				QTest::newRow("text file-read test") << QString::fromStdString(i->path().filename().string());
 		}
 	}
 }
 
-
-void TestAsyncloader::asyncloaderTester()
-{
-	if(folderPathFound) {
-		QFETCH(QString, filename);
-		qDebug() << "File: " << filename;
-
-		//text file open
-		QString folderPath = TESTFILE_FOLDER "textfileread_test/";
-		QString _path = folderPath.append(filename);
-
-		struct fileContent fc;
-		int error = readDataFromFile(_path.toUtf8().constData(), &fc);
-
-		if(error) {
-			QVERIFY2(false, "File not found");        //file open failed
-		} else {
-			bool wasBlocked = fe->blockSignals(true); //block all signals emitted by the FileEvent object
-			fe->setPath(_path);
-
-			wasBlocked = asl->blockSignals(true);     //block all signals emitted by the Asyncloader object
-			asl->loadTask(fe, dsp);
-			asl->_thread.quit();
-
-			QVERIFY(checkIfEqual(&fc));               //test the opening and reading of text files
-		}
-	} else {
-		QVERIFY2(false, "Folder path not found");
-	}
-}
-
-
 /* checks if data read from file is same as the data stored in the shared memory */
-bool TestAsyncloader::checkIfEqual(struct fileContent *fc)
-{
+bool TestAsyncloader::checkIfEqual(struct fileContent *fc) {
 	if(fc->columns != dsp->dataSet->columnCount() || fc->rows != dsp->dataSet->rowCount())
 		return false;
 
@@ -114,9 +104,8 @@ bool TestAsyncloader::checkIfEqual(struct fileContent *fc)
 	return true;
 }
 
-/* read data from the file specified from path and store it in the struct fileContent */
-int TestAsyncloader::readDataFromFile(std::string path, struct fileContent *fc)
-{
+/* read data from the file specified in path and store it in the struct fileContent */
+int TestAsyncloader::readDataFromFile(std::string path, struct fileContent *fc) {
 	std::ifstream input(path.c_str());
 	std::vector< std::vector<std::string> > fileRows;
 

@@ -66,8 +66,11 @@ private slots:
 	void cleanupTestCase();
 	void init();
 	void cleanup();
-	void asyncloaderTester_data();
-	void asyncloaderTester();
+	void test_loadPackage_ideal();
+	void test_loadPackage_exceptions();
+	void test_filechecksum();
+	void test_saveTask();
+	void test_progressHandler();
 };
 
 
