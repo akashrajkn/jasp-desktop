@@ -1,0 +1,48 @@
+name: jasp-snap # you probably want to 'snapcraft register <name>'
+version: '0.8.2' # just for humans, typically '1.2+git' or '1.3.2'
+summary: A fresh way to do statistics # 79 char long summary
+description: |
+  This is jasp snap.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+apps:
+  jasp-snap:
+    command: qt5-launch application
+    plugs:
+      - unity7
+      - home
+
+parts:
+  application:
+    plugin: qmake
+    qt-version: qt5
+    options:
+      - -qtwebkit
+    source: .
+    stage-packages:
+      # Here for the plugins-- they're not linked in automatically.
+      - libqt5gui5
+      # Here to make the menus work.
+      - libgtk2.0-0
+      - libqt5widgets5
+      - libqt5webkit5-dev
+      - libqt5svg5-dev
+      - libboost-dev
+      - libboost-filesystem-dev
+      - libboost-system-dev
+      - r-base-core
+      - r-cran-rcpp
+      - r-cran-rinside
+      - libarchive-dev
+      - r-cran-bayesfactor
+      - r-cran-lme4
+      - r-cran-afex
+      - r-cran-car
+      - r-cran-effects
+      - r-cran-logspline
+      - r-cran-hypergeo
+      - r-cran-rjson
+
+    after: [qt5conf] # A wiki
