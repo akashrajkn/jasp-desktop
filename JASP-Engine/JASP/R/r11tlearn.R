@@ -15,14 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-R11tLearn <- function(dataset=NULL, options, perform="run", callback=function(...) 0, ...) {
+R11tLearn <- function(
+    dataset = NULL, options, perform = "run", callback = function(...) 0, ...) {
 
-	results <- list()
-	
-	results[[".meta"]] <- list(
-		list(name="title", type="title"))
-	
-	results[["title"]] <- "R11t Learn!"
-	
-	results    
+  results <- list()
+
+  results[[".meta"]] <- list(list(name = "title", type = "title"))
+
+  results[["title"]] <- "R11t Learn!"
+
+  results
 }

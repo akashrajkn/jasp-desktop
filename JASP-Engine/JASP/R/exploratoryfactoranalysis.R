@@ -15,8 +15,10 @@
 # along with this program.	If not, see <http://www.gnu.org/licenses/>.
 #
 
-ExploratoryFactorAnalysis <- function(dataset = NULL, options, perform = "run",
-																			callback = function(...) list(status="ok"), state = NULL, ...) {
-	return(mainFunctionPCAEFA(type = "efa", dataset = NULL, options, perform = "run",
-																			callback = function(...) list(status="ok"), state = NULL, ...))
+ExploratoryFactorAnalysis <- function(
+    dataset = NULL, options, perform = "run",
+    callback = function(...) list(status = "ok"), state = NULL, ...) {
+  return(mainFunctionPCAEFA(
+             type = "efa", dataset = NULL, options, perform = "run",
+             callback = function(...) list(status = "ok"), state = NULL, ...))
 }

@@ -15,32 +15,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-AnovaOneWay <- function(dataset=NULL, options, perform="run", callback=function(...) 0, ...) {
+AnovaOneWay <- function(
+    dataset = NULL, options, perform = "run", callback = function(...) 0, ...) {
 
-	if (is.null(dataset))
-	{
-		if (perform == "run") {
-			dataset <- .readDataSetToEnd()
-		} else {
-			dataset <- .readDataSetHeader()
-		}
-	}
+  if (is.null(dataset)) {
+    if (perform == "run") {
+      dataset <- .readDataSetToEnd()
+    } else {
+      dataset <- .readDataSetHeader()
+    }
+  }
 
-	results <- list()
-	
-	anova.table <- list()
+  results <- list()
+
+  anova.table <- list()
 
 
-	anova.table[["title"]] <- "ANOVA"
-	anova.table[["cases"]] <- I(options$variables)
+  anova.table[["title"]] <- "ANOVA"
+  anova.table[["cases"]] <- I(options$variables)
 
-	fields <- list(
-		list(id="bruce"))
+  fields <- list(list(id = "bruce"))
 
-	anova.table[["schema"]] <- list(fields=fields)
+  anova.table[["schema"]] <- list(fields = fields)
 
-	results[["anova"]] <- anova.table 
+  results[["anova"]] <- anova.table
 
-	results
+  results
 }
-

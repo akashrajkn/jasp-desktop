@@ -16,41 +16,38 @@
 #
 
 .messages <- function(class, type) {
-  
+
 
   m <- list()
-  
+
   ### Error general
-  m$error$opening <- 
-  "The following problem(s) occurred while running the analysis:"
-  m$error$grouping <- 
-  "after grouping on {{grouping}}"
-  m$error$exception <- 
-  "This analysis terminated unexpectedly.<br><br>{{error}}<br><div class=stack-trace-selector><span>Stack trace</span><div class=stack-trace-arrow></div></div><div class=stack-trace>{{stackTrace}}</div><br>To receive assistance with this problem, please report the message above at: https://jasp-stats.org/bug-reports"
-  
+  m$error$opening <-
+      "The following problem(s) occurred while running the analysis:"
+  m$error$grouping <- "after grouping on {{grouping}}"
+  m$error$exception <-
+      "This analysis terminated unexpectedly.<br><br>{{error}}<br><div class=stack-trace-selector><span>Stack trace</span><div class=stack-trace-arrow></div></div><div class=stack-trace>{{stackTrace}}</div><br>To receive assistance with this problem, please report the message above at: https://jasp-stats.org/bug-reports"
+
   ### Error checks
-  m$error$infinity <- 
-  "Infinity found in {{variables}}"  
-  m$error$factorLevels <- 
-  "Number of factor levels {{factorLevels.amount}} in {{variables}}"  
-  m$error$variance <- 
-  "Variance = {{variance.equalTo}} in {{variables}}"  
-  m$error$observations <- 
-  "Number of observations {{observations.amount}} in {{variables}}"  
-  m$error$levene <- 
-  "Cannot compute statistic reliably: number of observations {{observations.amount}} in {{variables}}"
+  m$error$infinity <- "Infinity found in {{variables}}"
+  m$error$factorLevels <-
+      "Number of factor levels {{factorLevels.amount}} in {{variables}}"
+  m$error$variance <- "Variance = {{variance.equalTo}} in {{variables}}"
+  m$error$observations <-
+      "Number of observations {{observations.amount}} in {{variables}}"
+  m$error$levene <-
+      "Cannot compute statistic reliably: number of observations {{observations.amount}} in {{variables}}"
   m$error$limits <-
-  "Values in {{variables}} outside interval [{{limits.min}}, {{limits.max}}]"
-  m$error$varCovMatrix <- 
-  "Dataset is not a proper variance-covariance matrix. Please load only a positive definite symmetrical matrix as your dataset."
-  m$error$varCovData <- 
-  "The variance-covariance matrix of the supplied data is not positive-definite. Please check if variables have many missings observations or are collinear"
-  
+      "Values in {{variables}} outside interval [{{limits.min}}, {{limits.max}}]"
+  m$error$varCovMatrix <-
+      "Dataset is not a proper variance-covariance matrix. Please load only a positive definite symmetrical matrix as your dataset."
+  m$error$varCovData <-
+      "The variance-covariance matrix of the supplied data is not positive-definite. Please check if variables have many missings observations or are collinear"
+
   ### Footnotes
-  m$footnote$leveneSign <- 
-  "Levene's test is significant (p < .05), suggesting a violation of the equal variance assumption"
-  
-  
+  m$footnote$leveneSign <-
+      "Levene's test is significant (p < .05), suggesting a violation of the equal variance assumption"
+
+
   return(m[[class]][[type]])
 
 }

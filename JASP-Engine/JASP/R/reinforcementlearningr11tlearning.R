@@ -16,23 +16,18 @@
 #
 
 
-ReinforcementLearningR11tLearning <- function (
-    dataset = NULL,
-    options,
-    perform = "run",
-    callback = function(...) list(status = "ok"),
-    state = NULL,
-    ...
-) {
+ReinforcementLearningR11tLearning <- function(
+    dataset = NULL, options, perform = "run",
+    callback = function(...) list(status = "ok"), state = NULL, ...) {
 
-    table <- list()
-    table[["title"]] <- "R11t Learning"
-    table[["schema"]] <- list(fields = list())
-    table[["data"]] <- list()
+  table <- list()
+  table[["title"]] <- "R11t Learning"
+  table[["schema"]] <- list(fields = list())
+  table[["data"]] <- list()
 
-    results <- list()
-    results[[".meta"]] <- list(list(name = "table", type = "table"))
-    results[["table"]] <- table
+  results <- list()
+  results[[".meta"]] <- list(list(name = "table", type = "table"))
+  results[["table"]] <- table
 
-    return (list(results = results, status = "complete"))
+  return(list(results = results, status = "complete"))
 }
