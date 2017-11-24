@@ -21,89 +21,92 @@
 
 #include <QWidget>
 
-#include <QWebView>
 #include <QFileSystemWatcher>
 #include <QSettings>
+#include <QWebView>
 
-#include "verticaltabwidget.h"
-#include "fsbmrecent.h"
 #include "fsbmcurrent.h"
 #include "fsbmexamples.h"
+#include "fsbmrecent.h"
 #include "fsbrowser.h"
+#include "verticaltabwidget.h"
 
 #include "backstagecomputer.h"
 #include "backstageosf.h"
 
 #include "fileevent.h"
 
-class OpenSaveWidget : public QWidget
-{
-	Q_OBJECT
+class OpenSaveWidget : public QWidget {
+    Q_OBJECT
 public:
-	enum FileLocation {Recent = 0, Current, Computer, OSF, Examples};
+    enum FileLocation { Recent = 0,
+        Current,
+        Computer,
+        OSF,
+        Examples };
 
-	explicit OpenSaveWidget(QWidget *parent = 0);
+    explicit OpenSaveWidget(QWidget* parent = 0);
 
-	VerticalTabWidget *tabWidget();
-	void setSaveMode(FileEvent::FileMode mode);
-	void setOnlineDataManager(OnlineDataManager *odm);
-	bool changeTabIfCurrentFileEmpty();
+    VerticalTabWidget* tabWidget();
+    void setSaveMode(FileEvent::FileMode mode);
+    void setOnlineDataManager(OnlineDataManager* odm);
+    bool changeTabIfCurrentFileEmpty();
 
-	FileEvent* open();
-	FileEvent* open(const QString &path);
-	FileEvent* save();
-	void sync();
-	FileEvent *close();
+    FileEvent* open();
+    FileEvent* open(const QString& path);
+    FileEvent* save();
+    void sync();
+    FileEvent* close();
 
-	void setCurrentDataFile(const QString &path);
-	void setDataFileWatcher(bool watch);
+    void setCurrentDataFile(const QString& path);
+    void setDataFileWatcher(bool watch);
 
-	Utils::FileType getCurrentFileType();
-	QString getCurrentFilePath();
-	QString getDefaultOutFileName();
+    Utils::FileType getCurrentFileType();
+    QString getCurrentFilePath();
+    QString getDefaultOutFileName();
 
 public slots:
-	void dataSetIOCompleted(FileEvent *event);
+    void dataSetIOCompleted(FileEvent* event);
 
 signals:
-	void dataSetIORequest(FileEvent *event);
+    void dataSetIORequest(FileEvent* event);
 
 private slots:
-	void dataSetIORequestHandler(FileEvent *event);
-	void dataSetOpenRequestHandler(QString path);
-	void dataSetOpenExampleRequestHandler(QString path);
-	void dataSetOpenCurrentRequestHandler(QString path);
-	void dataFileModifiedHandler(QString path);
-	void clearOnlineDataFromRecentList(int provider);
-	void tabWidgetChanged(int id);
-	void tabWidgetChanging(int index, bool &cancel);
+    void dataSetIORequestHandler(FileEvent* event);
+    void dataSetOpenRequestHandler(QString path);
+    void dataSetOpenExampleRequestHandler(QString path);
+    void dataSetOpenCurrentRequestHandler(QString path);
+    void dataFileModifiedHandler(QString path);
+    void clearOnlineDataFromRecentList(int provider);
+    void tabWidgetChanged(int id);
+    void tabWidgetChanging(int index, bool& cancel);
 
 private:
-	bool checkSyncFileExists(const QString &path);
-	void clearSyncData();
+    bool checkSyncFileExists(const QString& path);
+    void clearSyncData();
 
-	static bool clearOSFFromRecentList(QString path);
-	OnlineDataManager *_odm = NULL;
+    static bool clearOSFFromRecentList(QString path);
+    OnlineDataManager* _odm = NULL;
 
-	QString _currentFilePath;
-	Utils::FileType _currentFileType;
+    QString _currentFilePath;
+    Utils::FileType _currentFileType;
 
-	FileEvent::FileMode _mode;
+    FileEvent::FileMode _mode;
 
-	VerticalTabWidget *_tabWidget;
+    VerticalTabWidget* _tabWidget;
 
-	FSBMRecent   *_fsmRecent;
-	FSBMCurrent   *_fsmCurrent;
-	FSBMExamples *_fsmExamples;
+    FSBMRecent* _fsmRecent;
+    FSBMCurrent* _fsmCurrent;
+    FSBMExamples* _fsmExamples;
 
-	FSBrowser *_bsRecent;
-	FSBrowser *_bsCurrent;
-	BackstageComputer *_bsComputer;
-	BackstageOSF *_bsOSF;
-	FSBrowser *_bsExamples;
+    FSBrowser* _bsRecent;
+    FSBrowser* _bsCurrent;
+    BackstageComputer* _bsComputer;
+    BackstageOSF* _bsOSF;
+    FSBrowser* _bsExamples;
 
-	QFileSystemWatcher _watcher;
-	QSettings _settings;
+    QFileSystemWatcher _watcher;
+    QSettings _settings;
 };
 
 #endif // OPENWIDGET_H

@@ -21,33 +21,31 @@
 
 #include <QWidget>
 
-
 namespace Ui {
 class SubjectivePriorsWidget;
 }
 
-class SubjectivePriorsWidget : public QWidget
-{
-	Q_OBJECT
+class SubjectivePriorsWidget : public QWidget {
+    Q_OBJECT
 
 public:
-	explicit SubjectivePriorsWidget(QWidget *parent = 0);
-	~SubjectivePriorsWidget();
+    explicit SubjectivePriorsWidget(QWidget* parent = 0);
+    ~SubjectivePriorsWidget();
 
 private slots:
-	void on__1standardizedEffectSize_toggled(bool checked);
-	void on__2dienesRawEffectSize_toggled(bool checked);
-	void on_defaultStandardEffectSize_toggled(bool checked);
-	void on_informativeStandardEffectSize_toggled(bool checked);
-	void on_cauchyInformative_toggled(bool checked);
-	void on_normalInformative_toggled(bool checked);
-	void on_tInformative_toggled(bool checked);
-	void on_halfNormalDienes_toggled(bool checked);
-	void on_normalDienes_toggled(bool checked);
-	void on_uniformDienes_toggled(bool checked);
+    void on__1standardizedEffectSize_toggled(bool checked);
+    void on__2dienesRawEffectSize_toggled(bool checked);
+    void on_defaultStandardEffectSize_toggled(bool checked);
+    void on_informativeStandardEffectSize_toggled(bool checked);
+    void on_cauchyInformative_toggled(bool checked);
+    void on_normalInformative_toggled(bool checked);
+    void on_tInformative_toggled(bool checked);
+    void on_halfNormalDienes_toggled(bool checked);
+    void on_normalDienes_toggled(bool checked);
+    void on_uniformDienes_toggled(bool checked);
 
 private:
-	Ui::SubjectivePriorsWidget *ui;
+    Ui::SubjectivePriorsWidget* ui;
 };
 
 #endif // SUBJECTIVEPRIORSWIDGET_H

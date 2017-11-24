@@ -20,21 +20,23 @@
 
 #define BLOCK_SIZE 512
 
-class DataBlock
-{
+class DataBlock {
 
 public:
-	DataBlock();
+    DataBlock();
 
-	bool insert(int rows);
-	bool erase(int rows);
+    bool insert(int rows);
+    bool erase(int rows);
 
-	int _rowCount;
+    int _rowCount;
 
-	union { double d; int i; } Data[BLOCK_SIZE];
+    union {
+        double d;
+        int i;
+    } Data[BLOCK_SIZE];
 
-	int rowCount();
-	static int capacity();
+    int rowCount();
+    static int capacity();
 };
 
 #endif // DATABLOCK_H

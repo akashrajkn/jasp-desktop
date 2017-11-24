@@ -26,8 +26,8 @@ using namespace boost;
 
 ODSExporter::ODSExporter()
 {
-	_defaultFileType = Utils::ods;
-	_allowedFileTypes.push_back(Utils::ods);
+    _defaultFileType = Utils::ods;
+    _allowedFileTypes.push_back(Utils::ods);
 }
 
 /**
@@ -36,16 +36,16 @@ ODSExporter::ODSExporter()
  * @param package The Data to save,
  * @param progressCallback Called Back for progress.
  */
-void ODSExporter::saveDataSet(const string &path, DataSetPackage* package, boost::function<void (const string &, int)> progressCallback)
+void ODSExporter::saveDataSet(const string& path, DataSetPackage* package, boost::function<void(const string&, int)> progressCallback)
 {
-	const DataSet *dataset = package->dataSet;
+    const DataSet* dataset = package->dataSet;
 
-	// Get our boilerplate ODS file.
-	createTemplateODS(progressCallback);
+    // Get our boilerplate ODS file.
+    createTemplateODS(progressCallback);
 
-	// Insert our data into the file.
-	insertJaspData(dataset, progressCallback);
+    // Insert our data into the file.
+    insertJaspData(dataset, progressCallback);
 
-	// Save the resulting file.
-	saveFile(path, progressCallback);
+    // Save the resulting file.
+    saveFile(path, progressCallback);
 }

@@ -19,30 +19,26 @@
 #ifndef EXPLORATORYFACTORANALYSISFORM_H
 #define EXPLORATORYFACTORANALYSISFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class ExploratoryFactorAnalysisForm;
 }
 
-class ExploratoryFactorAnalysisForm : public AnalysisForm
-{
-	Q_OBJECT
+class ExploratoryFactorAnalysisForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit ExploratoryFactorAnalysisForm(QWidget *parent = 0);
-	~ExploratoryFactorAnalysisForm();
+    explicit ExploratoryFactorAnalysisForm(QWidget* parent = 0);
+    ~ExploratoryFactorAnalysisForm();
 
 private:
-	Ui::ExploratoryFactorAnalysisForm *ui;
+    Ui::ExploratoryFactorAnalysisForm* ui;
 
 private slots:
-	void HandleSlider(int i);
-	void HandleLineEdit(QString s);
-
+    void HandleSlider(int i);
+    void HandleLineEdit(QString s);
 };
-
-
 
 #endif // EXPLORATORYFACTORANALYSISFORM_H

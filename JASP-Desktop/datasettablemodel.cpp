@@ -18,121 +18,109 @@
 
 #include "datasettablemodel.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-#include <QSize>
 #include <QDebug>
+#include <QSize>
 
 #include "qutils.h"
 
 using namespace std;
 
-DataSetTableModel::DataSetTableModel(QObject *parent) :
-    QAbstractTableModel(parent)
+DataSetTableModel::DataSetTableModel(QObject* parent)
+    : QAbstractTableModel(parent)
 {
-	_dataSet = NULL;
+    _dataSet = NULL;
 
-	_nominalTextIcon = QIcon(":/icons/variable-nominal-text.svg");
-	_nominalIcon = QIcon(":/icons/variable-nominal.svg");
-	_ordinalIcon = QIcon(":/icons/variable-ordinal.svg");
-	_scaleIcon = QIcon(":/icons/variable-scale.svg");
+    _nominalTextIcon = QIcon(":/icons/variable-nominal-text.svg");
+    _nominalIcon = QIcon(":/icons/variable-nominal.svg");
+    _ordinalIcon = QIcon(":/icons/variable-ordinal.svg");
+    _scaleIcon = QIcon(":/icons/variable-scale.svg");
 }
 
 void DataSetTableModel::setDataSet(DataSet* dataSet)
 {
     beginResetModel();
-	_dataSet = dataSet;
+    _dataSet = dataSet;
     endResetModel();
 }
 
 void DataSetTableModel::clearDataSet()
 {
-	beginResetModel();
-	_dataSet = NULL;
-	endResetModel();
+    beginResetModel();
+    _dataSet = NULL;
+    endResetModel();
 }
 
-int DataSetTableModel::rowCount(const QModelIndex &parent) const
+int DataSetTableModel::rowCount(const QModelIndex& parent) const
 {
-	if (_dataSet == NULL)
-		return 0;
+    if (_dataSet == NULL)
+        return 0;
 
-	return parent.isValid() ? 0 : _dataSet->rowCount();
+    return parent.isValid() ? 0 : _dataSet->rowCount();
 }
 
-int DataSetTableModel::columnCount(const QModelIndex &parent) const
+int DataSetTableModel::columnCount(const QModelIndex& parent) const
 {
-	if (_dataSet == NULL)
-		return 0;
+    if (_dataSet == NULL)
+        return 0;
 
-	return parent.isValid() ? 0 : _dataSet->columnCount();
+    return parent.isValid() ? 0 : _dataSet->columnCount();
 }
 
-QVariant DataSetTableModel::data(const QModelIndex &index, int role) const
+QVariant DataSetTableModel::data(const QModelIndex& index, int role) const
 {
-	if (_dataSet == NULL)
-		return QVariant();
+    if (_dataSet == NULL)
+        return QVariant();
 
-    if (role == Qt::DisplayRole)
-	{
-		QString value = tq(_dataSet->column(index.column())[index.row()]);
-		return QVariant(value);
-	}
+    if (role == Qt::DisplayRole) {
+        QString value = tq(_dataSet->column(index.column())[index.row()]);
+        return QVariant(value);
+    }
 
     return QVariant();
 }
 
-QVariant DataSetTableModel::headerData ( int section, Qt::Orientation orientation, int role) const
+QVariant DataSetTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if (_dataSet == NULL)
-		return QVariant();
+    if (_dataSet == NULL)
+        return QVariant();
 
-	if (role == Qt::DisplayRole)
-	{
-		if (orientation == Qt::Horizontal)
-		{
-			QString value = tq(_dataSet->column(section).name()) + QString("        ");
-			return QVariant(value);
-		}
-		else
-		{
-			return QVariant(section + 1);
-		}
-	}
-	else if (role == Qt::DecorationRole && orientation == Qt::Horizontal)
-	{
-		Column &column = _dataSet->column(section);
+    if (role == Qt::DisplayRole) {
+        if (orientation == Qt::Horizontal) {
+            QString value = tq(_dataSet->column(section).name()) + QString("        ");
+            return QVariant(value);
+        } else {
+            return QVariant(section + 1);
+        }
+    } else if (role == Qt::DecorationRole && orientation == Qt::Horizontal) {
+        Column& column = _dataSet->column(section);
 
-		switch (column.columnType())
-		{
-		case Column::ColumnTypeNominalText:
-			return QVariant(_nominalTextIcon);
-		case Column::ColumnTypeNominal:
-			return QVariant(_nominalIcon);
-		case Column::ColumnTypeOrdinal:
-			return QVariant(_ordinalIcon);
-		case Column::ColumnTypeScale:
-			return QVariant(_scaleIcon);
-		default:
-			return QVariant();
-		}
-	}
-	else if (role == Qt::SizeHintRole && orientation == Qt::Vertical)
-	{
-		return QVariant(/*QSize(80, -1)*/);
-	}
-	else if (role == Qt::TextAlignmentRole)
-	{
-		return QVariant(Qt::AlignCenter);
-	}
+        switch (column.columnType()) {
+        case Column::ColumnTypeNominalText:
+            return QVariant(_nominalTextIcon);
+        case Column::ColumnTypeNominal:
+            return QVariant(_nominalIcon);
+        case Column::ColumnTypeOrdinal:
+            return QVariant(_ordinalIcon);
+        case Column::ColumnTypeScale:
+            return QVariant(_scaleIcon);
+        default:
+            return QVariant();
+        }
+    } else if (role == Qt::SizeHintRole && orientation == Qt::Vertical) {
+        return QVariant(/*QSize(80, -1)*/);
+    } else if (role == Qt::TextAlignmentRole) {
+        return QVariant(Qt::AlignCenter);
+    }
 
-	return QVariant();
+    return QVariant();
 }
 
-bool DataSetTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool DataSetTableModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-	/*if (_dataSet == NULL)
+    /*if (_dataSet == NULL)
 		return false;
 
 	bool ok;
@@ -149,28 +137,28 @@ bool DataSetTableModel::setData(const QModelIndex &index, const QVariant &value,
 		return ok;
 	}*/
 
-	//_dataSet->columns()[index.column()].setValue(index.row(), v);
+    //_dataSet->columns()[index.column()].setValue(index.row(), v);
 
-	return true;
+    return true;
 }
 
-Qt::ItemFlags DataSetTableModel::flags(const QModelIndex &index) const
+Qt::ItemFlags DataSetTableModel::flags(const QModelIndex& index) const
 {
-	return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 bool DataSetTableModel::setColumnType(int columnIndex, Column::ColumnType newColumnType)
 {
-	if (_dataSet == NULL)
-		return true;
+    if (_dataSet == NULL)
+        return true;
 
-	bool changed = _dataSet->column(columnIndex).changeColumnType(newColumnType);
-	emit headerDataChanged(Qt::Horizontal, columnIndex, columnIndex);
+    bool changed = _dataSet->column(columnIndex).changeColumnType(newColumnType);
+    emit headerDataChanged(Qt::Horizontal, columnIndex, columnIndex);
 
-	return changed;
+    return changed;
 }
 
 Column::ColumnType DataSetTableModel::getColumnType(int columnIndex)
 {
-	return _dataSet->column(columnIndex).columnType();
+    return _dataSet->column(columnIndex).columnType();
 }

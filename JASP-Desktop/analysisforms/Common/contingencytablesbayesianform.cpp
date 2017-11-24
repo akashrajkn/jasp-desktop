@@ -19,71 +19,71 @@
 #include "contingencytablesbayesianform.h"
 #include "ui_contingencytablesbayesianform.h"
 
-ContingencyTablesBayesianForm::ContingencyTablesBayesianForm(QWidget *parent) :
-	AnalysisForm("ContingencyTablesBayesianForm", parent),
-	ui(new Ui::ContingencyTablesBayesianForm)
+ContingencyTablesBayesianForm::ContingencyTablesBayesianForm(QWidget* parent)
+    : AnalysisForm("ContingencyTablesBayesianForm", parent)
+    , ui(new Ui::ContingencyTablesBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
 
-	_rowsModel = new TableModelVariablesAssigned();
-	_rowsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	_rowsModel->setSource(&_availableVariablesModel);
-	ui->rows->setModel(_rowsModel);
+    _rowsModel = new TableModelVariablesAssigned();
+    _rowsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    _rowsModel->setSource(&_availableVariablesModel);
+    ui->rows->setModel(_rowsModel);
 
-	_columnsModel = new TableModelVariablesAssigned();
-	_columnsModel->setSource(&_availableVariablesModel);
-	_columnsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->columns->setModel(_columnsModel);
+    _columnsModel = new TableModelVariablesAssigned();
+    _columnsModel->setSource(&_availableVariablesModel);
+    _columnsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->columns->setModel(_columnsModel);
 
-	_countsModel = new TableModelVariablesAssigned();
-	_countsModel->setSource(&_availableVariablesModel);
-	_countsModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_countsModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	ui->counts->setModel(_countsModel);
+    _countsModel = new TableModelVariablesAssigned();
+    _countsModel->setSource(&_availableVariablesModel);
+    _countsModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _countsModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    ui->counts->setModel(_countsModel);
 
-	_layersModel = new TableModelVariablesLevels();
-	_layersModel->setSource(&_availableVariablesModel);
-	_layersModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->layers->setModel(_layersModel);
+    _layersModel = new TableModelVariablesLevels();
+    _layersModel->setSource(&_availableVariablesModel);
+    _layersModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->layers->setModel(_layersModel);
 
-	ui->buttonAssignRows->setSourceAndTarget(ui->listAvailableFields, ui->rows);
-	ui->buttonAssignColumns->setSourceAndTarget(ui->listAvailableFields, ui->columns);
-	ui->buttonAssignCounts->setSourceAndTarget(ui->listAvailableFields, ui->counts);
-	ui->buttonAssignLayers->setSourceAndTarget(ui->listAvailableFields, ui->layers);
+    ui->buttonAssignRows->setSourceAndTarget(ui->listAvailableFields, ui->rows);
+    ui->buttonAssignColumns->setSourceAndTarget(ui->listAvailableFields, ui->columns);
+    ui->buttonAssignCounts->setSourceAndTarget(ui->listAvailableFields, ui->counts);
+    ui->buttonAssignLayers->setSourceAndTarget(ui->listAvailableFields, ui->layers);
 
-	ui->panelStatistics->hide();
-	ui->panelOptions->hide();
+    ui->panelStatistics->hide();
+    ui->panelOptions->hide();
 
-	ui->oddsRatioCredibleIntervalInterval->setLabel("Credible interval");
-	ui->effectSizeCredibleIntervalInterval->setLabel("Credible interval");
-	ui->priorConcentration->setLabel("Prior concentration");
+    ui->oddsRatioCredibleIntervalInterval->setLabel("Credible interval");
+    ui->effectSizeCredibleIntervalInterval->setLabel("Credible interval");
+    ui->priorConcentration->setLabel("Prior concentration");
 
 #ifdef QT_NO_DEBUG
-	ui->effectSize->hide();
-	ui->effectSizeCredibleIntervalContainer->hide();
-	ui->plotPosteriorEffectSize->hide();
+    ui->effectSize->hide();
+    ui->effectSizeCredibleIntervalContainer->hide();
+    ui->plotPosteriorEffectSize->hide();
 #else
-	ui->effectSize->setStyleSheet("background-color: pink ;");
-	ui->effectSizeCredibleIntervalContainer->setStyleSheet("background-color: pink ;");
-	ui->plotPosteriorEffectSize->setStyleSheet("background-color: pink ;");
+    ui->effectSize->setStyleSheet("background-color: pink ;");
+    ui->effectSizeCredibleIntervalContainer->setStyleSheet("background-color: pink ;");
+    ui->plotPosteriorEffectSize->setStyleSheet("background-color: pink ;");
 #endif
 }
 
 ContingencyTablesBayesianForm::~ContingencyTablesBayesianForm()
 {
-	delete ui;
+    delete ui;
 }
 
 void ContingencyTablesBayesianForm::otherSamplingToggled(bool on)
 {
-	if (on)
-		ui->hypothesis->setEnabled(false);
+    if (on)
+        ui->hypothesis->setEnabled(false);
 }
 
 void ContingencyTablesBayesianForm::independentMultinomialSamplingToggled(bool on)
 {
-	if (on)
-		ui->hypothesis->setEnabled(true);
+    if (on)
+        ui->hypothesis->setEnabled(true);
 }

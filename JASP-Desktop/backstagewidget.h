@@ -23,48 +23,53 @@
 
 #include <QStackedWidget>
 
-#include "backstage/verticaltabbar.h"
 #include "backstage/opensavewidget.h"
+#include "backstage/verticaltabbar.h"
 #include "fileevent.h"
 
 #include "activitylog.h"
 #include "analysis.h"
 
-class BackStageWidget : public QWidget
-{
-	Q_OBJECT
+class BackStageWidget : public QWidget {
+    Q_OBJECT
 public:
-	enum FileOperation {Open = 0, Save, SaveAs, ExportResults, ExportData, SyncData, Close};
-	explicit BackStageWidget(QWidget *parent = NULL);
-	void setOnlineDataManager(OnlineDataManager *odm);
+    enum FileOperation { Open = 0,
+        Save,
+        SaveAs,
+        ExportResults,
+        ExportData,
+        SyncData,
+        Close };
+    explicit BackStageWidget(QWidget* parent = NULL);
+    void setOnlineDataManager(OnlineDataManager* odm);
 
-	void setLog(ActivityLog *log);
-	FileEvent *open();
-	FileEvent *open(const QString &filepath);
-	FileEvent *save();
-	void sync();
-	FileEvent *close();
+    void setLog(ActivityLog* log);
+    FileEvent* open();
+    FileEvent* open(const QString& filepath);
+    FileEvent* save();
+    void sync();
+    FileEvent* close();
 
 signals:
-	void dataSetIORequest(FileEvent *event);
-	void exportSelected(QString filename);
+    void dataSetIORequest(FileEvent* event);
+    void exportSelected(QString filename);
 
 public slots:
-	void analysisAdded(Analysis *analysis);
-	void setSyncFile(FileEvent *event);
-	void dataAutoSynchronizationChanged(bool on);
+    void analysisAdded(Analysis* analysis);
+    void setSyncFile(FileEvent* event);
+    void dataAutoSynchronizationChanged(bool on);
 
 private slots:
-	void tabPageChanging(int index, bool &cancel);
+    void tabPageChanging(int index, bool& cancel);
 
-	void dataSetIORequestHandler(FileEvent *event);
-	void dataSetIORequestCompleted(FileEvent *event);
+    void dataSetIORequestHandler(FileEvent* event);
+    void dataSetIORequestCompleted(FileEvent* event);
 
 private:
-	VerticalTabBar *_tabBar;
-	QStackedWidget *_tabPages;
+    VerticalTabBar* _tabBar;
+    QStackedWidget* _tabPages;
 
-	OpenSaveWidget *_openAndSaveWidget;
+    OpenSaveWidget* _openAndSaveWidget;
 };
 
 #endif // BACKSTAGEWIDGET_H

@@ -19,61 +19,58 @@
 
 DataSetPackage::DataSetPackage()
 {
-	hasAnalyses = false;
+    hasAnalyses = false;
 }
 
 void DataSetPackage::reset()
 {
-	dataSet = NULL;
-	emptyValuesMap.clear();
-	archiveVersion = Version();
-	dataArchiveVersion = Version();
-	analysesHTML = std::string();
-	analysesData = Json::arrayValue;
-	hasAnalyses = false;
-	warningMessage = std::string();
-	_isLoaded = false;
-	_analysesHTMLReady = false;
-	setModified(false);
+    dataSet = NULL;
+    emptyValuesMap.clear();
+    archiveVersion = Version();
+    dataArchiveVersion = Version();
+    analysesHTML = std::string();
+    analysesData = Json::arrayValue;
+    hasAnalyses = false;
+    warningMessage = std::string();
+    _isLoaded = false;
+    _analysesHTMLReady = false;
+    setModified(false);
 }
 
 void DataSetPackage::setModified(bool value)
 {
-	if (value != _isModified)
-	{
-		_isModified = value;
-		isModifiedChanged(this);
-	}
+    if (value != _isModified) {
+        _isModified = value;
+        isModifiedChanged(this);
+    }
 }
 
 bool DataSetPackage::isModified() const
 {
-	return _isModified;
+    return _isModified;
 }
 
 void DataSetPackage::setLoaded()
 {
-	_isLoaded = true;
+    _isLoaded = true;
 }
 
 bool DataSetPackage::isLoaded() const
 {
-	return _isLoaded;
+    return _isLoaded;
 }
 
 bool DataSetPackage::isReady() const
 {
-	return _analysesHTMLReady;
+    return _analysesHTMLReady;
 }
-
 
 void DataSetPackage::setAnalysesHTMLReady()
 {
-	_analysesHTMLReady = true;
+    _analysesHTMLReady = true;
 }
 
 void DataSetPackage::setWaitingForReady()
 {
-	_analysesHTMLReady = false;
+    _analysesHTMLReady = false;
 }
-

@@ -21,51 +21,50 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
-#include "widgets/tablemodelanovamodel.h"
-#include "widgets/tablemodelvariablesoptions.h"
 #include "widgets/tablemodelanovadesign.h"
+#include "widgets/tablemodelanovamodel.h"
 #include "widgets/tablemodelanovawithinsubjectcells.h"
+#include "widgets/tablemodelvariablesassigned.h"
+#include "widgets/tablemodelvariablesoptions.h"
 
 namespace Ui {
 class AnovaRepeatedMeasuresBayesianForm;
 }
 
-class AnovaRepeatedMeasuresBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class AnovaRepeatedMeasuresBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit AnovaRepeatedMeasuresBayesianForm(QWidget *parent = 0);
-	~AnovaRepeatedMeasuresBayesianForm();
+    explicit AnovaRepeatedMeasuresBayesianForm(QWidget* parent = 0);
+    ~AnovaRepeatedMeasuresBayesianForm();
 
-	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    virtual void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
 
-	void withinSubjectsDesignChanged();
-	void anovaDesignTableClicked(QModelIndex index);
+    void withinSubjectsDesignChanged();
+    void anovaDesignTableClicked(QModelIndex index);
 
-	void factorsChanging();
-	void factorsChanged(bool changed = true);
+    void factorsChanging();
+    void factorsChanged(bool changed = true);
 
 private:
-	Ui::AnovaRepeatedMeasuresBayesianForm *ui;
+    Ui::AnovaRepeatedMeasuresBayesianForm* ui;
 
-	TableModelAnovaDesign *_designTableModel;
-	TableModelAnovaWithinSubjectCells *_withinSubjectCellsListModel;
-	TableModelVariablesAssigned *_betweenSubjectsFactorsListModel;
-	TableModelVariablesAssigned *_covariatesListModel;
-	TableModelVariablesAssigned *_wlsWeightsListModel;
+    TableModelAnovaDesign* _designTableModel;
+    TableModelAnovaWithinSubjectCells* _withinSubjectCellsListModel;
+    TableModelVariablesAssigned* _betweenSubjectsFactorsListModel;
+    TableModelVariablesAssigned* _covariatesListModel;
+    TableModelVariablesAssigned* _wlsWeightsListModel;
 
-	TableModelAnovaModel *_anovaModel;
+    TableModelAnovaModel* _anovaModel;
 
-	TableModelVariablesAvailable *_factorsAvailableListModel;
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 
-	TableModelVariablesAvailable *_plotFactorsAvailableTableModel;
-	TableModelVariablesAssigned *_horizontalAxisTableModel;
-	TableModelVariablesAssigned *_seperateLinesTableModel;
-	TableModelVariablesAssigned *_seperatePlotsTableModel;
+    TableModelVariablesAvailable* _plotFactorsAvailableTableModel;
+    TableModelVariablesAssigned* _horizontalAxisTableModel;
+    TableModelVariablesAssigned* _seperateLinesTableModel;
+    TableModelVariablesAssigned* _seperatePlotsTableModel;
 };
 
 #endif // ANOVAREPEATEDMEASURESBAYESIANFORM_H

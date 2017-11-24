@@ -19,56 +19,52 @@
 #include "multinomialtestform.h"
 #include "ui_multinomialtestform.h"
 
-MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
-	AnalysisForm("MultinomialTestForm", parent),
-	ui(new Ui::MultinomialTestForm)
+MultinomialTestForm::MultinomialTestForm(QWidget* parent)
+    : AnalysisForm("MultinomialTestForm", parent)
+    , ui(new Ui::MultinomialTestForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableVariables->setModel(&_availableVariablesModel);
-	ui->listAvailableVariables->setDoubleClickTarget(ui->factor);
+    ui->listAvailableVariables->setModel(&_availableVariablesModel);
+    ui->listAvailableVariables->setDoubleClickTarget(ui->factor);
 
-	TableModelVariablesAssigned *factorModel = new TableModelVariablesAssigned(this);
-	factorModel->setSource(&_availableVariablesModel);
-	factorModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	factorModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
+    TableModelVariablesAssigned* factorModel = new TableModelVariablesAssigned(this);
+    factorModel->setSource(&_availableVariablesModel);
+    factorModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    factorModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
 
-	ui->factor->setModel(factorModel);
-	ui->factor->setDoubleClickTarget(ui->listAvailableVariables);
-	ui->assignFactor->setSourceAndTarget(ui->listAvailableVariables, ui->factor);
+    ui->factor->setModel(factorModel);
+    ui->factor->setDoubleClickTarget(ui->listAvailableVariables);
+    ui->assignFactor->setSourceAndTarget(ui->listAvailableVariables, ui->factor);
 
-	TableModelVariablesAssigned *countModel = new TableModelVariablesAssigned(this);
-	countModel->setSource(&_availableVariablesModel);
-	countModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	countModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeScale);
+    TableModelVariablesAssigned* countModel = new TableModelVariablesAssigned(this);
+    countModel->setSource(&_availableVariablesModel);
+    countModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    countModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeScale);
 
-	ui->counts->setModel(countModel);
-	ui->counts->setDoubleClickTarget(ui->listAvailableVariables);
-	ui->assignCounts->setSourceAndTarget(ui->listAvailableVariables, ui->counts);
+    ui->counts->setModel(countModel);
+    ui->counts->setDoubleClickTarget(ui->listAvailableVariables);
+    ui->assignCounts->setSourceAndTarget(ui->listAvailableVariables, ui->counts);
 
+    TableModelVariablesAssigned* probVarModel = new TableModelVariablesAssigned(this);
+    probVarModel->setSource(&_availableVariablesModel);
+    probVarModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    probVarModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeScale);
 
-	TableModelVariablesAssigned *probVarModel = new TableModelVariablesAssigned(this);
-	probVarModel->setSource(&_availableVariablesModel);
-	probVarModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	probVarModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeScale);
+    ui->exProbVar->setModel(probVarModel);
+    ui->exProbVar->setDoubleClickTarget(ui->listAvailableVariables);
+    ui->assignExProbVar->setSourceAndTarget(ui->listAvailableVariables, ui->exProbVar);
 
-	ui->exProbVar->setModel(probVarModel);
-	ui->exProbVar->setDoubleClickTarget(ui->listAvailableVariables);
-	ui->assignExProbVar->setSourceAndTarget(ui->listAvailableVariables, ui->exProbVar);
-
-	ui->tableView->setVisible(false);
-
+    ui->tableView->setVisible(false);
 
 #ifdef QT_NO_DEBUG
 
 #else
 
 #endif
-
-
 }
 
 MultinomialTestForm::~MultinomialTestForm()
 {
-	delete ui;
+    delete ui;
 }

@@ -18,42 +18,43 @@
 
 #include "fsbmcurrent.h"
 
-#include <QStringList>
-#include <QFileInfo>
-#include <QEvent>
 #include <QDebug>
+#include <QEvent>
+#include <QFileInfo>
+#include <QStringList>
 
-FSBMCurrent::FSBMCurrent(QObject *parent)
-	: FSBModel(parent)
+FSBMCurrent::FSBMCurrent(QObject* parent)
+    : FSBModel(parent)
 {
-	parent->installEventFilter(this);
-	_current = QString();
+    parent->installEventFilter(this);
+    _current = QString();
 }
 
 void FSBMCurrent::refresh()
 {
 }
 
-void FSBMCurrent::setCurrent(const QString &path)
+void FSBMCurrent::setCurrent(const QString& path)
 {
-	if (path.endsWith(".jasp", Qt::CaseInsensitive))
-		return;
+    if (path.endsWith(".jasp", Qt::CaseInsensitive))
+        return;
 
-	_current = path;
+    _current = path;
 
-	_entries.clear();
-	FSEntry::EntryType entryType = FSEntry::Other;
-	FSEntry entry = createEntry(path, entryType);
-	_entries.append(entry);
+    _entries.clear();
+    FSEntry::EntryType entryType = FSEntry::Other;
+    FSEntry entry = createEntry(path, entryType);
+    _entries.append(entry);
 
-	emit entriesChanged();
+    emit entriesChanged();
 }
 
-QString FSBMCurrent::getCurrent() const {
-	return _current;
+QString FSBMCurrent::getCurrent() const
+{
+    return _current;
 }
 
-bool FSBMCurrent::isOnlineFile() const {
-	return _current.startsWith("http");
+bool FSBMCurrent::isOnlineFile() const
+{
+    return _current.startsWith("http");
 }
-

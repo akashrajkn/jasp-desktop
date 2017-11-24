@@ -23,82 +23,78 @@
 
 #include "boundmodel.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include <QString>
-#include <QPair>
-#include <QList>
-#include <QIcon>
 #include <QAbstractItemView>
+#include <QIcon>
+#include <QList>
+#include <QPair>
+#include <QString>
 
-#include "terms.h"
-#include "tablemodel.h"
 #include "common.h"
+#include "tablemodel.h"
+#include "terms.h"
 #include "variableinfo.h"
 
-class TableModelVariables : public TableModel, public VariableInfoConsumer
-{
-	Q_OBJECT
+class TableModelVariables : public TableModel, public VariableInfoConsumer {
+    Q_OBJECT
 public:
-	explicit TableModelVariables(QObject *parent = 0);
-	
-	void setVariableTypesSuggested(int variableTypesSuggested);
-	int variableTypesSuggested() const;
+    explicit TableModelVariables(QObject* parent = 0);
 
-	void setVariableTypesAllowed(int variableTypesAllowed);
-	int variableTypesAllowed() const;
+    void setVariableTypesSuggested(int variableTypesSuggested);
+    int variableTypesSuggested() const;
 
-    virtual int rowCount(const QModelIndex &) const OVERRIDE;
-	virtual int columnCount(const QModelIndex &parent) const OVERRIDE;
-    virtual QVariant data(const QModelIndex &index, int role) const OVERRIDE;
+    void setVariableTypesAllowed(int variableTypesAllowed);
+    int variableTypesAllowed() const;
 
-    virtual bool insertRows(int row, int count, const QModelIndex &parent) OVERRIDE;
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const OVERRIDE;
+    virtual int rowCount(const QModelIndex&) const OVERRIDE;
+    virtual int columnCount(const QModelIndex& parent) const OVERRIDE;
+    virtual QVariant data(const QModelIndex& index, int role) const OVERRIDE;
+
+    virtual bool insertRows(int row, int count, const QModelIndex& parent) OVERRIDE;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const OVERRIDE;
 
     virtual Qt::DropActions supportedDropActions() const OVERRIDE;
     virtual Qt::DropActions supportedDragActions() const OVERRIDE;
 
     virtual QStringList mimeTypes() const OVERRIDE;
-    virtual QMimeData *mimeData(const QModelIndexList &indexes) const OVERRIDE;
-    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) OVERRIDE;
-    virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const OVERRIDE;
+    virtual QMimeData* mimeData(const QModelIndexList& indexes) const OVERRIDE;
+    virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) OVERRIDE;
+    virtual bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const OVERRIDE;
 
-	void setSupportedDropActions(Qt::DropActions actions);
-	void setSupportedDragActions(Qt::DropActions actions);
+    void setSupportedDropActions(Qt::DropActions actions);
+    void setSupportedDragActions(Qt::DropActions actions);
 
-	void setMimeType(const QString &mimeType);
+    void setMimeType(const QString& mimeType);
 
-	virtual void mimeDataMoved(const QModelIndexList &indexes) OVERRIDE;
+    virtual void mimeDataMoved(const QModelIndexList& indexes) OVERRIDE;
 
 protected:
+    Terms _variables;
 
-	Terms _variables;
+    bool isAllowed(const Term& term) const;
+    bool isSuggested(const Term& term) const;
 
-	bool isAllowed(const Term &term) const;
-	bool isSuggested(const Term &term) const;
+    bool isDroppingToSelf(const QMimeData* mimeData) const;
 
-	bool isDroppingToSelf(const QMimeData *mimeData) const;
-
-	QString _mimeType;
+    QString _mimeType;
 
 private:
+    QAbstractItemView* _defaultTarget;
 
-	QAbstractItemView *_defaultTarget;
+    Qt::DropActions _dropActions;
+    Qt::DropActions _dragActions;
 
-	Qt::DropActions _dropActions;
-	Qt::DropActions _dragActions;
+    int _variableTypesSuggested;
+    int _variableTypesAllowed;
 
-	int _variableTypesSuggested;
-	int _variableTypesAllowed;
+    QMimeData* _mimeData;
 
-	QMimeData *_mimeData;
-
-	QIcon _nominalTextIcon;
-	QIcon _nominalIcon;
-	QIcon _ordinalIcon;
-	QIcon _scaleIcon;
-	
+    QIcon _nominalTextIcon;
+    QIcon _nominalIcon;
+    QIcon _ordinalIcon;
+    QIcon _scaleIcon;
 };
 
 #endif // TABLEMODELVARIABLES_H

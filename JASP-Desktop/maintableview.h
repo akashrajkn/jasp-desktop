@@ -29,49 +29,46 @@
 
 #include <QPushButton>
 
-class MainTableView : public QTableView
-{
-	Q_OBJECT
+class MainTableView : public QTableView {
+    Q_OBJECT
 
 public:
-	explicit MainTableView(QWidget *parent = 0);
+    explicit MainTableView(QWidget* parent = 0);
 
-	virtual void setModel(QAbstractItemModel *model) OVERRIDE;
-	void setVariablesView(VariablesWidget *variablesPage);
-	void adjustAfterDataLoad(bool dataLoaded);
+    virtual void setModel(QAbstractItemModel* model) OVERRIDE;
+    void setVariablesView(VariablesWidget* variablesPage);
+    void adjustAfterDataLoad(bool dataLoaded);
 
 protected:
-	virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) OVERRIDE;
-	virtual void verticalScrollbarValueChanged(int value) OVERRIDE;
-	virtual void mouseDoubleClickEvent(QMouseEvent *event) OVERRIDE;
+    virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) OVERRIDE;
+    virtual void verticalScrollbarValueChanged(int value) OVERRIDE;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) OVERRIDE;
 
 signals:
-	void dataTableColumnSelected();
-	void dataTableDoubleClicked();
-	
+    void dataTableColumnSelected();
+    void dataTableDoubleClicked();
+
 public slots:
 
 private slots:
-	void badDataEnteredHandler(QModelIndex index);
-	void columnTypeChanged(int columnIndex, Column::ColumnType newColumnType);
-	void showLabelView(int columnIndex);
+    void badDataEnteredHandler(QModelIndex index);
+    void columnTypeChanged(int columnIndex, Column::ColumnType newColumnType);
+    void showLabelView(int columnIndex);
 
 private:
-	DataSetTableModel *_dataSetModel;
-	VariablesWidget *_variablesPage;
+    DataSetTableModel* _dataSetModel;
+    VariablesWidget* _variablesPage;
 
+    bool _infoPopupVisible;
+    QModelIndex _infoPopupIndex;
+    InfoPopup* _infoPopup;
 
-	bool _infoPopupVisible;
-	QModelIndex _infoPopupIndex;
-	InfoPopup *_infoPopup;
+    void showInfoPopup(QModelIndex& index);
+    void moveInfoPopup();
+    void hideInfoPopup();
 
-	void showInfoPopup(QModelIndex &index);
-	void moveInfoPopup();
-	void hideInfoPopup();
-
-	MainTableHorizontalHeader *_header;
-	bool _dataLoaded;
-	
+    MainTableHorizontalHeader* _header;
+    bool _dataLoaded;
 };
 
 #endif // TABLEVIEW_H

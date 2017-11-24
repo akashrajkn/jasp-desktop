@@ -16,37 +16,35 @@
 // <http://www.gnu.org/licenses/>.
 //
 
-
 #ifndef REINFORCEMENTLEARNINGR11TLEARNINGFORM_H
 #define REINFORCEMENTLEARNINGR11TLEARNINGFORM_H
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariablesoptions.h"
 
 namespace Ui {
 class ReinforcementLearningR11tLearningForm;
 }
 
-class ReinforcementLearningR11tLearningForm : public AnalysisForm
-{
-	Q_OBJECT
+class ReinforcementLearningR11tLearningForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit ReinforcementLearningR11tLearningForm(QWidget *parent = 0);
-	~ReinforcementLearningR11tLearningForm();
+    explicit ReinforcementLearningR11tLearningForm(QWidget* parent = 0);
+    ~ReinforcementLearningR11tLearningForm();
 
 private:
-	Ui::ReinforcementLearningR11tLearningForm *ui;
+    Ui::ReinforcementLearningR11tLearningForm* ui;
 
-	TableModelVariablesAssigned *_subjectIdListModel;
-	TableModelVariablesAssigned *_groupListModel;
-	TableModelVariablesAssigned *_trialNumberListModel;
-	TableModelVariablesAssigned *_deckListModel;
-	TableModelVariablesAssigned *_rewardListModel;
-	TableModelVariablesAssigned *_lossListModel;
+    TableModelVariablesAssigned* _subjectIdListModel;
+    TableModelVariablesAssigned* _groupListModel;
+    TableModelVariablesAssigned* _trialNumberListModel;
+    TableModelVariablesAssigned* _deckListModel;
+    TableModelVariablesAssigned* _rewardListModel;
+    TableModelVariablesAssigned* _lossListModel;
 };
 
 #endif // REINFORCEMENTLEARNINGR11TLEARNINGFORM_H

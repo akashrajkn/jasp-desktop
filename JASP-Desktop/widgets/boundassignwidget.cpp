@@ -19,53 +19,56 @@
 #include "boundassignwidget.h"
 #include "ui_boundassignwidget.h"
 
-BoundAssignWidget::BoundAssignWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::BoundAssignWidget)
+BoundAssignWidget::BoundAssignWidget(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::BoundAssignWidget)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->leftLabel->hide();
-	ui->rightLabel->hide();
+    ui->leftLabel->hide();
+    ui->rightLabel->hide();
 
-	_availableModel = new TableModelVariablesAvailable(this);
-	_assignedModel = new TableModelVariablesAssigned(this);
+    _availableModel = new TableModelVariablesAvailable(this);
+    _assignedModel = new TableModelVariablesAssigned(this);
 
-	_assignedModel->setSource(_availableModel);
-	_assignedModel->setSorted(true);
+    _assignedModel->setSource(_availableModel);
+    _assignedModel->setSorted(true);
 
-	ui->availableVariables->setModel(_availableModel);
-	ui->availableVariables->setDoubleClickTarget(ui->assignedVariables);
+    ui->availableVariables->setModel(_availableModel);
+    ui->availableVariables->setDoubleClickTarget(ui->assignedVariables);
 
-	ui->assignedVariables->setModel(_assignedModel);
-	ui->assignedVariables->setDoubleClickTarget(ui->availableVariables);
+    ui->assignedVariables->setModel(_assignedModel);
+    ui->assignedVariables->setDoubleClickTarget(ui->availableVariables);
 
-	ui->assignButton->setSourceAndTarget(ui->availableVariables, ui->assignedVariables);
+    ui->assignButton->setSourceAndTarget(ui->availableVariables, ui->assignedVariables);
 }
 
 BoundAssignWidget::~BoundAssignWidget()
 {
-	delete ui;
+    delete ui;
 }
 
-void BoundAssignWidget::bindTo(Option *option)
+void BoundAssignWidget::bindTo(Option* option)
 {
-	ui->assignedVariables->bindTo(option);
+    ui->assignedVariables->bindTo(option);
 }
 
-void BoundAssignWidget::setVariables(const Terms &variables)
+void BoundAssignWidget::setVariables(const Terms& variables)
 {
-	_availableModel->setVariables(variables);
-	_availableModel->notifyAlreadyAssigned(_assignedModel->assigned());
+    _availableModel->setVariables(variables);
+    _availableModel->notifyAlreadyAssigned(_assignedModel->assigned());
 }
 
-void BoundAssignWidget::setLabels(const QString &left, const QString &right)
+void BoundAssignWidget::setLabels(const QString& left, const QString& right)
 {
-	ui->leftLabel->setText(left);
-	ui->rightLabel->setText(right);
-	if (left.isEmpty()) ui->leftLabel->hide();
-	else ui->leftLabel->show();
-	if (right.isEmpty()) ui->rightLabel->hide();
-	else ui->rightLabel->show();
-
+    ui->leftLabel->setText(left);
+    ui->rightLabel->setText(right);
+    if (left.isEmpty())
+        ui->leftLabel->hide();
+    else
+        ui->leftLabel->show();
+    if (right.isEmpty())
+        ui->rightLabel->hide();
+    else
+        ui->rightLabel->show();
 }

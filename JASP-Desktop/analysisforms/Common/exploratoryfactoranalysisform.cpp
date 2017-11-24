@@ -19,25 +19,24 @@
 #include "exploratoryfactoranalysisform.h"
 #include "ui_exploratoryfactoranalysisform.h"
 
-
-ExploratoryFactorAnalysisForm::ExploratoryFactorAnalysisForm(QWidget *parent) :
-	AnalysisForm("ExploratoryFactorAnalysisForm", parent),
-	ui(new Ui::ExploratoryFactorAnalysisForm)
+ExploratoryFactorAnalysisForm::ExploratoryFactorAnalysisForm(QWidget* parent)
+    : AnalysisForm("ExploratoryFactorAnalysisForm", parent)
+    , ui(new Ui::ExploratoryFactorAnalysisForm)
 {
-	ui->setupUi(this);
-	ui->highlightText->setText("0.4");
+    ui->setupUi(this);
+    ui->highlightText->setText("0.4");
 
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
-	ui->listAvailableFields->setDoubleClickTarget(ui->variables);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
+    ui->listAvailableFields->setDoubleClickTarget(ui->variables);
 
-	TableModelVariablesAssigned *variablesModel = new TableModelVariablesAssigned(this);
-	variablesModel->setSource(&_availableVariablesModel);
-	variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	variablesModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	ui->variables->setModel(variablesModel);
-	ui->variables->setDoubleClickTarget(ui->listAvailableFields);
+    TableModelVariablesAssigned* variablesModel = new TableModelVariablesAssigned(this);
+    variablesModel->setSource(&_availableVariablesModel);
+    variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    variablesModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    ui->variables->setModel(variablesModel);
+    ui->variables->setDoubleClickTarget(ui->listAvailableFields);
 
-/*
+    /*
 	TableModelVariablesAssigned *groupingVariableModel = new TableModelVariablesAssigned(this);
 	groupingVariableModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
 	groupingVariableModel->setSource(&_availableVariablesModel);
@@ -45,15 +44,15 @@ ExploratoryFactorAnalysisForm::ExploratoryFactorAnalysisForm(QWidget *parent) :
 	ui->groupingVariable->setDoubleClickTarget(ui->listAvailableFields);
 */
 
-	ui->buttonAssignVariables->setSourceAndTarget(ui->listAvailableFields, ui->variables);
+    ui->buttonAssignVariables->setSourceAndTarget(ui->listAvailableFields, ui->variables);
     ui->containerOptions->hide();
-//	ui->buttonAssignGroupingVariable->setSourceAndTarget(ui->listAvailableFields, ui->groupingVariable);
+    //	ui->buttonAssignGroupingVariable->setSourceAndTarget(ui->listAvailableFields, ui->groupingVariable);
 
-//	ui->confidenceIntervalInterval->setLabel("Confidence interval");
-//	ui->descriptivesPlotsConfidenceInterval->setLabel("Confidence interval");
+    //	ui->confidenceIntervalInterval->setLabel("Confidence interval");
+    //	ui->descriptivesPlotsConfidenceInterval->setLabel("Confidence interval");
 
-	connect(ui->highlightSlider,SIGNAL(valueChanged(int)),this,SLOT(HandleSlider(int)));
-	connect(ui->highlightText,SIGNAL(textChanged(QString)),this,SLOT(HandleLineEdit(QString)));
+    connect(ui->highlightSlider, SIGNAL(valueChanged(int)), this, SLOT(HandleSlider(int)));
+    connect(ui->highlightText, SIGNAL(textChanged(QString)), this, SLOT(HandleLineEdit(QString)));
 }
 
 /*
@@ -65,18 +64,17 @@ void ExploratoryFactorAnalysisForm::HandleSlider(double i)
 */
 void ExploratoryFactorAnalysisForm::HandleSlider(int i)
 {
-	QString	s = QString::number(((double)i)/100.0, 'f', 2);
-	ui->highlightText->setText(s);
+    QString s = QString::number(((double)i) / 100.0, 'f', 2);
+    ui->highlightText->setText(s);
     ui->highlightText->finalise();
 }
 
 void ExploratoryFactorAnalysisForm::HandleLineEdit(QString s)
 {
-	ui->highlightSlider->setValue(s.toDouble() * 100.0);
+    ui->highlightSlider->setValue(s.toDouble() * 100.0);
 }
-
 
 ExploratoryFactorAnalysisForm::~ExploratoryFactorAnalysisForm()
 {
-	delete ui;
+    delete ui;
 }

@@ -25,16 +25,15 @@ namespace Ui {
 class SummaryStatsBinomialTestBayesianForm;
 }
 
-class SummaryStatsBinomialTestBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class SummaryStatsBinomialTestBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit SummaryStatsBinomialTestBayesianForm(QWidget *parent = 0);
-	~SummaryStatsBinomialTestBayesianForm();
+    explicit SummaryStatsBinomialTestBayesianForm(QWidget* parent = 0);
+    ~SummaryStatsBinomialTestBayesianForm();
 
 private:
-	Ui::SummaryStatsBinomialTestBayesianForm *ui;
+    Ui::SummaryStatsBinomialTestBayesianForm* ui;
 };
 
 #endif // SUMMARYSTATSBINOMIALTESTBAYESIAN_H

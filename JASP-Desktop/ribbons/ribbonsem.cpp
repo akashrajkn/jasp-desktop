@@ -19,16 +19,16 @@
 #include "ribbonsem.h"
 #include "ui_ribbonsem.h"
 
-RibbonSEM::RibbonSEM(QWidget *parent) :
-	RibbonWidget(parent),
-	ui(new Ui::RibbonSEM)
+RibbonSEM::RibbonSEM(QWidget* parent)
+    : RibbonWidget(parent)
+    , ui(new Ui::RibbonSEM)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	addRibbonButton(ui->SEMSimple);
+    addRibbonButton(ui->SEMSimple);
 }
 
 RibbonSEM::~RibbonSEM()
 {
-	delete ui;
+    delete ui;
 }

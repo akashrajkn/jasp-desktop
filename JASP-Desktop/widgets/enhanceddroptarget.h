@@ -21,10 +21,9 @@
 
 #include <QMimeData>
 
-class EnhancedDropTarget
-{
+class EnhancedDropTarget {
 public:
-	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent, int flags) = 0;
+    virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent, int flags) = 0;
 };
 
 #endif // ENHANCEDDROPTARGET_H

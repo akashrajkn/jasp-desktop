@@ -18,115 +18,106 @@
 #include "odsimporter.h"
 #include "sharedmemory.h"
 
-#include "ods/odsxmlmanifesthandler.h"
-#include "ods/odsxmlcontentshandler.h"
 #include "filereader.h"
+#include "ods/odsxmlcontentshandler.h"
+#include "ods/odsxmlmanifesthandler.h"
 
 #include <QXmlInputSource>
-
-
 
 using namespace std;
 using namespace boost;
 using namespace ods;
 
-
 //Data * ODSImporter::_dta = 0;
 
-ODSImporter::ODSImporter(DataSetPackage *packageData)
-	: Importer(packageData)
+ODSImporter::ODSImporter(DataSetPackage* packageData)
+    : Importer(packageData)
 {
-	// Spreadsheet files are never JASP archives.
-	packageData->isArchive = false;
+    // Spreadsheet files are never JASP archives.
+    packageData->isArchive = false;
 }
 
 ODSImporter::~ODSImporter()
 {
 }
 
-
-
-
 // Implmemtation of Inporter base class.
-ImportDataSet* ODSImporter::loadFile(const string &locator, boost::function<void(const string &, int)> progressCallback)
+ImportDataSet* ODSImporter::loadFile(const string& locator, boost::function<void(const string&, int)> progressCallback)
 {
-	// Create new data set.
-	ODSImportDataSet * result = new ODSImportDataSet(this);
+    // Create new data set.
+    ODSImportDataSet* result = new ODSImportDataSet(this);
 
-	// Check mnaifest for the contents file.
-	progressCallback("Reading ODS manifest.", 0);
-	readManifest(locator, result);
+    // Check mnaifest for the contents file.
+    progressCallback("Reading ODS manifest.", 0);
+    readManifest(locator, result);
 
-	// Read the sheet contents.
-	progressCallback("Reading ODS contents.", 33);
-	readContents(locator, result);
+    // Read the sheet contents.
+    progressCallback("Reading ODS contents.", 33);
+    readContents(locator, result);
 
-	// Do post load processing:
-	progressCallback("Processing.", 60);
-	result->postLoadProcess();
+    // Do post load processing:
+    progressCallback("Processing.", 60);
+    result->postLoadProcess();
 
-	// Build the dictionary for sync.
-	result->buildDictionary();
+    // Build the dictionary for sync.
+    result->buildDictionary();
 
-	return result;
+    return result;
 }
 
-void ODSImporter::fillSharedMemoryColumn(ImportColumn *importColumn, Column &column)
+void ODSImporter::fillSharedMemoryColumn(ImportColumn* importColumn, Column& column)
 {
-	ODSImportColumn *odsColumn = dynamic_cast<ODSImportColumn *>(importColumn);
-	const vector<string> &values = odsColumn->getData();
+    ODSImportColumn* odsColumn = dynamic_cast<ODSImportColumn*>(importColumn);
+    const vector<string>& values = odsColumn->getData();
 
-	fillSharedMemoryColumnWithStrings(values, column);
-
-
+    fillSharedMemoryColumnWithStrings(values, column);
 }
 
-void ODSImporter::readManifest(const string &path, ODSImportDataSet *dataset)
+void ODSImporter::readManifest(const string& path, ODSImportDataSet* dataset)
 {
 
-	QXmlInputSource src;
-	{
-		// Get the data file proper from the ODS manifest file.
-		FileReader manifest(path, ODSImportDataSet::manifestPath);
-		QString tmp;
-		int errorCode = 0;
-		if (((tmp = manifest.readAllData(errorCode)).size() == 0) || (errorCode < 0))
-			throw runtime_error("Error reading manifest in ODS.");
-		src.setData(tmp);
-		manifest.close();
-	}
+    QXmlInputSource src;
+    {
+        // Get the data file proper from the ODS manifest file.
+        FileReader manifest(path, ODSImportDataSet::manifestPath);
+        QString tmp;
+        int errorCode = 0;
+        if (((tmp = manifest.readAllData(errorCode)).size() == 0) || (errorCode < 0))
+            throw runtime_error("Error reading manifest in ODS.");
+        src.setData(tmp);
+        manifest.close();
+    }
 
-	{
-		XmlManifestHandler * manHandler = new XmlManifestHandler(dataset);
-		QXmlSimpleReader reader;
-		reader.setContentHandler(manHandler);
-		reader.setErrorHandler(manHandler);
-		reader.parse(src);
-	}
+    {
+        XmlManifestHandler* manHandler = new XmlManifestHandler(dataset);
+        QXmlSimpleReader reader;
+        reader.setContentHandler(manHandler);
+        reader.setErrorHandler(manHandler);
+        reader.parse(src);
+    }
 }
 
-void ODSImporter::readContents(const string &path, ODSImportDataSet *dataset)
+void ODSImporter::readContents(const string& path, ODSImportDataSet* dataset)
 {
 
-	FileReader contents(path, dataset->getContentFilename());
+    FileReader contents(path, dataset->getContentFilename());
 
-	QXmlInputSource src;
-	{
-		QString tmp;
-		int errorCode = 0;
-		if (((tmp = contents.readAllData(errorCode)).size() == 0) || (errorCode < 0))
-			throw runtime_error("Error reading contents in ODS.");
-		src.setData(tmp);
-	}
+    QXmlInputSource src;
+    {
+        QString tmp;
+        int errorCode = 0;
+        if (((tmp = contents.readAllData(errorCode)).size() == 0) || (errorCode < 0))
+            throw runtime_error("Error reading contents in ODS.");
+        src.setData(tmp);
+    }
 
-	{
-		XmlContentsHandler * contentsHandler = new XmlContentsHandler(dataset);
-		QXmlSimpleReader reader;
-		reader.setContentHandler(contentsHandler);
-		reader.setErrorHandler(contentsHandler);
-		reader.parse(src);
-	}
+    {
+        XmlContentsHandler* contentsHandler = new XmlContentsHandler(dataset);
+        QXmlSimpleReader reader;
+        reader.setContentHandler(contentsHandler);
+        reader.setErrorHandler(contentsHandler);
+        reader.parse(src);
+    }
 
-	contents.close();
+    contents.close();
 }
-

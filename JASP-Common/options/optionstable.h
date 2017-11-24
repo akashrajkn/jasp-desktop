@@ -25,22 +25,21 @@
 #include "option.h"
 #include "options.h"
 
-class OptionsTable : public OptionI<std::vector<Options*> >
-{
+class OptionsTable : public OptionI<std::vector<Options*>> {
 public:
-	OptionsTable(Options *rowTemplate = NULL);
+    OptionsTable(Options* rowTemplate = NULL);
 
-	virtual void init(const Json::Value &data) OVERRIDE;
+    virtual void init(const Json::Value& data) OVERRIDE;
 
-	virtual Json::Value asJSON() const OVERRIDE;
-	virtual void set(const Json::Value &value) OVERRIDE;
-	virtual Option* clone() const OVERRIDE;
-	virtual void setValue(const std::vector<Options *> &value) OVERRIDE;
+    virtual Json::Value asJSON() const OVERRIDE;
+    virtual void set(const Json::Value& value) OVERRIDE;
+    virtual Option* clone() const OVERRIDE;
+    virtual void setValue(const std::vector<Options*>& value) OVERRIDE;
 
-	Options *rowTemplate() const;
+    Options* rowTemplate() const;
 
 private:
-	Options *_template;
+    Options* _template;
 };
 
 #endif // OPTIONSTABLE_H

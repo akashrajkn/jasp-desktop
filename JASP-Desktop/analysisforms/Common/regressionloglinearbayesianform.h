@@ -21,36 +21,35 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 
 namespace Ui {
 class RegressionLogLinearBayesianForm;
 }
 
-class RegressionLogLinearBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class RegressionLogLinearBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit RegressionLogLinearBayesianForm(QWidget *parent = 0);
-	~RegressionLogLinearBayesianForm();
+    explicit RegressionLogLinearBayesianForm(QWidget* parent = 0);
+    ~RegressionLogLinearBayesianForm();
 
-	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    virtual void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
+    void factorsChanging();
+    void factorsChanged();
 
 private:
-	Ui::RegressionLogLinearBayesianForm *ui;
+    Ui::RegressionLogLinearBayesianForm* ui;
 
-	TableModelVariablesAssigned *_dependentListModel;
-	TableModelVariablesAssigned *_factorsListModel;
+    TableModelVariablesAssigned* _dependentListModel;
+    TableModelVariablesAssigned* _factorsListModel;
 
-	TableModelAnovaModel *_model;
+    TableModelAnovaModel* _model;
 
-	TableModelVariablesAvailable *_factorsAvailableListModel;
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 };
 
 #endif // REGRESSIONLOGLINEARBAYESIANFORM_H

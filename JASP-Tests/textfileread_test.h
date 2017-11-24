@@ -26,39 +26,35 @@
 #if QT_VERSION > QT_VERSION_CHECK(5, 3, 0)
 #include <QSignalBlocker>
 #endif
-#include <fstream>
-#include <vector>
-#include <string>
-#include <boost/filesystem.hpp>
 #include "AutomatedTests.h"
 #include "asyncloader.h"
-#include "sharedmemory.h"
+#include "datasetpackage.h"
 #include "fileevent.h"
 #include "mainwindow.h"
-#include "datasetpackage.h"
+#include "sharedmemory.h"
+#include <boost/filesystem.hpp>
+#include <fstream>
+#include <string>
+#include <vector>
 
-
-class TextFileReadTest : public QObject
-{
+class TextFileReadTest : public QObject {
     Q_OBJECT
 
 public:
+    struct fileContent {
+        int columns;
+        int rows;
+        std::vector<std::string> headers;
+        std::vector<std::vector<std::string>> data;
+    };
 
-  struct fileContent
-  {
-    int columns;
-    int rows;
-    std::vector <std::string> headers;
-    std::vector< std::vector<std::string> > data;
-  };
+    FileEvent* fe;
+    DataSetPackage* dsp;
+    AsyncLoader* asl;
+    bool folderPathFound;
 
-  FileEvent *fe;
-  DataSetPackage *dsp;
-  AsyncLoader *asl;
-  bool folderPathFound;
-
-  int readDataFromFile(std::string, struct fileContent*);
-  bool checkIfEqual(struct fileContent *);
+    int readDataFromFile(std::string, struct fileContent*);
+    bool checkIfEqual(struct fileContent*);
 
 private slots:
     void initTestCase();
@@ -68,7 +64,6 @@ private slots:
     void asyncloaderTester_data();
     void asyncloaderTester();
 };
-
 
 DECLARE_TEST(TextFileReadTest)
 

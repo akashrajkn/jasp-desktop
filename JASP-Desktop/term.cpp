@@ -19,155 +19,150 @@
 #include "term.h"
 #include "qutils.h"
 
-#include <sstream>
 #include <boost/foreach.hpp>
+#include <sstream>
 
 using namespace std;
 
 Term::Term(const std::vector<string> components)
 {
-	bool first = true;
+    bool first = true;
 
-	foreach (const string &component, components)
-	{
-		if (first)
-			first = false;
-		else
+    foreach (const string& component, components) {
+        if (first)
+            first = false;
+        else
 #ifdef __WIN32__
-			_asString.append(" * ");
+            _asString.append(" * ");
 #else
-			_asString.append(" \xE2\x88\x97 ");
+            _asString.append(" \xE2\x88\x97 ");
 #endif
 
-		_asString.append(component);
-		_components.append(tq(component));
-		_scomponents.push_back(component);
-	}
+        _asString.append(component);
+        _components.append(tq(component));
+        _scomponents.push_back(component);
+    }
 
-	_asQString = tq(_asString);
+    _asQString = tq(_asString);
 }
 
 Term::Term(const string component)
 {
-	_components.append(tq(component));
-	_scomponents.push_back(component);
-	_asString = component;
-	_asQString = tq(component);
+    _components.append(tq(component));
+    _scomponents.push_back(component);
+    _asString = component;
+    _asQString = tq(component);
 }
 
 Term::Term(const QStringList components)
 {
-	bool first = true;
+    bool first = true;
 
-	foreach (const QString &component, components)
-	{
-		if (first)
-			first = false;
-		else
+    foreach (const QString& component, components) {
+        if (first)
+            first = false;
+        else
 #ifdef __WIN32__
-			_asQString.append(" * ");
+            _asQString.append(" * ");
 #else
-			_asQString.append(" \xE2\x88\x97 ");
+            _asQString.append(" \xE2\x88\x97 ");
 #endif
 
-		_asQString += component;
-		_components.append(component);
-		_scomponents.push_back(fq(component));
-	}
+        _asQString += component;
+        _components.append(component);
+        _scomponents.push_back(fq(component));
+    }
 
-	_asString = fq(_asQString);
+    _asString = fq(_asQString);
 }
 
 Term::Term(const QString component)
 {
-	_components.append(component);
-	_scomponents.push_back(fq(component));
-	_asQString = component;
-	_asString = fq(component);
+    _components.append(component);
+    _scomponents.push_back(fq(component));
+    _asQString = component;
+    _asString = fq(component);
 }
 
-const QStringList &Term::components() const
+const QStringList& Term::components() const
 {
-	return _components;
+    return _components;
 }
 
-const std::vector<string> &Term::scomponents() const
+const std::vector<string>& Term::scomponents() const
 {
-	return _scomponents;
+    return _scomponents;
 }
 
-const string &Term::asString() const
+const string& Term::asString() const
 {
-	return _asString;
+    return _asString;
 }
 
-bool Term::contains(const string &component) const
+bool Term::contains(const string& component) const
 {
-	BOOST_FOREACH(const string &termComponent, _scomponents)
-	{
-		if (component == termComponent)
-			return true;
-	}
+    BOOST_FOREACH (const string& termComponent, _scomponents) {
+        if (component == termComponent)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
-bool Term::containsAll(const Term &term) const
+bool Term::containsAll(const Term& term) const
 {
-	BOOST_FOREACH(const string &termComponent, term._scomponents)
-	{
-		if ( ! contains(termComponent))
-			return false;
-	}
+    BOOST_FOREACH (const string& termComponent, term._scomponents) {
+        if (!contains(termComponent))
+            return false;
+    }
 
-	return true;
+    return true;
 }
 
-bool Term::containsAny(const Term &term) const
+bool Term::containsAny(const Term& term) const
 {
-	BOOST_FOREACH(const string &termComponent, _scomponents)
-	{
-		if (term.contains(termComponent))
-			return true;
-	}
+    BOOST_FOREACH (const string& termComponent, _scomponents) {
+        if (term.contains(termComponent))
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
-const QString &Term::asQString() const
+const QString& Term::asQString() const
 {
-	return _asQString;
+    return _asQString;
 }
 
 Term::iterator Term::begin()
 {
-	return _components.begin();
+    return _components.begin();
 }
 
 Term::iterator Term::end()
 {
-	return _components.end();
+    return _components.end();
 }
 
-const QString &Term::at(int index) const
+const QString& Term::at(int index) const
 {
-	return _components.at(index);
+    return _components.at(index);
 }
 
-bool Term::operator==(const Term &other) const
+bool Term::operator==(const Term& other) const
 {
-	if (this == &other)
-		return true;
+    if (this == &other)
+        return true;
 
-	return components() == other.components();
+    return components() == other.components();
 }
 
-bool Term::operator!=(const Term &other) const
+bool Term::operator!=(const Term& other) const
 {
-	return this->operator==(other) == false;
+    return this->operator==(other) == false;
 }
 
 size_t Term::size() const
 {
-	return _components.size();
+    return _components.size();
 }

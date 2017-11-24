@@ -19,16 +19,15 @@
 
 const Version AppInfo::version = Version(0, 8, 4, 255);
 const std::string AppInfo::name = "JASP";
-const std::string AppInfo::builddate = __DATE__ " " __TIME__ " (Netherlands)" ;
+const std::string AppInfo::builddate = __DATE__ " " __TIME__ " (Netherlands)";
 
 std::string AppInfo::getShortDesc()
 {
-	return AppInfo::name + " " + AppInfo::version.asString();
+    return AppInfo::name + " " + AppInfo::version.asString();
 }
 
 std::string AppInfo::getBuildYear()
 {
-	std::string datum = __DATE__;
-	return datum.substr(datum.length() - 4);
+    std::string datum = __DATE__;
+    return datum.substr(datum.length() - 4);
 }
-

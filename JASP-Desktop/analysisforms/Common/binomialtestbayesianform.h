@@ -25,16 +25,15 @@ namespace Ui {
 class BinomialTestBayesianForm;
 }
 
-class BinomialTestBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class BinomialTestBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit BinomialTestBayesianForm(QWidget *parent = 0);
-	~BinomialTestBayesianForm();
+    explicit BinomialTestBayesianForm(QWidget* parent = 0);
+    ~BinomialTestBayesianForm();
 
 private:
-	Ui::BinomialTestBayesianForm *ui;
+    Ui::BinomialTestBayesianForm* ui;
 };
 
 #endif // BINOMIALTESTBAYESIANFORM_H

@@ -20,16 +20,13 @@
 
 #include "importer.h"
 
-
-class CSVImporter : public Importer
-{
+class CSVImporter : public Importer {
 public:
-	CSVImporter(DataSetPackage *packageData);
+    CSVImporter(DataSetPackage* packageData);
 
 protected:
-	virtual ImportDataSet* loadFile(const std::string &locator, boost::function<void(const std::string &, int)> progressCallback);
-	virtual void fillSharedMemoryColumn(ImportColumn *importColumn, Column &column);
-
+    virtual ImportDataSet* loadFile(const std::string& locator, boost::function<void(const std::string&, int)> progressCallback);
+    virtual void fillSharedMemoryColumn(ImportColumn* importColumn, Column& column);
 };
 
 #endif // CSVIMPORTER_H

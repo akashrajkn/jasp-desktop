@@ -25,16 +25,15 @@ namespace Ui {
 class MultinomialTestForm;
 }
 
-class MultinomialTestForm : public AnalysisForm
-{
-	Q_OBJECT
+class MultinomialTestForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit MultinomialTestForm(QWidget *parent = 0);
-	~MultinomialTestForm();
+    explicit MultinomialTestForm(QWidget* parent = 0);
+    ~MultinomialTestForm();
 
 private:
-	Ui::MultinomialTestForm *ui;
+    Ui::MultinomialTestForm* ui;
 };
 
 #endif // MULTINOMIALTESTFORM_H

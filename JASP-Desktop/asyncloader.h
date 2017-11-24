@@ -19,9 +19,9 @@
 #ifndef ASYNCLOADER_H
 #define ASYNCLOADER_H
 
+#include <QMutex>
 #include <QObject>
 #include <QThread>
-#include <QMutex>
 #include <QTimer>
 
 #include "dataset.h"
@@ -31,43 +31,40 @@
 
 #include "onlinedatamanager.h"
 
-class AsyncLoader : public QObject
-{
-	Q_OBJECT
+class AsyncLoader : public QObject {
+    Q_OBJECT
 
 public:
-	explicit AsyncLoader(QObject *parent = 0);
+    explicit AsyncLoader(QObject* parent = 0);
 
-	void io(FileEvent *event, DataSetPackage *package);
-	void free(DataSet *dataSet);
-	void setOnlineDataManager(OnlineDataManager *odm);
+    void io(FileEvent* event, DataSetPackage* package);
+    void free(DataSet* dataSet);
+    void setOnlineDataManager(OnlineDataManager* odm);
 
 signals:
-	void beginLoad(FileEvent*, DataSetPackage*);
-	void beginSave(FileEvent*, DataSetPackage*);
-	void progress(const QString &status, int progress);
-	void beginFileUpload(QString nodePath, QString sourcePath);
+    void beginLoad(FileEvent*, DataSetPackage*);
+    void beginSave(FileEvent*, DataSetPackage*);
+    void progress(const QString& status, int progress);
+    void beginFileUpload(QString nodePath, QString sourcePath);
 
 private slots:
-	void loadTask(FileEvent *event, DataSetPackage *package);
-	void saveTask(FileEvent *event, DataSetPackage *package);
-	void loadPackage(QString id);
-	void uploadFileFinished(QString id);
-	//void errorFlagged(QString msg, QString id);
+    void loadTask(FileEvent* event, DataSetPackage* package);
+    void saveTask(FileEvent* event, DataSetPackage* package);
+    void loadPackage(QString id);
+    void uploadFileFinished(QString id);
+    //void errorFlagged(QString msg, QString id);
 
 private:
+    QString fileChecksum(const QString& fileName, QCryptographicHash::Algorithm hashAlgorithm);
 
-	QString fileChecksum(const QString &fileName, QCryptographicHash::Algorithm hashAlgorithm);
+    void progressHandler(std::string status, int progress);
+    QThread _thread;
+    DataSetLoader _loader;
 
-	void progressHandler(std::string status, int progress);
-	QThread _thread;
-	DataSetLoader _loader;
+    FileEvent* _currentEvent;
+    DataSetPackage* _currentPackage;
 
-	FileEvent *_currentEvent;
-	DataSetPackage *_currentPackage;
-
-	OnlineDataManager *_odm = NULL;
-	
+    OnlineDataManager* _odm = NULL;
 };
 
 #endif // ASYNCLOADER_H

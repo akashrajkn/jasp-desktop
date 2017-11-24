@@ -20,9 +20,9 @@
 #define REGRESSIONLOGISTICFORM_H
 
 #include "../analysisform.h"
+#include "widgets/tablemodelanovamodel.h"
 #include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariableslevels.h"
-#include "widgets/tablemodelanovamodel.h"
 
 #include "common.h"
 
@@ -30,28 +30,27 @@ namespace Ui {
 class RegressionLogisticForm;
 }
 
-class RegressionLogisticForm : public AnalysisForm
-{
-	Q_OBJECT
+class RegressionLogisticForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit RegressionLogisticForm(QWidget *parent = 0);
-	~RegressionLogisticForm();
-	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    explicit RegressionLogisticForm(QWidget* parent = 0);
+    ~RegressionLogisticForm();
+    void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
+    void factorsChanging();
+    void factorsChanged();
 
 private:
-	Ui::RegressionLogisticForm *ui;
+    Ui::RegressionLogisticForm* ui;
 
-	TableModelVariablesAssigned *_dependentModel;
-	TableModelVariablesAssigned  *_covariatesModel;
-	TableModelVariablesAssigned  *_factorsModel;
-	TableModelVariablesAssigned *_wlsWeightsModel;
+    TableModelVariablesAssigned* _dependentModel;
+    TableModelVariablesAssigned* _covariatesModel;
+    TableModelVariablesAssigned* _factorsModel;
+    TableModelVariablesAssigned* _wlsWeightsModel;
 
-	TableModelAnovaModel *_modelModel;
+    TableModelAnovaModel* _modelModel;
 };
 
 #endif // REGRESSIONLOGISTICFORM_H

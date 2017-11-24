@@ -21,47 +21,45 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariablesoptions.h"
 
 namespace Ui {
 class AnovaForm;
 }
 
-class AnovaForm : public AnalysisForm
-{
-	Q_OBJECT
+class AnovaForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit AnovaForm(QWidget *parent = 0);
-	~AnovaForm();
+    explicit AnovaForm(QWidget* parent = 0);
+    ~AnovaForm();
 
-	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    virtual void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
-	void termsChanged();
+    void factorsChanging();
+    void factorsChanged();
+    void termsChanged();
 
 private:
-	Ui::AnovaForm *ui;
+    Ui::AnovaForm* ui;
 
-	TableModelVariablesAssigned *_dependentListModel;
-	TableModelVariablesAssigned *_fixedFactorsListModel;
-	TableModelVariablesAssigned *_randomFactorsListModel;
-	TableModelVariablesAssigned *_wlsWeightsListModel;
+    TableModelVariablesAssigned* _dependentListModel;
+    TableModelVariablesAssigned* _fixedFactorsListModel;
+    TableModelVariablesAssigned* _randomFactorsListModel;
+    TableModelVariablesAssigned* _wlsWeightsListModel;
 
-	TableModelAnovaModel *_anovaModel;
+    TableModelAnovaModel* _anovaModel;
 
-	TableModelVariablesOptions *_contrastsModel;
-	TableModelVariablesAvailable *_factorsAvailableListModel;
+    TableModelVariablesOptions* _contrastsModel;
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 
-    TableModelVariablesAvailable *_plotFactorsAvailableTableModel;
-    TableModelVariablesAssigned *_horizontalAxisTableModel;
-    TableModelVariablesAssigned *_seperateLinesTableModel;
-    TableModelVariablesAssigned *_seperatePlotsTableModel;
-
+    TableModelVariablesAvailable* _plotFactorsAvailableTableModel;
+    TableModelVariablesAssigned* _horizontalAxisTableModel;
+    TableModelVariablesAssigned* _seperateLinesTableModel;
+    TableModelVariablesAssigned* _seperatePlotsTableModel;
 };
 
 #endif // ANOVAFORM_H

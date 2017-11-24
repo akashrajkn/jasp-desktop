@@ -24,25 +24,22 @@
 #include "bound.h"
 #include "options/optionboolean.h"
 
-
-class BoundCheckBox : public QCheckBox, public Bound
-{
+class BoundCheckBox : public QCheckBox, public Bound {
     Q_OBJECT
 public:
-	explicit BoundCheckBox(QWidget *parent = 0);
-	virtual void bindTo(Option *option) OVERRIDE;
+    explicit BoundCheckBox(QWidget* parent = 0);
+    virtual void bindTo(Option* option) OVERRIDE;
 
 protected:
-	virtual void nextCheckState() OVERRIDE;
-	bool event(QEvent *e) OVERRIDE;
+    virtual void nextCheckState() OVERRIDE;
+    bool event(QEvent* e) OVERRIDE;
 
 signals:
-    
+
 public slots:
 
 private:
-	OptionBoolean *_boundTo;
-
+    OptionBoolean* _boundTo;
 };
 
 #endif // BOUNDCHECKBOX_H

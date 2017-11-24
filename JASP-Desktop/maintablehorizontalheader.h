@@ -26,45 +26,43 @@
 #include "common.h"
 #include "datasettablemodel.h"
 
-class MainTableHorizontalHeader : public QHeaderView
-{
-	Q_OBJECT
+class MainTableHorizontalHeader : public QHeaderView {
+    Q_OBJECT
 
 public:
-	explicit MainTableHorizontalHeader(QWidget *parent = 0);
+    explicit MainTableHorizontalHeader(QWidget* parent = 0);
 
-	virtual void setModel(QAbstractItemModel *model) OVERRIDE;
+    virtual void setModel(QAbstractItemModel* model) OVERRIDE;
 
 signals:
-	void columnTypeChanged(int columnIndex, Column::ColumnType newColumnType);
-	void columnNamePressed(int columnIndex);
+    void columnTypeChanged(int columnIndex, Column::ColumnType newColumnType);
+    void columnNamePressed(int columnIndex);
 
 public slots:
 
 protected:
-	virtual void mousePressEvent(QMouseEvent *event) OVERRIDE;
-	virtual void mouseMoveEvent(QMouseEvent *event) OVERRIDE;
+    virtual void mousePressEvent(QMouseEvent* event) OVERRIDE;
+    virtual void mouseMoveEvent(QMouseEvent* event) OVERRIDE;
 
 private slots:
-	void nominalSelected();
-	void ordinalSelected();
-	void scaleSelected();
+    void nominalSelected();
+    void ordinalSelected();
+    void scaleSelected();
 
 private:
-	int _columnSelected;
-	DataSetTableModel *_dataSetModel;
+    int _columnSelected;
+    DataSetTableModel* _dataSetModel;
 
-	QMenu *_menu;
+    QMenu* _menu;
 
-	QIcon _nominalTextIcon;
-	QIcon _nominalIcon;
-	QIcon _ordinalIcon;
-	QIcon _scaleIcon;
+    QIcon _nominalTextIcon;
+    QIcon _nominalIcon;
+    QIcon _ordinalIcon;
+    QIcon _scaleIcon;
 
-	QAction *_convertToNominal;
-	QAction *_convertToOrdinal;
-	QAction *_convertToScale;
-
+    QAction* _convertToNominal;
+    QAction* _convertToOrdinal;
+    QAction* _convertToScale;
 };
 
 #endif // MAINTABLEHORIZONTALHEADER_H

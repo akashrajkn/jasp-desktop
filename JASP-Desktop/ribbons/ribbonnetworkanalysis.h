@@ -25,16 +25,15 @@ namespace Ui {
 class RibbonNetworkAnalysis;
 }
 
-class RibbonNetworkAnalysis : public RibbonWidget
-{
-	Q_OBJECT
+class RibbonNetworkAnalysis : public RibbonWidget {
+    Q_OBJECT
 
 public:
-	explicit RibbonNetworkAnalysis(QWidget *parent = 0);
-	~RibbonNetworkAnalysis();
+    explicit RibbonNetworkAnalysis(QWidget* parent = 0);
+    ~RibbonNetworkAnalysis();
 
 private:
-	Ui::RibbonNetworkAnalysis *ui;
+    Ui::RibbonNetworkAnalysis* ui;
 };
 
 #endif // RIBBONNETWORKANALYSIS_H

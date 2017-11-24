@@ -25,19 +25,18 @@
 
 #include "common.h"
 
-class FSBMCurrent : public FSBModel
-{
+class FSBMCurrent : public FSBModel {
 public:
-	FSBMCurrent(QObject *parent = NULL);
+    FSBMCurrent(QObject* parent = NULL);
 
-	void refresh() OVERRIDE;
+    void refresh() OVERRIDE;
 
-	void setCurrent(const QString &path);
-	QString getCurrent() const;
-	bool isOnlineFile() const;
+    void setCurrent(const QString& path);
+    QString getCurrent() const;
+    bool isOnlineFile() const;
 
 private:
-	QString _current;
+    QString _current;
 };
 
 #endif // FSBROWSERMODELCURRENT_H

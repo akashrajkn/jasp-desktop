@@ -23,36 +23,32 @@
 
 #include <QString>
 
-class Bound
-{
+class Bound {
 public:
+    virtual void bindTo(Option* option) = 0;
+    virtual void unbind() {}
 
-	virtual void bindTo(Option *option) = 0;
-	virtual void unbind() { }
+    bool isIllegal() const { return _message != ""; }
+    QString illegalMessage() const { return _message; }
 
-	bool isIllegal() const { return _message != ""; }
-	QString illegalMessage() const { return _message; }
-
-	boost::signals2::signal<void (Bound *)> illegalChanged;
+    boost::signals2::signal<void(Bound*)> illegalChanged;
 
 protected:
+    void setIllegal(QString message)
+    {
+        if (_message != message) {
+            _message = message;
+            illegalChanged(this);
+        }
+    }
 
-	void setIllegal(QString message)
-	{
-		if (_message != message)
-		{
-			_message = message;
-			illegalChanged(this);
-		}
-	}
-
-	void setLegal()
-	{
-		setIllegal("");
-	}
+    void setLegal()
+    {
+        setIllegal("");
+    }
 
 private:
-	QString _message;
+    QString _message;
 };
 
 #endif // BOUND_H

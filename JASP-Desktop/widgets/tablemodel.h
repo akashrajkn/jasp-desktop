@@ -21,13 +21,14 @@
 
 #include <QAbstractTableModel>
 
-class TableModel : public QAbstractTableModel
-{
-	Q_OBJECT
+class TableModel : public QAbstractTableModel {
+    Q_OBJECT
 public:
-	TableModel(QObject *parent) : QAbstractTableModel(parent) { }
-	virtual void mimeDataMoved(const QModelIndexList &indexes) { Q_UNUSED(indexes); }
-
+    TableModel(QObject* parent)
+        : QAbstractTableModel(parent)
+    {
+    }
+    virtual void mimeDataMoved(const QModelIndexList& indexes) { Q_UNUSED(indexes); }
 };
 
 #endif // TABLEMODEL_H

@@ -19,104 +19,101 @@
 #include "ribbonanalysis.h"
 #include "ui_ribbonanalysis.h"
 
-#include <QMenu>
 #include <QDebug>
+#include <QMenu>
 
-RibbonAnalysis::RibbonAnalysis(QWidget *parent) :
-	RibbonWidget(parent),
-	ui(new Ui::RibbonAnalysis)
+RibbonAnalysis::RibbonAnalysis(QWidget* parent)
+    : RibbonWidget(parent)
+    , ui(new Ui::RibbonAnalysis)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	addRibbonButton(ui->Descriptives);
-	addRibbonButton(ui->ttestButton);
-	addRibbonButton(ui->anovaButton);
-	addRibbonButton(ui->frequenciesButton);
-	addRibbonButton(ui->regressionButton);
-	addRibbonButton(ui->factoranalysisButton);
+    addRibbonButton(ui->Descriptives);
+    addRibbonButton(ui->ttestButton);
+    addRibbonButton(ui->anovaButton);
+    addRibbonButton(ui->frequenciesButton);
+    addRibbonButton(ui->regressionButton);
+    addRibbonButton(ui->factoranalysisButton);
 
-//	connect(ui->Descriptives, SIGNAL(clicked()), this, SLOT(itemSelected()));
+    //	connect(ui->Descriptives, SIGNAL(clicked()), this, SLOT(itemSelected()));
 
-	QMenu *menu;
+    QMenu* menu;
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Descriptive Statistics"), this, SLOT(itemSelected()))->setObjectName("Descriptives");
-	menu->addAction(QString("Reliability Analysis"), this, SLOT(itemSelected()))->setObjectName("ReliabilityAnalysis");
+    menu = new QMenu(this);
+    menu->addAction(QString("Descriptive Statistics"), this, SLOT(itemSelected()))->setObjectName("Descriptives");
+    menu->addAction(QString("Reliability Analysis"), this, SLOT(itemSelected()))->setObjectName("ReliabilityAnalysis");
 
-	ui->Descriptives->setMenu(menu);
+    ui->Descriptives->setMenu(menu);
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestIndependentSamples");
-	menu->addAction(QString("Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestPairedSamples");
-	menu->addAction(QString("One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestOneSample");
+    menu = new QMenu(this);
+    menu->addAction(QString("Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestIndependentSamples");
+    menu->addAction(QString("Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestPairedSamples");
+    menu->addAction(QString("One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestOneSample");
 
-	menu->addSeparator();
+    menu->addSeparator();
 
-	menu->addAction(QString("Bayesian Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianIndependentSamples");
-	menu->addAction(QString("Bayesian Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianPairedSamples");
-	menu->addAction(QString("Bayesian One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianOneSample");
+    menu->addAction(QString("Bayesian Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianIndependentSamples");
+    menu->addAction(QString("Bayesian Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianPairedSamples");
+    menu->addAction(QString("Bayesian One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("TTestBayesianOneSample");
 
-	ui->ttestButton->setMenu(menu);
+    ui->ttestButton->setMenu(menu);
 
+    menu = new QMenu(this);
 
-	menu = new QMenu(this);
+    menu->addAction(QString("ANOVA"), this, SLOT(itemSelected()))->setObjectName("Anova");
+    menu->addAction(QString("Repeated Measures ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaRepeatedMeasures");
+    menu->addAction(QString("ANCOVA"), this, SLOT(itemSelected()))->setObjectName("Ancova");
 
-	menu->addAction(QString("ANOVA"), this, SLOT(itemSelected()))->setObjectName("Anova");
-	menu->addAction(QString("Repeated Measures ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaRepeatedMeasures");
-	menu->addAction(QString("ANCOVA"), this, SLOT(itemSelected()))->setObjectName("Ancova");
+    menu->addSeparator();
 
-	menu->addSeparator();
+    menu->addAction(QString("Bayesian ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaBayesian");
+    menu->addAction(QString("Bayesian Repeated Measures ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaRepeatedMeasuresBayesian");
+    menu->addAction(QString("Bayesian ANCOVA"), this, SLOT(itemSelected()))->setObjectName("AncovaBayesian");
 
-	menu->addAction(QString("Bayesian ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaBayesian");
-	menu->addAction(QString("Bayesian Repeated Measures ANOVA"), this, SLOT(itemSelected()))->setObjectName("AnovaRepeatedMeasuresBayesian");
-	menu->addAction(QString("Bayesian ANCOVA"), this, SLOT(itemSelected()))->setObjectName("AncovaBayesian");
+    ui->anovaButton->setMenu(menu);
 
-	ui->anovaButton->setMenu(menu);
+    menu = new QMenu(this);
 
+    menu->addAction(QString("Correlation Matrix"), this, SLOT(itemSelected()))->setObjectName("Correlation");
+    menu->addAction(QString("Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLinear");
+    menu->addAction(QString("Logistic Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLogistic");
 
-	menu = new QMenu(this);
+    menu->addSeparator();
 
-	menu->addAction(QString("Correlation Matrix"), this, SLOT(itemSelected()))->setObjectName("Correlation");
-	menu->addAction(QString("Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLinear");
-	menu->addAction(QString("Logistic Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLogistic");
-
-	menu->addSeparator();
-
-	menu->addAction(QString("Bayesian Correlation Matrix"), this, SLOT(itemSelected()))->setObjectName("CorrelationBayesian");
-	menu->addAction(QString("Bayesian Correlation Pairs"), this, SLOT(itemSelected()))->setObjectName("CorrelationBayesianPairs");
-	menu->addAction(QString("Bayesian Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLinearBayesian");
+    menu->addAction(QString("Bayesian Correlation Matrix"), this, SLOT(itemSelected()))->setObjectName("CorrelationBayesian");
+    menu->addAction(QString("Bayesian Correlation Pairs"), this, SLOT(itemSelected()))->setObjectName("CorrelationBayesianPairs");
+    menu->addAction(QString("Bayesian Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLinearBayesian");
 
 #ifdef QT_DEBUG
-	menu->addSeparator();
-	menu->addAction(QString("BAS Regression Linear link"), this, SLOT(itemSelected()))->setObjectName("BASRegressionLinearLink");
+    menu->addSeparator();
+    menu->addAction(QString("BAS Regression Linear link"), this, SLOT(itemSelected()))->setObjectName("BASRegressionLinearLink");
 #endif
-	ui->regressionButton->setMenu(menu);
+    ui->regressionButton->setMenu(menu);
 
+    menu = new QMenu(this);
 
-	menu = new QMenu(this);
-
-	menu->addAction(QString("Binomial Test"), this, SLOT(itemSelected()))->setObjectName("BinomialTest");
+    menu->addAction(QString("Binomial Test"), this, SLOT(itemSelected()))->setObjectName("BinomialTest");
 #ifdef QT_DEBUG
-	menu->addAction(QString("Multinomial Test"), this, SLOT(itemSelected()))->setObjectName("MultinomialTest");
+    menu->addAction(QString("Multinomial Test"), this, SLOT(itemSelected()))->setObjectName("MultinomialTest");
 #endif
-	menu->addAction(QString("Contingency Tables"), this, SLOT(itemSelected()))->setObjectName("ContingencyTables");
+    menu->addAction(QString("Contingency Tables"), this, SLOT(itemSelected()))->setObjectName("ContingencyTables");
     menu->addAction(QString("Log-Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLogLinear");
 
-	menu->addSeparator();
-	menu->addAction(QString("Bayesian Binomial Test"), this, SLOT(itemSelected()))->setObjectName("BinomialTestBayesian");
-	menu->addAction(QString("Bayesian Contingency Tables"), this, SLOT(itemSelected()))->setObjectName("ContingencyTablesBayesian");
+    menu->addSeparator();
+    menu->addAction(QString("Bayesian Binomial Test"), this, SLOT(itemSelected()))->setObjectName("BinomialTestBayesian");
+    menu->addAction(QString("Bayesian Contingency Tables"), this, SLOT(itemSelected()))->setObjectName("ContingencyTablesBayesian");
     menu->addAction(QString("Bayesian Log-Linear Regression"), this, SLOT(itemSelected()))->setObjectName("RegressionLogLinearBayesian");
 
-	ui->frequenciesButton->setMenu(menu);
+    ui->frequenciesButton->setMenu(menu);
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Principal Component Analysis"), this, SLOT(itemSelected()))->setObjectName("PrincipalComponentAnalysis");
-	menu->addAction(QString("Exploratory Factor Analysis"), this, SLOT(itemSelected()))->setObjectName("ExploratoryFactorAnalysis");
+    menu = new QMenu(this);
+    menu->addAction(QString("Principal Component Analysis"), this, SLOT(itemSelected()))->setObjectName("PrincipalComponentAnalysis");
+    menu->addAction(QString("Exploratory Factor Analysis"), this, SLOT(itemSelected()))->setObjectName("ExploratoryFactorAnalysis");
 
-	ui->factoranalysisButton->setMenu(menu);
+    ui->factoranalysisButton->setMenu(menu);
 }
 
 RibbonAnalysis::~RibbonAnalysis()
 {
-	delete ui;
+    delete ui;
 }

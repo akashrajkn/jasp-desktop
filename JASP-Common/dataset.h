@@ -22,37 +22,33 @@
 
 #include "columns.h"
 
-class DataSet
-{
+class DataSet {
 public:
+    DataSet(boost::interprocess::managed_shared_memory* mem);
+    ~DataSet();
 
-	DataSet(boost::interprocess::managed_shared_memory *mem);
-	~DataSet();
+    int rowCount() const;
+    int columnCount() const;
 
-	int rowCount() const;
-	int columnCount() const;
+    Columns& columns();
+    Column& column(int index);
+    Column& column(std::string name);
 
-	Columns& columns();
-	Column& column(int index);
-	Column& column(std::string name);
+    int getColumnIndex(std::string name);
+    void setRowCount(int rowCount);
+    void setColumnCount(int columnCount);
+    void removeColumn(std::string name);
 
-	int getColumnIndex(std::string name);
-	void setRowCount(int rowCount);
-	void setColumnCount(int columnCount);
-	void removeColumn(std::string name);
+    void setSharedMemory(boost::interprocess::managed_shared_memory* mem);
 
-	void setSharedMemory(boost::interprocess::managed_shared_memory *mem);
-
-	std::string toString();
-	std::vector<std::string> resetEmptyValues(std::map<std::string, std::map<int, std::string> > &emptyValuesMap);
+    std::string toString();
+    std::vector<std::string> resetEmptyValues(std::map<std::string, std::map<int, std::string>>& emptyValuesMap);
 
 private:
+    Columns _columns;
 
-	Columns _columns;
-
-	int _rowCount;
-	int _columnCount;
-
+    int _rowCount;
+    int _columnCount;
 };
 
 #endif // DATASET_H

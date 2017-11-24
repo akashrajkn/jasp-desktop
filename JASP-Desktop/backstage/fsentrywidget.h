@@ -21,64 +21,62 @@
 
 #include <QAbstractButton>
 
-#include "fsentry.h"
 #include "elidelabel.h"
+#include "fsentry.h"
 
 #include <QLabel>
 #include <QPixmap>
 
 #include "common.h"
 
-
-class FSEntryWidget : public QAbstractButton
-{
-	Q_OBJECT
+class FSEntryWidget : public QAbstractButton {
+    Q_OBJECT
 
 public:
-	explicit FSEntryWidget(const FSEntry &entry, QWidget *parent = 0);
-	~FSEntryWidget();
+    explicit FSEntryWidget(const FSEntry& entry, QWidget* parent = 0);
+    ~FSEntryWidget();
 
-	void setEntryInfo(const FSEntry &entry);
-	void setCompact(bool compact);
+    void setEntryInfo(const FSEntry& entry);
+    void setCompact(bool compact);
 
-	const QString &path() const;
-	FSEntry::EntryType entryType() const;
+    const QString& path() const;
+    FSEntry::EntryType entryType() const;
 
-	enum ClickMeans { ClickIsOpen, ClickIsSelect };
+    enum ClickMeans { ClickIsOpen,
+        ClickIsSelect };
 
 protected:
-	bool eventFilter(QObject *object, QEvent *event) OVERRIDE;
-	void paintEvent(QPaintEvent *event) OVERRIDE;
-	void nextCheckState() OVERRIDE;
+    bool eventFilter(QObject* object, QEvent* event) OVERRIDE;
+    void paintEvent(QPaintEvent* event) OVERRIDE;
+    void nextCheckState() OVERRIDE;
 
-	static QPixmap *_smallIcons;
-	static QPixmap *_largeIcons;
+    static QPixmap* _smallIcons;
+    static QPixmap* _largeIcons;
 
-	static const QString _uncheckedSS;
-	static const QString _checkedSS;
+    static const QString _uncheckedSS;
+    static const QString _checkedSS;
 
 signals:
-	void selected();
-	void opened();
+    void selected();
+    void opened();
 
 private slots:
-	void clickedHandler();
-	void doubleClickHandler();
+    void clickedHandler();
+    void doubleClickHandler();
 
 private:
+    static void initIcons();
 
-	static void initIcons();
+    void refresh();
 
-	void refresh();
+    ClickMeans _clickMeans;
+    QLabel* _icon;
+    ElideLabel* _label;
+    ElideLabel* _description;
 
-	ClickMeans _clickMeans;
-	QLabel *_icon;
-	ElideLabel *_label;
-	ElideLabel *_description;
+    bool _compact;
 
-	bool _compact;
-
-	FSEntry _entry;
+    FSEntry _entry;
 };
 
 #endif // FILESYSTEMENTRYWIDGET_H

@@ -17,10 +17,11 @@
 
 #include "label.h"
 
-#include <sstream>
 #include <cstring>
+#include <sstream>
 
-void Label::_setLabel(const std::string &label) {
+void Label::_setLabel(const std::string& label)
+{
     _stringLength = label.length();
     if (sizeof(_stringValue) < label.length())
         _stringLength = sizeof(_stringValue);
@@ -28,59 +29,60 @@ void Label::_setLabel(const std::string &label) {
     std::memcpy(_stringValue, label.c_str(), _stringLength);
 }
 
-Label::Label(const std::string &label, int value)
+Label::Label(const std::string& label, int value)
 {
     _setLabel(label);
-	_hasIntValue = false;
-	_intValue = value;
+    _hasIntValue = false;
+    _intValue = value;
 }
 
 Label::Label(int value)
 {
-	std::stringstream ss;
-	ss << value;
-	std::string asString = ss.str();
+    std::stringstream ss;
+    ss << value;
+    std::string asString = ss.str();
 
-	std::memcpy(_stringValue, asString.c_str(), asString.length());
-	_stringLength = asString.length();
+    std::memcpy(_stringValue, asString.c_str(), asString.length());
+    _stringLength = asString.length();
 
-	_hasIntValue = true;
-	_intValue = value;
+    _hasIntValue = true;
+    _intValue = value;
 }
 
 Label::Label()
 {
-	_hasIntValue = false;
-	_intValue = -1;
-	_stringLength = 0;
+    _hasIntValue = false;
+    _intValue = -1;
+    _stringLength = 0;
 }
 
 std::string Label::text() const
 {
-	return std::string(_stringValue, _stringLength);
+    return std::string(_stringValue, _stringLength);
 }
 
 bool Label::hasIntValue() const
 {
-	return _hasIntValue;
+    return _hasIntValue;
 }
 
 int Label::value() const
 {
-	return _intValue;
+    return _intValue;
 }
 
-void Label::setLabel(const std::string &label) {
+void Label::setLabel(const std::string& label)
+{
     _setLabel(label);
 }
 
-Label &Label::operator=(const Label &label)
+Label& Label::operator=(const Label& label)
 {
-	this->_hasIntValue = label._hasIntValue;
-	this->_intValue = label._intValue;
+    this->_hasIntValue = label._hasIntValue;
+    this->_intValue = label._intValue;
 
-	std::memcpy(_stringValue, label._stringValue, label._stringLength);
-	_stringLength = label._stringLength;
+    std::memcpy(_stringValue, label._stringValue, label._stringLength);
+    _stringLength = label._stringLength;
 
-	return *this;
+    return *this;
 }

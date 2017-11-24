@@ -19,70 +19,73 @@
 #ifndef FSBROWSER_H
 #define FSBROWSER_H
 
-#include <QWidget>
-#include <QGridLayout>
 #include <QButtonGroup>
+#include <QCheckBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QSettings>
-#include <QCheckBox>
+#include <QWidget>
 
-#include "fsbmodel.h"
-#include "breadcrumbs.h"
 #include "authwidget.h"
+#include "breadcrumbs.h"
+#include "fsbmodel.h"
 #include "verticalscrollarea.h"
 
-class FSBrowser : public QWidget
-{
-	Q_OBJECT
+class FSBrowser : public QWidget {
+    Q_OBJECT
 public:
-	enum BrowseMode { BrowseOpenFile, BrowseOpenFolder, BrowseSaveFile, BrowseExportFile, BrowseCurrent, BrowseRecentFiles, BrowseExamples};
-	enum ViewType   { IconView, ListView };
+    enum BrowseMode { BrowseOpenFile,
+        BrowseOpenFolder,
+        BrowseSaveFile,
+        BrowseExportFile,
+        BrowseCurrent,
+        BrowseRecentFiles,
+        BrowseExamples };
+    enum ViewType { IconView,
+        ListView };
 
-	explicit FSBrowser(QWidget *parent = 0, BrowseMode mode = BrowseOpenFile);
+    explicit FSBrowser(QWidget* parent = 0, BrowseMode mode = BrowseOpenFile);
 
-	void setFSModel(FSBModel *model);
+    void setFSModel(FSBModel* model);
 
-
-	void setBrowseMode(BrowseMode mode);
-	void setViewType(ViewType viewType);
-	void StartProcessing();
-	void StopProcessing();
+    void setBrowseMode(BrowseMode mode);
+    void setViewType(ViewType viewType);
+    void StartProcessing();
+    void StopProcessing();
 
 signals:
 
-	void entryOpened(QString path);
-	void entrySelected(QString path);
+    void entryOpened(QString path);
+    void entrySelected(QString path);
 
 public slots:
 
 private slots:
 
-	void processingEntries();
-	void refresh();
-	void loginRequested(QString username, QString password);
-	void entrySelectedHandler();
-	void entryOpenedHandler();
-	void authenticationFailed(QString message);
-	void hideAuthentication();
+    void processingEntries();
+    void refresh();
+    void loginRequested(QString username, QString password);
+    void entrySelectedHandler();
+    void entryOpenedHandler();
+    void authenticationFailed(QString message);
+    void hideAuthentication();
 
 private:
+    void clearItems();
 
-	void clearItems();
+    BrowseMode _browseMode;
+    ViewType _viewType;
 
-	BrowseMode _browseMode;
-	ViewType _viewType;
+    QWidget* _scrollPane;
+    QVBoxLayout* _scrollPaneLayout;
+    QButtonGroup* _buttonGroup;
+    QLabel* _processLabel;
+    VerticalScrollArea* _scrollArea;
 
-	QWidget *_scrollPane;
-	QVBoxLayout *_scrollPaneLayout;
-	QButtonGroup *_buttonGroup;
-	QLabel *_processLabel;
-	VerticalScrollArea *_scrollArea;
+    FSBModel* _model;
 
-	FSBModel *_model;
-
-	AuthWidget *_authWidget;
-	QSettings _settings;
-
+    AuthWidget* _authWidget;
+    QSettings _settings;
 };
 
 #endif // FSBROWSER_H

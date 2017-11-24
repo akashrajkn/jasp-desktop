@@ -21,21 +21,20 @@
 
 ///// additional Headers
 
-RibbonReinforcementLearning::RibbonReinforcementLearning(QWidget *parent) :
-	RibbonWidget(parent),
-	ui(new Ui::RibbonReinforcementLearning)
+RibbonReinforcementLearning::RibbonReinforcementLearning(QWidget* parent)
+    : RibbonWidget(parent)
+    , ui(new Ui::RibbonReinforcementLearning)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	addRibbonButton(ui->buttonR11tLearning);
+    addRibbonButton(ui->buttonR11tLearning);
 
-	ui->buttonR11tLearning->setObjectName("ReinforcementLearningR11tLearning");
-	connect(ui->buttonR11tLearning, SIGNAL(clicked()), this, SLOT(itemSelected()));
-///// Ribbon Buttons and Menu
-
+    ui->buttonR11tLearning->setObjectName("ReinforcementLearningR11tLearning");
+    connect(ui->buttonR11tLearning, SIGNAL(clicked()), this, SLOT(itemSelected()));
+    ///// Ribbon Buttons and Menu
 }
 
 RibbonReinforcementLearning::~RibbonReinforcementLearning()
 {
-	delete ui;
+    delete ui;
 }

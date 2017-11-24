@@ -22,18 +22,17 @@
 
 #include "lib_json/json.h"
 
-#include "optionvariables.h"
 #include "common.h"
+#include "optionvariables.h"
 
-class OptionVariable : public OptionVariables
-{
+class OptionVariable : public OptionVariables {
 public:
-	OptionVariable();
-	virtual void set(const Json::Value& value) OVERRIDE;
-	virtual Json::Value asJSON() const OVERRIDE;
-	virtual Option* clone() const OVERRIDE;
+    OptionVariable();
+    virtual void set(const Json::Value& value) OVERRIDE;
+    virtual Json::Value asJSON() const OVERRIDE;
+    virtual Option* clone() const OVERRIDE;
 
-	std::string variable() const;
+    std::string variable() const;
 };
 
 #endif // OPTIONVARIABLE_H

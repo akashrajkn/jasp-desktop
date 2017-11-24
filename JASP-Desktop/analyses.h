@@ -21,72 +21,66 @@
 
 #include "analysis.h"
 
-#include <QString>
 #include <QMap>
 #include <QObject>
+#include <QString>
 
-class Analyses : public QObject
-{
-	Q_OBJECT
+class Analyses : public QObject {
+    Q_OBJECT
 
-	friend class EngineSync;
-	friend class boost::iterator_core_access;
+    friend class EngineSync;
+    friend class boost::iterator_core_access;
 
-	typedef QMap<int, Analysis *> ById;
+    typedef QMap<int, Analysis*> ById;
 
 public:
-	Analyses();
+    Analyses();
 
-	Analysis *create(const QString &module, const QString &name);
-	Analysis *create(const QString &module, const QString &name, int id, const Version &version, Json::Value *options = NULL, Analysis::Status status = Analysis::Empty);
-	Analysis *get(int id) const;
-	void clear();
+    Analysis* create(const QString& module, const QString& name);
+    Analysis* create(const QString& module, const QString& name, int id, const Version& version, Json::Value* options = NULL, Analysis::Status status = Analysis::Empty);
+    Analysis* get(int id) const;
+    void clear();
 
-	typedef QList<Analysis*>::iterator iterator;
-	iterator begin();
-	iterator end();
+    typedef QList<Analysis*>::iterator iterator;
+    iterator begin();
+    iterator end();
 
-	int count() const;
+    int count() const;
 
 signals:
-	void analysisInitialised(Analysis *source);
-	void analysisOptionsChanged(Analysis *source);
-	void analysisToRefresh(Analysis *source);
-	void analysisSaveImage(Analysis *source);
-	void analysisImageSaved(Analysis *source);
-	void analysisResultsChanged(Analysis *source);
-	void analysisUserDataLoaded(Analysis *source);
-	void analysisAdded(Analysis *source);
+    void analysisInitialised(Analysis* source);
+    void analysisOptionsChanged(Analysis* source);
+    void analysisToRefresh(Analysis* source);
+    void analysisSaveImage(Analysis* source);
+    void analysisImageSaved(Analysis* source);
+    void analysisResultsChanged(Analysis* source);
+    void analysisUserDataLoaded(Analysis* source);
+    void analysisAdded(Analysis* source);
 
 private slots:
-	void flushDefaultsToDisk();
+    void flushDefaultsToDisk();
 
 private:
+    typedef struct {
+        QString analysisName;
+        Options* options;
+        bool needsSync;
+    } Defaults;
 
-	typedef struct {
-		QString analysisName;
-		Options *options;
-		bool needsSync;
-	} Defaults;
+    void assignDefaults(Analysis* analysis);
 
-	void assignDefaults(Analysis *analysis);
+    void analysisOptionsChangedHandler(Analysis* analysis);
+    void analysisToRefreshHandler(Analysis* analysis);
+    void analysisSaveImageHandler(Analysis* analysis, Json::Value& options);
+    void analysisImageSavedHandler(Analysis* analysis);
+    void analysisResultsChangedHandler(Analysis* analysis);
+    void analysisUserDataLoadedHandler(Analysis* analysis);
 
-	void analysisOptionsChangedHandler(Analysis *analysis);
-	void analysisToRefreshHandler(Analysis *analysis);
-	void analysisSaveImageHandler(Analysis *analysis, Json::Value &options);
-	void analysisImageSavedHandler(Analysis *analysis);
-	void analysisResultsChangedHandler(Analysis *analysis);
-	void analysisUserDataLoadedHandler(Analysis *analysis);
+    QList<Analysis*> _analyses;
 
-	QList<Analysis*> _analyses;
+    int _nextId;
 
-	int _nextId;
-
-	QMap<QString, Defaults> _defaults;
-
-
-
+    QMap<QString, Defaults> _defaults;
 };
-
 
 #endif // ANALYSES_H

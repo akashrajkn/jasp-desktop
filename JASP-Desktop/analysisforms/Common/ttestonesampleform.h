@@ -19,23 +19,22 @@
 #ifndef ONESAMPLETTESTFORM_H
 #define ONESAMPLETTESTFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class TTestOneSampleForm;
 }
 
-class TTestOneSampleForm : public AnalysisForm
-{
-	Q_OBJECT
+class TTestOneSampleForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit TTestOneSampleForm(QWidget *parent = 0);
-	~TTestOneSampleForm();
+    explicit TTestOneSampleForm(QWidget* parent = 0);
+    ~TTestOneSampleForm();
 
 private:
-	Ui::TTestOneSampleForm *ui;
+    Ui::TTestOneSampleForm* ui;
 };
 
 #endif // ONESAMPLETTESTFORM_H

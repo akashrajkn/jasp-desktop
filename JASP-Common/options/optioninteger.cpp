@@ -18,49 +18,48 @@
 #include "optioninteger.h"
 
 OptionInteger::OptionInteger(int value, int min, int max, std::string format)
-	: OptionI()
+    : OptionI()
 {
-	_value = value;
-  _min = min;
-  _max = max;
-  _format = format;
+    _value = value;
+    _min = min;
+    _max = max;
+    _format = format;
 }
 
-void OptionInteger::init(const Json::Value &data)
+void OptionInteger::init(const Json::Value& data)
 {
-	_value = data.get("default", 0).asInt();
-  _min = data.get("min", -999999).asInt();
-  _max = data.get("max",  999999).asInt();
-  _format = data.get("format", "").asString();
+    _value = data.get("default", 0).asInt();
+    _min = data.get("min", -999999).asInt();
+    _max = data.get("max", 999999).asInt();
+    _format = data.get("format", "").asString();
 }
 
 Json::Value OptionInteger::asJSON() const
 {
-	return Json::Value(_value);
+    return Json::Value(_value);
 }
 
-void OptionInteger::set(const Json::Value &value)
+void OptionInteger::set(const Json::Value& value)
 {
-	_value = value.asInt();
+    _value = value.asInt();
 }
 
-Option *OptionInteger::clone() const
+Option* OptionInteger::clone() const
 {
-	return new OptionInteger(value());
+    return new OptionInteger(value());
 }
 
 int OptionInteger::min() const
 {
-  return _min;
+    return _min;
 }
 
 int OptionInteger::max() const
 {
-  return _max;
+    return _max;
 }
 
 std::string OptionInteger::format() const
 {
-  return _format;
+    return _format;
 }
-

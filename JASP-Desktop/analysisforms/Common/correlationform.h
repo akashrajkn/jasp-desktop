@@ -26,18 +26,17 @@ namespace Ui {
 class CorrelationForm;
 }
 
-class CorrelationForm : public AnalysisForm
-{
-	Q_OBJECT
+class CorrelationForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit CorrelationForm(QWidget *parent = 0);
-	~CorrelationForm();
+    explicit CorrelationForm(QWidget* parent = 0);
+    ~CorrelationForm();
 
 private:
-	Ui::CorrelationForm *ui;
+    Ui::CorrelationForm* ui;
 
-	TableModelVariablesAssigned *_modelVariables;
+    TableModelVariablesAssigned* _modelVariables;
 };
 
 #endif // CORRELATIONFORM_H

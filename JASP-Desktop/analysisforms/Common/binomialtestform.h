@@ -25,16 +25,15 @@ namespace Ui {
 class BinomialTestForm;
 }
 
-class BinomialTestForm : public AnalysisForm
-{
-	Q_OBJECT
+class BinomialTestForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit BinomialTestForm(QWidget *parent = 0);
-	~BinomialTestForm();
+    explicit BinomialTestForm(QWidget* parent = 0);
+    ~BinomialTestForm();
 
 private:
-	Ui::BinomialTestForm *ui;
+    Ui::BinomialTestForm* ui;
 };
 
 #endif // BINOMIALTESTFORM_H

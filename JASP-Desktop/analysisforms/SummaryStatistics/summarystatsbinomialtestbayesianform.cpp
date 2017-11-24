@@ -19,14 +19,14 @@
 #include "summarystatsbinomialtestbayesianform.h"
 #include "ui_summarystatsbinomialtestbayesianform.h"
 
-SummaryStatsBinomialTestBayesianForm::SummaryStatsBinomialTestBayesianForm(QWidget *parent) :
-	AnalysisForm("SummaryStatsBinomialTestBayesianForm", parent),
-	ui(new Ui::SummaryStatsBinomialTestBayesianForm)
+SummaryStatsBinomialTestBayesianForm::SummaryStatsBinomialTestBayesianForm(QWidget* parent)
+    : AnalysisForm("SummaryStatsBinomialTestBayesianForm", parent)
+    , ui(new Ui::SummaryStatsBinomialTestBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 }
 
 SummaryStatsBinomialTestBayesianForm::~SummaryStatsBinomialTestBayesianForm()
 {
-	delete ui;
+    delete ui;
 }

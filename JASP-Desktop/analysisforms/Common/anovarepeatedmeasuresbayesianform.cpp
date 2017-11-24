@@ -20,162 +20,161 @@
 #include "ui_anovarepeatedmeasuresbayesianform.h"
 
 #include "column.h"
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodelnuisancefactors.h"
+#include "widgets/tablemodelvariablesassigned.h"
 
-AnovaRepeatedMeasuresBayesianForm::AnovaRepeatedMeasuresBayesianForm(QWidget *parent) :
-	AnalysisForm("AnovaRepeatedMeasuresBayesianForm", parent),
-	ui(new Ui::AnovaRepeatedMeasuresBayesianForm)
+AnovaRepeatedMeasuresBayesianForm::AnovaRepeatedMeasuresBayesianForm(QWidget* parent)
+    : AnalysisForm("AnovaRepeatedMeasuresBayesianForm", parent)
+    , ui(new Ui::AnovaRepeatedMeasuresBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
 
-	_designTableModel = new TableModelAnovaDesign(this);
-	ui->repeatedMeasuresFactors->setModel(_designTableModel);
+    _designTableModel = new TableModelAnovaDesign(this);
+    ui->repeatedMeasuresFactors->setModel(_designTableModel);
 
-	// this is a hack to allow deleting factors and levels :/
-	// ideally this would be handled between the TableView and the model
-	// and wouldn't require the surrounding classes' intervention like this
-	connect(ui->repeatedMeasuresFactors, SIGNAL(clicked(QModelIndex)), this, SLOT(anovaDesignTableClicked(QModelIndex)));
+    // this is a hack to allow deleting factors and levels :/
+    // ideally this would be handled between the TableView and the model
+    // and wouldn't require the surrounding classes' intervention like this
+    connect(ui->repeatedMeasuresFactors, SIGNAL(clicked(QModelIndex)), this, SLOT(anovaDesignTableClicked(QModelIndex)));
 
-	_withinSubjectCellsListModel = new TableModelAnovaWithinSubjectCells(this);
-	_withinSubjectCellsListModel->setSource(&_availableVariablesModel);
-	_withinSubjectCellsListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_withinSubjectCellsListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->repeatedMeasuresCells->setModel(_withinSubjectCellsListModel);
-	ui->repeatedMeasuresCells->viewport()->setAttribute(Qt::WA_Hover);
-	ui->repeatedMeasuresCells->setItemDelegate(new AnovaHoverDelegate(ui->repeatedMeasuresCells));
+    _withinSubjectCellsListModel = new TableModelAnovaWithinSubjectCells(this);
+    _withinSubjectCellsListModel->setSource(&_availableVariablesModel);
+    _withinSubjectCellsListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _withinSubjectCellsListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->repeatedMeasuresCells->setModel(_withinSubjectCellsListModel);
+    ui->repeatedMeasuresCells->viewport()->setAttribute(Qt::WA_Hover);
+    ui->repeatedMeasuresCells->setItemDelegate(new AnovaHoverDelegate(ui->repeatedMeasuresCells));
 
-	_betweenSubjectsFactorsListModel = new TableModelVariablesAssigned(this);
-	_betweenSubjectsFactorsListModel->setSource(&_availableVariablesModel);
-	_betweenSubjectsFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->betweenSubjectFactors->setModel(_betweenSubjectsFactorsListModel);
+    _betweenSubjectsFactorsListModel = new TableModelVariablesAssigned(this);
+    _betweenSubjectsFactorsListModel->setSource(&_availableVariablesModel);
+    _betweenSubjectsFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->betweenSubjectFactors->setModel(_betweenSubjectsFactorsListModel);
 
-	_covariatesListModel = new TableModelVariablesAssigned(this);
-	_covariatesListModel->setSource(&_availableVariablesModel);
-	_covariatesListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_covariatesListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->covariates->setModel(_covariatesListModel);
+    _covariatesListModel = new TableModelVariablesAssigned(this);
+    _covariatesListModel->setSource(&_availableVariablesModel);
+    _covariatesListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _covariatesListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->covariates->setModel(_covariatesListModel);
 
-	ui->buttonAssignFixed->setSourceAndTarget(ui->listAvailableFields, ui->repeatedMeasuresCells);
-	ui->buttonAssignRandom->setSourceAndTarget(ui->listAvailableFields, ui->betweenSubjectFactors);
-	ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
+    ui->buttonAssignFixed->setSourceAndTarget(ui->listAvailableFields, ui->repeatedMeasuresCells);
+    ui->buttonAssignRandom->setSourceAndTarget(ui->listAvailableFields, ui->betweenSubjectFactors);
+    ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
 
-	_anovaModel = new TableModelAnovaModel(this);
-	_anovaModel->setPiecesCanBeAssigned(false);
-	ui->modelTerms->setModel(_anovaModel);
+    _anovaModel = new TableModelAnovaModel(this);
+    _anovaModel->setPiecesCanBeAssigned(false);
+    ui->modelTerms->setModel(_anovaModel);
 
-	connect(_betweenSubjectsFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_betweenSubjectsFactorsListModel, SIGNAL(assignmentsChanged(bool)), this, SLOT(factorsChanged(bool)));
-	connect(_betweenSubjectsFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
-	connect(_betweenSubjectsFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    connect(_betweenSubjectsFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_betweenSubjectsFactorsListModel, SIGNAL(assignmentsChanged(bool)), this, SLOT(factorsChanged(bool)));
+    connect(_betweenSubjectsFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
+    connect(_betweenSubjectsFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
 
-	connect(_covariatesListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_covariatesListModel, SIGNAL(assignmentsChanged(bool)), this, SLOT(factorsChanged(bool)));
-	connect(_covariatesListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addCovariates(Terms)));
-	connect(_covariatesListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    connect(_covariatesListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_covariatesListModel, SIGNAL(assignmentsChanged(bool)), this, SLOT(factorsChanged(bool)));
+    connect(_covariatesListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addCovariates(Terms)));
+    connect(_covariatesListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
 
-	connect(_designTableModel, SIGNAL(designChanging()), this, SLOT(factorsChanging()));
-	connect(_designTableModel, SIGNAL(designChanged()), this, SLOT(withinSubjectsDesignChanged()));
-	connect(_designTableModel, SIGNAL(factorAdded(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
-	connect(_designTableModel, SIGNAL(factorRemoved(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    connect(_designTableModel, SIGNAL(designChanging()), this, SLOT(factorsChanging()));
+    connect(_designTableModel, SIGNAL(designChanged()), this, SLOT(withinSubjectsDesignChanged()));
+    connect(_designTableModel, SIGNAL(factorAdded(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
+    connect(_designTableModel, SIGNAL(factorRemoved(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
 
-	_plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
-	ui->plotVariables->setModel(_plotFactorsAvailableTableModel);
+    _plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
+    ui->plotVariables->setModel(_plotFactorsAvailableTableModel);
 
-	_horizontalAxisTableModel = new TableModelVariablesAssigned(this);
-	_horizontalAxisTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotHorizontalAxis->setModel(_horizontalAxisTableModel);
+    _horizontalAxisTableModel = new TableModelVariablesAssigned(this);
+    _horizontalAxisTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotHorizontalAxis->setModel(_horizontalAxisTableModel);
 
-	_seperateLinesTableModel = new TableModelVariablesAssigned(this);
-	_seperateLinesTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotSeparateLines->setModel(_seperateLinesTableModel);
+    _seperateLinesTableModel = new TableModelVariablesAssigned(this);
+    _seperateLinesTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotSeparateLines->setModel(_seperateLinesTableModel);
 
-	_seperatePlotsTableModel = new TableModelVariablesAssigned(this);
-	_seperatePlotsTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotSeparatePlots->setModel(_seperatePlotsTableModel);
+    _seperatePlotsTableModel = new TableModelVariablesAssigned(this);
+    _seperatePlotsTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotSeparatePlots->setModel(_seperatePlotsTableModel);
 
-	ui->buttonAssignHorizontalAxis->setSourceAndTarget(ui->plotVariables, ui->plotHorizontalAxis);
-	ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
-	ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
+    ui->buttonAssignHorizontalAxis->setSourceAndTarget(ui->plotVariables, ui->plotHorizontalAxis);
+    ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
+    ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
 
-	ui->containerModel->hide();
-	ui->containerPostHocTests->hide();
-	ui->advancedOptions->hide();
-	ui->containerDescriptivesPlot->hide();
+    ui->containerModel->hide();
+    ui->containerPostHocTests->hide();
+    ui->advancedOptions->hide();
+    ui->containerDescriptivesPlot->hide();
 
-	ui->plotCredibleIntervalInterval->setLabel("Credible interval");
-	ui->priorFixedEffects->setLabel("r scale fixed effects");
-	ui->priorRandomEffects->setLabel("r scale random effects");
-	ui->priorCovariates->setLabel("r scale covariates");
+    ui->plotCredibleIntervalInterval->setLabel("Credible interval");
+    ui->priorFixedEffects->setLabel("r scale fixed effects");
+    ui->priorRandomEffects->setLabel("r scale random effects");
+    ui->priorCovariates->setLabel("r scale covariates");
 }
 
 AnovaRepeatedMeasuresBayesianForm::~AnovaRepeatedMeasuresBayesianForm()
 {
-	delete ui;
+    delete ui;
 }
 
-void AnovaRepeatedMeasuresBayesianForm::bindTo(Options *options, DataSet *dataSet)
+void AnovaRepeatedMeasuresBayesianForm::bindTo(Options* options, DataSet* dataSet)
 {
-	AnalysisForm::bindTo(options, dataSet);
+    AnalysisForm::bindTo(options, dataSet);
 
-	factorsChanged();
+    factorsChanged();
 
-	Terms factorsAvailable;
+    Terms factorsAvailable;
 
-	foreach (const Factor &factor, _designTableModel->design())
-		factorsAvailable.add(factor.first);
+    foreach (const Factor& factor, _designTableModel->design())
+        factorsAvailable.add(factor.first);
 
-	factorsAvailable.add(_betweenSubjectsFactorsListModel->assigned());
+    factorsAvailable.add(_betweenSubjectsFactorsListModel->assigned());
 
-	_anovaModel->setVariables(factorsAvailable);
-	_plotFactorsAvailableTableModel->setVariables(factorsAvailable);
+    _anovaModel->setVariables(factorsAvailable);
+    _plotFactorsAvailableTableModel->setVariables(factorsAvailable);
 }
 
 void AnovaRepeatedMeasuresBayesianForm::withinSubjectsDesignChanged()
 {
-	_withinSubjectCellsListModel->setDesign(_designTableModel->design());
+    _withinSubjectCellsListModel->setDesign(_designTableModel->design());
 
-	factorsChanged();
+    factorsChanged();
 }
 
 void AnovaRepeatedMeasuresBayesianForm::anovaDesignTableClicked(QModelIndex index)
 {
-	// the second column contains an X to delete the row
+    // the second column contains an X to delete the row
 
-	if (index.column() == 1)
-		_designTableModel->removeRow(index.row());
+    if (index.column() == 1)
+        _designTableModel->removeRow(index.row());
 }
 
 void AnovaRepeatedMeasuresBayesianForm::factorsChanging()
 {
-	if (_options != NULL)
-		_options->blockSignals(true);
+    if (_options != NULL)
+        _options->blockSignals(true);
 }
 
 void AnovaRepeatedMeasuresBayesianForm::factorsChanged(bool changed)
 {
-	if (changed)
-	{
-		Terms factorsAvailable;
+    if (changed) {
+        Terms factorsAvailable;
 
-		foreach (const Factor &factor, _designTableModel->design())
-			factorsAvailable.add(factor.first);
+        foreach (const Factor& factor, _designTableModel->design())
+            factorsAvailable.add(factor.first);
 
-		factorsAvailable.add(_betweenSubjectsFactorsListModel->assigned());
+        factorsAvailable.add(_betweenSubjectsFactorsListModel->assigned());
 
-		_plotFactorsAvailableTableModel->setVariables(factorsAvailable);
+        _plotFactorsAvailableTableModel->setVariables(factorsAvailable);
 
-		Terms plotVariablesAssigned;
-		plotVariablesAssigned.add(_horizontalAxisTableModel->assigned());
-		plotVariablesAssigned.add(_seperateLinesTableModel->assigned());
-		plotVariablesAssigned.add(_seperatePlotsTableModel->assigned());
-		_plotFactorsAvailableTableModel->notifyAlreadyAssigned(plotVariablesAssigned);
+        Terms plotVariablesAssigned;
+        plotVariablesAssigned.add(_horizontalAxisTableModel->assigned());
+        plotVariablesAssigned.add(_seperateLinesTableModel->assigned());
+        plotVariablesAssigned.add(_seperatePlotsTableModel->assigned());
+        _plotFactorsAvailableTableModel->notifyAlreadyAssigned(plotVariablesAssigned);
 
-		ui->postHocTestsVariables->setVariables(factorsAvailable);
-	}
+        ui->postHocTestsVariables->setVariables(factorsAvailable);
+    }
 
-	if (_options != NULL)
-		_options->blockSignals(false);
+    if (_options != NULL)
+        _options->blockSignals(false);
 }

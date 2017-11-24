@@ -20,13 +20,12 @@
 
 #include "exporter.h"
 
-class DataExporter : public Exporter
-{
+class DataExporter : public Exporter {
 public:
-	DataExporter();
-	void saveDataSet(const std::string &path, DataSetPackage* package, boost::function<void (const std::string &, int)> progressCallback) OVERRIDE;
+    DataExporter();
+    void saveDataSet(const std::string& path, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback) OVERRIDE;
 
-	bool escapeValue(std::string &value);
+    bool escapeValue(std::string& value);
 };
 
 #endif // DATAEXPORTER_H

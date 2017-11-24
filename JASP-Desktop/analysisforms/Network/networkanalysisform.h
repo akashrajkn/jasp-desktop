@@ -25,16 +25,15 @@ namespace Ui {
 class NetworkAnalysisForm;
 }
 
-class NetworkAnalysisForm : public AnalysisForm
-{
+class NetworkAnalysisForm : public AnalysisForm {
     Q_OBJECT
 
 public:
-    explicit NetworkAnalysisForm(QWidget *parent = 0);
+    explicit NetworkAnalysisForm(QWidget* parent = 0);
     ~NetworkAnalysisForm();
 
 private slots:
-    void on_estimator_currentIndexChanged(const QString &);
+    void on_estimator_currentIndexChanged(const QString&);
     void on__4cv_clicked();
     void on__3stars_clicked();
     void on__2ric_clicked();
@@ -45,7 +44,7 @@ private slots:
     void on__3Data_clicked(bool checked);
 
 private:
-    Ui::NetworkAnalysisForm *ui;
+    Ui::NetworkAnalysisForm* ui;
 };
 
 #endif // NETWORKANALYSISFORM_H

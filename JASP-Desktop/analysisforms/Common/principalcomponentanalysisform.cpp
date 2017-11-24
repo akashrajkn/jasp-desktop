@@ -19,24 +19,24 @@
 #include "principalcomponentanalysisform.h"
 #include "ui_principalcomponentanalysisform.h"
 
-PrincipalComponentAnalysisForm::PrincipalComponentAnalysisForm(QWidget *parent) :
-	AnalysisForm("PrincipalComponentAnalysisForm", parent),
-	ui(new Ui::PrincipalComponentAnalysisForm)
+PrincipalComponentAnalysisForm::PrincipalComponentAnalysisForm(QWidget* parent)
+    : AnalysisForm("PrincipalComponentAnalysisForm", parent)
+    , ui(new Ui::PrincipalComponentAnalysisForm)
 {
-	ui->setupUi(this);
-	ui->highlightText->setText("0.4");
+    ui->setupUi(this);
+    ui->highlightText->setText("0.4");
 
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
-	ui->listAvailableFields->setDoubleClickTarget(ui->variables);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
+    ui->listAvailableFields->setDoubleClickTarget(ui->variables);
 
-	TableModelVariablesAssigned *variablesModel = new TableModelVariablesAssigned(this);
-	variablesModel->setSource(&_availableVariablesModel);
-	variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	variablesModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	ui->variables->setModel(variablesModel);
-	ui->variables->setDoubleClickTarget(ui->listAvailableFields);
+    TableModelVariablesAssigned* variablesModel = new TableModelVariablesAssigned(this);
+    variablesModel->setSource(&_availableVariablesModel);
+    variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    variablesModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    ui->variables->setModel(variablesModel);
+    ui->variables->setDoubleClickTarget(ui->listAvailableFields);
 
-/*
+    /*
 	TableModelVariablesAssigned *groupingVariableModel = new TableModelVariablesAssigned(this);
 	groupingVariableModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
 	groupingVariableModel->setSource(&_availableVariablesModel);
@@ -44,15 +44,15 @@ PrincipalComponentAnalysisForm::PrincipalComponentAnalysisForm(QWidget *parent) 
 	ui->groupingVariable->setDoubleClickTarget(ui->listAvailableFields);
 */
 
-	ui->buttonAssignVariables->setSourceAndTarget(ui->listAvailableFields, ui->variables);
+    ui->buttonAssignVariables->setSourceAndTarget(ui->listAvailableFields, ui->variables);
     ui->containerOptions->hide();
-//	ui->buttonAssignGroupingVariable->setSourceAndTarget(ui->listAvailableFields, ui->groupingVariable);
+    //	ui->buttonAssignGroupingVariable->setSourceAndTarget(ui->listAvailableFields, ui->groupingVariable);
 
-//	ui->confidenceIntervalInterval->setLabel("Confidence interval");
-//	ui->descriptivesPlotsConfidenceInterval->setLabel("Confidence interval");
+    //	ui->confidenceIntervalInterval->setLabel("Confidence interval");
+    //	ui->descriptivesPlotsConfidenceInterval->setLabel("Confidence interval");
 
-	connect(ui->highlightSlider,SIGNAL(valueChanged(int)),this,SLOT(HandleSlider(int)));
-	connect(ui->highlightText,SIGNAL(textChanged(QString)),this,SLOT(HandleLineEdit(QString)));
+    connect(ui->highlightSlider, SIGNAL(valueChanged(int)), this, SLOT(HandleSlider(int)));
+    connect(ui->highlightText, SIGNAL(textChanged(QString)), this, SLOT(HandleLineEdit(QString)));
 }
 
 /*
@@ -64,18 +64,17 @@ void PrincipalComponentAnalysisForm::HandleSlider(double i)
 */
 void PrincipalComponentAnalysisForm::HandleSlider(int i)
 {
-	QString	s = QString::number(((double)i)/100.0, 'f', 2);
+    QString s = QString::number(((double)i) / 100.0, 'f', 2);
     ui->highlightText->setText(s);
     ui->highlightText->finalise();
 }
 
 void PrincipalComponentAnalysisForm::HandleLineEdit(QString s)
 {
-	ui->highlightSlider->setValue(s.toDouble() * 100.0);
+    ui->highlightSlider->setValue(s.toDouble() * 100.0);
 }
-
 
 PrincipalComponentAnalysisForm::~PrincipalComponentAnalysisForm()
 {
-	delete ui;
+    delete ui;
 }

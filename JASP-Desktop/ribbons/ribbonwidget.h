@@ -19,29 +19,26 @@
 #ifndef RIBBONWIDGET_H
 #define RIBBONWIDGET_H
 
-#include <QWidget>
 #include "widgets/ribbonbutton.h"
+#include <QWidget>
 
-class RibbonWidget : public QWidget
-{
-	Q_OBJECT
+class RibbonWidget : public QWidget {
+    Q_OBJECT
 public:
-	explicit RibbonWidget(QWidget *parent = 0);
-	void addRibbonButton(RibbonButton *button);
+    explicit RibbonWidget(QWidget* parent = 0);
+    void addRibbonButton(RibbonButton* button);
 
 signals:
-	void itemSelected(QString itemName);
+    void itemSelected(QString itemName);
 
 public slots:
-	void setDataSetLoaded(bool loaded);
+    void setDataSetLoaded(bool loaded);
 
 protected slots:
-	void itemSelected();
+    void itemSelected();
 
 private:
-
-	QList<RibbonButton*> _buttons;
-
+    QList<RibbonButton*> _buttons;
 };
 
 #endif // RIBBONWIDGET_H

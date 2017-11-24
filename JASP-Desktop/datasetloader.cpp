@@ -17,16 +17,16 @@
 
 #include "datasetloader.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
-#include "sharedmemory.h"
 #include "dataset.h"
+#include "sharedmemory.h"
 
 #include "importers/csvimporter.h"
-#include "importers/spssimporter.h"
 #include "importers/jaspimporter.h"
 #include "importers/odsimporter.h"
+#include "importers/spssimporter.h"
 
 #include <QFileInfo>
 #include <QSettings>
@@ -37,55 +37,53 @@ using namespace ods;
 using namespace boost::interprocess;
 using namespace boost;
 
-string DataSetLoader::getExtension(const string &locator, const string &extension) {
-	filesystem::path path(locator);
-	string ext = path.extension().generic_string();
-
-	if (!ext.length()) ext=extension;
-	return ext;
-}
-
-Importer* DataSetLoader::getImporter(DataSetPackage *packageData, const string &locator, const string &extension)
+string DataSetLoader::getExtension(const string& locator, const string& extension)
 {
-	Importer* result = NULL;
-	string ext = getExtension(locator, extension);
+    filesystem::path path(locator);
+    string ext = path.extension().generic_string();
 
-	if (boost::iequals(ext,".csv") || boost::iequals(ext,".txt"))
-		result = new CSVImporter(packageData);
-	else if (boost::iequals(ext,".sav"))
-		result = new SPSSImporter(packageData);
-	else if (boost::iequals(ext,".ods"))
-		result = new ODSImporter(packageData);
-
-	return result;
+    if (!ext.length())
+        ext = extension;
+    return ext;
 }
 
-void DataSetLoader::loadPackage(DataSetPackage *packageData, const string &locator, const string &extension, boost::function<void(const string &, int)> progress)
+Importer* DataSetLoader::getImporter(DataSetPackage* packageData, const string& locator, const string& extension)
 {
-	Importer* importer = getImporter(packageData, locator, extension);
+    Importer* result = NULL;
+    string ext = getExtension(locator, extension);
 
-	if (importer)
-	{
-		importer->loadDataSet(locator, progress);
-		delete importer;
-	}
-	else
-		JASPImporter::loadDataSet(packageData, locator, progress);
+    if (boost::iequals(ext, ".csv") || boost::iequals(ext, ".txt"))
+        result = new CSVImporter(packageData);
+    else if (boost::iequals(ext, ".sav"))
+        result = new SPSSImporter(packageData);
+    else if (boost::iequals(ext, ".ods"))
+        result = new ODSImporter(packageData);
+
+    return result;
 }
 
-void DataSetLoader::syncPackage(DataSetPackage *packageData, const string &locator, const string &extension, boost::function<void(const string &, int)> progress)
+void DataSetLoader::loadPackage(DataSetPackage* packageData, const string& locator, const string& extension, boost::function<void(const string&, int)> progress)
 {
-	Importer* importer = getImporter(packageData, locator, extension);
+    Importer* importer = getImporter(packageData, locator, extension);
 
-	if (importer)
-	{
-		importer->syncDataSet(locator, progress);
-		delete importer;
-	}
+    if (importer) {
+        importer->loadDataSet(locator, progress);
+        delete importer;
+    } else
+        JASPImporter::loadDataSet(packageData, locator, progress);
 }
 
-void DataSetLoader::freeDataSet(DataSet *dataSet)
+void DataSetLoader::syncPackage(DataSetPackage* packageData, const string& locator, const string& extension, boost::function<void(const string&, int)> progress)
 {
-	SharedMemory::deleteDataSet(dataSet);
+    Importer* importer = getImporter(packageData, locator, extension);
+
+    if (importer) {
+        importer->syncDataSet(locator, progress);
+        delete importer;
+    }
 }
 
+void DataSetLoader::freeDataSet(DataSet* dataSet)
+{
+    SharedMemory::deleteDataSet(dataSet);
+}

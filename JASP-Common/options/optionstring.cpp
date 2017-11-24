@@ -21,41 +21,41 @@ using namespace std;
 
 OptionString::OptionString(string value, string regexp, int max)
 {
-	_value = value;
-	_max = max;
-	_regexp = regexp;
+    _value = value;
+    _max = max;
+    _regexp = regexp;
 }
 
-void OptionString::init(const Json::Value &data)
+void OptionString::init(const Json::Value& data)
 {
-	_value = data.get("default", "").asString();
-	_regexp = data.get("regexp", "").asString();
-	_max = data.get("max", -1).asInt();
+    _value = data.get("default", "").asString();
+    _regexp = data.get("regexp", "").asString();
+    _max = data.get("max", -1).asInt();
 }
 
 Json::Value OptionString::asJSON() const
 {
-	return _value;
+    return _value;
 }
 
-void OptionString::set(const Json::Value &value)
+void OptionString::set(const Json::Value& value)
 {
-	setValue(value.asString());
+    setValue(value.asString());
 }
 
-Option *OptionString::clone() const
+Option* OptionString::clone() const
 {
-	OptionString *c = new OptionString();
-	c->setValue(_value);
-	return c;
+    OptionString* c = new OptionString();
+    c->setValue(_value);
+    return c;
 }
 
 int OptionString::max() const
 {
-	return _max;
+    return _max;
 }
 
 string OptionString::regexp() const
 {
-	return _regexp;
+    return _regexp;
 }

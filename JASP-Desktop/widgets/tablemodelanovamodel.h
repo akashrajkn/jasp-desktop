@@ -22,89 +22,92 @@
 #include <QAbstractListModel>
 #include <list>
 
-#include "tablemodelvariablesavailable.h"
 #include "enhanceddroptarget.h"
-#include "options/optionterm.h"
 #include "options/optionstable.h"
+#include "options/optionterm.h"
+#include "tablemodelvariablesavailable.h"
 
 #include "tablemodel.h"
 
-class TableModelAnovaModel : public TableModel, public EnhancedDropTarget, public BoundModel
-{
-	Q_OBJECT
+class TableModelAnovaModel : public TableModel, public EnhancedDropTarget, public BoundModel {
+    Q_OBJECT
 
-	friend class AnovaModelWidget;
+    friend class AnovaModelWidget;
 
-	enum AssignType { Cross = 0, MainEffects, Interaction, All2Way, All3Way, All4Way, All5Way };
+    enum AssignType { Cross = 0,
+        MainEffects,
+        Interaction,
+        All2Way,
+        All3Way,
+        All4Way,
+        All5Way };
 
 public:
-	TableModelAnovaModel(QObject *parent = 0);
+    TableModelAnovaModel(QObject* parent = 0);
 
-	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const OVERRIDE;
-	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const OVERRIDE;
-	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const OVERRIDE;
-	virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) OVERRIDE;
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const OVERRIDE;
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const OVERRIDE;
+    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const OVERRIDE;
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) OVERRIDE;
 
-	virtual QStringList mimeTypes() const OVERRIDE;
-	virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent = QModelIndex()) const OVERRIDE;
-	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent = QModelIndex()) OVERRIDE;
-	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent, int assignType) OVERRIDE;
-	virtual QMimeData *mimeData(const QModelIndexList &indexes) const OVERRIDE;
-	virtual Qt::ItemFlags flags(const QModelIndex &index) const OVERRIDE;
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const OVERRIDE;
+    virtual QStringList mimeTypes() const OVERRIDE;
+    virtual bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent = QModelIndex()) const OVERRIDE;
+    virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent = QModelIndex()) OVERRIDE;
+    virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent, int assignType) OVERRIDE;
+    virtual QMimeData* mimeData(const QModelIndexList& indexes) const OVERRIDE;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const OVERRIDE;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const OVERRIDE;
 
-	virtual Qt::DropActions supportedDropActions() const OVERRIDE;
-	virtual Qt::DropActions supportedDragActions() const OVERRIDE;
+    virtual Qt::DropActions supportedDropActions() const OVERRIDE;
+    virtual Qt::DropActions supportedDragActions() const OVERRIDE;
 
-	const Terms &variables() const;
+    const Terms& variables() const;
 
-	virtual void bindTo(Option *option) OVERRIDE;
-	virtual void unbind() OVERRIDE;
+    virtual void bindTo(Option* option) OVERRIDE;
+    virtual void unbind() OVERRIDE;
 
-	virtual void mimeDataMoved(const QModelIndexList &indexes) OVERRIDE;
+    virtual void mimeDataMoved(const QModelIndexList& indexes) OVERRIDE;
 
-	const Terms &terms() const;
+    const Terms& terms() const;
 
-	bool piecesCanBeAssigned() const;
-	void setPiecesCanBeAssigned(bool piecesCanBeAssigned);
+    bool piecesCanBeAssigned() const;
+    void setPiecesCanBeAssigned(bool piecesCanBeAssigned);
 
 public slots:
 
-	void setVariables(const Terms &fixedFactors, const Terms &randomFactors = Terms(), const Terms &covariates = Terms());
+    void setVariables(const Terms& fixedFactors, const Terms& randomFactors = Terms(), const Terms& covariates = Terms());
 
-	void addFixedFactors(const Terms &terms);
-	void addRandomFactors(const Terms &terms);
-	void addCovariates(const Terms &terms);
-	void removeVariables(const Terms &terms);
+    void addFixedFactors(const Terms& terms);
+    void addRandomFactors(const Terms& terms);
+    void addCovariates(const Terms& terms);
+    void removeVariables(const Terms& terms);
 
 signals:
-	void variablesAvailableChanged();
-	void termsChanged();
+    void variablesAvailableChanged();
+    void termsChanged();
 
 protected:
+    static OptionTerm* termOptionFromRow(Options* row);
 
-	static OptionTerm* termOptionFromRow(Options *row);
+    void setTerms(const Terms& terms, bool newTermsAreNuisance = false);
 
-	void setTerms(const Terms &terms, bool newTermsAreNuisance = false);
+    void clear();
+    void assign(const Terms& terms);
+    void updateNuisances(bool checked = true);
 
-	void clear();
-	void assign(const Terms &terms);
-	void updateNuisances(bool checked = true);
+    OptionsTable* _boundTo;
 
-	OptionsTable *_boundTo;
+    std::vector<Options*> _rows;
 
-	std::vector<Options *> _rows;
+    bool _piecesCanBeAssigned;
 
-	bool _piecesCanBeAssigned;
+    Terms _variables;
 
-	Terms _variables;
+    Terms _covariates;
+    Terms _fixedFactors;
+    Terms _randomFactors;
 
-	Terms _covariates;
-	Terms _fixedFactors;
-	Terms _randomFactors;
-
-	Terms _terms;
-
+    Terms _terms;
 };
 
 #endif // TABLEMODELANOVAMODEL_H

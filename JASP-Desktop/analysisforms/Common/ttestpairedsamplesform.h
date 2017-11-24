@@ -25,16 +25,15 @@ namespace Ui {
 class TTestPairedSamplesForm;
 }
 
-class TTestPairedSamplesForm : public AnalysisForm
-{
-	Q_OBJECT
+class TTestPairedSamplesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit TTestPairedSamplesForm(QWidget *parent = 0);
-	~TTestPairedSamplesForm();
+    explicit TTestPairedSamplesForm(QWidget* parent = 0);
+    ~TTestPairedSamplesForm();
 
 private:
-	Ui::TTestPairedSamplesForm *ui;
+    Ui::TTestPairedSamplesForm* ui;
 };
 
 #endif // TTESTPAIREDSAMPLESFORM_H

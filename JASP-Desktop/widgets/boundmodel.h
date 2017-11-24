@@ -21,12 +21,10 @@
 
 #include "options/option.h"
 
-class BoundModel
-{
+class BoundModel {
 public:
-	virtual void bindTo(Option *) { }
-	virtual void unbind() { }
-
+    virtual void bindTo(Option*) {}
+    virtual void unbind() {}
 };
 
 #endif // BOUNDMODEL_H

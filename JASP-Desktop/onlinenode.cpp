@@ -1,93 +1,90 @@
 #include "onlinenode.h"
 
-
-OnlineNode::OnlineNode(QNetworkAccessManager *manager, QString id, QObject *parent):
-	QObject(parent)
+OnlineNode::OnlineNode(QNetworkAccessManager* manager, QString id, QObject* parent)
+    : QObject(parent)
 {
-	_manager = manager;
-	_id = id;
+    _manager = manager;
+    _id = id;
 }
 
 QString OnlineNode::id() const
 {
-	return _id;
+    return _id;
 }
 
 QString OnlineNode::nodeId() const
 {
-	return _nodeId;
+    return _nodeId;
 }
 
 bool OnlineNode::error() const
 {
-	return _error;
+    return _error;
 }
 
 QString OnlineNode::errorMessage() const
 {
-	return _errorMsg;
+    return _errorMsg;
 }
 
 QNetworkAccessManager* OnlineNode::manager() const
 {
-	return _manager;
+    return _manager;
 }
 
 QString OnlineNode::path() const
 {
-	return _path;
+    return _path;
 }
 
-void OnlineNode::setPath(const QString &path)
+void OnlineNode::setPath(const QString& path)
 {
-	_path = path;
+    _path = path;
 }
 
 OnlineDataConnection* OnlineNode::connection()
 {
-	if (_connection == NULL) {
-		_connection = new OnlineDataConnection(_manager, this);
-		connect(_connection, SIGNAL(finished()), this, SLOT(connectionFinished()));
-	}
+    if (_connection == NULL) {
+        _connection = new OnlineDataConnection(_manager, this);
+        connect(_connection, SIGNAL(finished()), this, SLOT(connectionFinished()));
+    }
 
-	return _connection;
+    return _connection;
 }
 
 void OnlineNode::connectionFinished()
 {
-	OnlineDataConnection *conn = connection();
-	if (conn->error())
-		setError(true, conn->errorMessage());
-	else if (_reinitialise)
-	{
-		initialise();
-		return;
-	}
+    OnlineDataConnection* conn = connection();
+    if (conn->error())
+        setError(true, conn->errorMessage());
+    else if (_reinitialise) {
+        initialise();
+        return;
+    }
 
-	_reinitialise = false;
-	emit finished();
+    _reinitialise = false;
+    emit finished();
 }
 
 void OnlineNode::startInit()
 {
-	setError(false, "");
+    setError(false, "");
 
-	_inited = false;
+    _inited = false;
 }
 
 void OnlineNode::endInit(bool success)
 {
-	_inited = success;
+    _inited = success;
 
-	if (success == false || _reinitialise || beginAction() == false)
-	{
-		_reinitialise = false;
-		emit finished();
-	}
+    if (success == false || _reinitialise || beginAction() == false) {
+        _reinitialise = false;
+        emit finished();
+    }
 }
 
 void OnlineNode::setError(bool value, QString message)
 {
-	_error = value;
-	_errorMsg = message;
+    _error = value;
+    _errorMsg = message;
 }

@@ -24,105 +24,108 @@
 #include <utime.h>
 #endif
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/foreach.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/nowide/convert.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
+#include <boost/nowide/convert.hpp>
 
 using namespace std;
 using namespace boost::posix_time;
 using namespace boost;
 
-const char* Utils::getFileTypeString(const Utils::FileType &fileType) {
-	switch (fileType) {
-        case Utils::csv: return "csv";
-		case Utils::txt: return "txt";
-		case Utils::sav: return "sav";
-		case Utils::ods: return "ods";
-		case Utils::jasp: return "jasp";
-        case Utils::html: return "html";
-        case Utils::pdf: return "pdf";
-		default: return "";
-	}
+const char* Utils::getFileTypeString(const Utils::FileType& fileType)
+{
+    switch (fileType) {
+    case Utils::csv:
+        return "csv";
+    case Utils::txt:
+        return "txt";
+    case Utils::sav:
+        return "sav";
+    case Utils::ods:
+        return "ods";
+    case Utils::jasp:
+        return "jasp";
+    case Utils::html:
+        return "html";
+    case Utils::pdf:
+        return "pdf";
+    default:
+        return "";
+    }
 }
 
-Utils::FileType Utils::getTypeFromFileName(const std::string &path)
+Utils::FileType Utils::getTypeFromFileName(const std::string& path)
 {
 
-	Utils::FileType filetype =  Utils::unknown;
+    Utils::FileType filetype = Utils::unknown;
 
-	for (int i = 0; i < Utils::empty; i++)
-	{
-		Utils::FileType it = static_cast<Utils::FileType>(i);
-		std::string it_str(".");
-		it_str += Utils::getFileTypeString(it);
-		if (algorithm::iends_with(path, it_str))
-		{
-			filetype = it;
-			break;
-		}
-	}
+    for (int i = 0; i < Utils::empty; i++) {
+        Utils::FileType it = static_cast<Utils::FileType>(i);
+        std::string it_str(".");
+        it_str += Utils::getFileTypeString(it);
+        if (algorithm::iends_with(path, it_str)) {
+            filetype = it;
+            break;
+        }
+    }
 
-	if (filetype == Utils::unknown)
-	{
-		if (!algorithm::find_last(path, "."))
-			filetype =  Utils::empty;
-	}
+    if (filetype == Utils::unknown) {
+        if (!algorithm::find_last(path, "."))
+            filetype = Utils::empty;
+    }
 
-	return filetype;
+    return filetype;
 }
 
 long Utils::currentMillis()
 {
-	ptime epoch(boost::gregorian::date(1970,1,1));
-	ptime t = microsec_clock::local_time();
-	time_duration elapsed = t - epoch;
+    ptime epoch(boost::gregorian::date(1970, 1, 1));
+    ptime t = microsec_clock::local_time();
+    time_duration elapsed = t - epoch;
 
-	return elapsed.total_milliseconds();
+    return elapsed.total_milliseconds();
 }
 
 long Utils::currentSeconds()
 {
-	time_t now;
-	time(&now);
+    time_t now;
+    time(&now);
 
-	return now;
+    return now;
 }
 
-long Utils::getFileModificationTime(const std::string &filename)
+long Utils::getFileModificationTime(const std::string& filename)
 {
 #ifdef __WIN32__
 
-	wstring wfilename = nowide::widen(filename);
-	HANDLE file = CreateFile(wfilename.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    wstring wfilename = nowide::widen(filename);
+    HANDLE file = CreateFile(wfilename.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	if (file == INVALID_HANDLE_VALUE)
-		return -1;
+    if (file == INVALID_HANDLE_VALUE)
+        return -1;
 
-	FILETIME modTime;
+    FILETIME modTime;
 
-	bool success = GetFileTime(file, NULL, NULL, &modTime);
-	CloseHandle(file);
+    bool success = GetFileTime(file, NULL, NULL, &modTime);
+    CloseHandle(file);
 
-	if (success)
-	{
-		ptime pt = from_ftime<ptime>(modTime);
-		ptime epoch(boost::gregorian::date(1970,1,1));
+    if (success) {
+        ptime pt = from_ftime<ptime>(modTime);
+        ptime epoch(boost::gregorian::date(1970, 1, 1));
 
-		return (pt - epoch).total_seconds();
-	}
-	else
-	{
-		return -1;
-	}
+        return (pt - epoch).total_seconds();
+    } else {
+        return -1;
+    }
 #elif __APPLE__
 
-	struct stat attrib;
-	stat(filename.c_str(), &attrib);
-	time_t modificationTime = attrib.st_mtimespec.tv_sec;
+    struct stat attrib;
+    stat(filename.c_str(), &attrib);
+    time_t modificationTime = attrib.st_mtimespec.tv_sec;
 
-	return modificationTime;
+    return modificationTime;
 
 #else
     struct stat attrib;
@@ -133,123 +136,121 @@ long Utils::getFileModificationTime(const std::string &filename)
 #endif
 }
 
-long Utils::getFileSize(const string &filename)
+long Utils::getFileSize(const string& filename)
 {
-	system::error_code ec;
-	filesystem::path path;
+    system::error_code ec;
+    filesystem::path path;
 
 #ifdef __WIN32__
 
-	path = boost::nowide::widen(filename);
+    path = boost::nowide::widen(filename);
 
 #else
 
-	path = filename;
+    path = filename;
 
 #endif
 
-	uintmax_t fileSize = filesystem::file_size(path, ec);
+    uintmax_t fileSize = filesystem::file_size(path, ec);
 
-	if (ec == 0)
-		return fileSize;
-	else
-		return -1;
+    if (ec == 0)
+        return fileSize;
+    else
+        return -1;
 }
 
-void Utils::touch(const string &filename)
+void Utils::touch(const string& filename)
 {
 #ifdef __WIN32__
 
-	wstring wfilename = nowide::widen(filename);
-	HANDLE file = CreateFile(wfilename.c_str(), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    wstring wfilename = nowide::widen(filename);
+    HANDLE file = CreateFile(wfilename.c_str(), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	if (file == INVALID_HANDLE_VALUE)
-		return;
+    if (file == INVALID_HANDLE_VALUE)
+        return;
 
-	FILETIME ft;
-	SYSTEMTIME st;
+    FILETIME ft;
+    SYSTEMTIME st;
 
-	GetSystemTime(&st);
-	SystemTimeToFileTime(&st, &ft);
-	SetFileTime(file, NULL, NULL, &ft);
+    GetSystemTime(&st);
+    SystemTimeToFileTime(&st, &ft);
+    SetFileTime(file, NULL, NULL, &ft);
 
-	CloseHandle(file);
+    CloseHandle(file);
 
 #else
-	struct utimbuf newTime;
+    struct utimbuf newTime;
 
-	time_t newTimeT;
-	time(&newTimeT);
+    time_t newTimeT;
+    time(&newTimeT);
 
-	newTime.actime = newTimeT;
-	newTime.modtime = newTimeT;
+    newTime.actime = newTimeT;
+    newTime.modtime = newTimeT;
 
-	utime(filename.c_str(), &newTime);
+    utime(filename.c_str(), &newTime);
 #endif
 }
 
-bool Utils::renameOverwrite(const string &oldName, const string &newName)
+bool Utils::renameOverwrite(const string& oldName, const string& newName)
 {
-	filesystem::path o = osPath(oldName);
-	filesystem::path n = osPath(newName);
-	system::error_code ec;
+    filesystem::path o = osPath(oldName);
+    filesystem::path n = osPath(newName);
+    system::error_code ec;
 
 #ifdef __WIN32__
-	system::error_code er;
-	if (filesystem::exists(n, er)) {
-		filesystem::file_status s = filesystem::status(n);
-		bool readOnly = (s.permissions() & filesystem::owner_write) == 0;
-		if (readOnly)
-			filesystem::permissions(n, filesystem::owner_write);
-	}
+    system::error_code er;
+    if (filesystem::exists(n, er)) {
+        filesystem::file_status s = filesystem::status(n);
+        bool readOnly = (s.permissions() & filesystem::owner_write) == 0;
+        if (readOnly)
+            filesystem::permissions(n, filesystem::owner_write);
+    }
 #endif
 
-	boost::filesystem::rename(o, n, ec);
+    boost::filesystem::rename(o, n, ec);
 
-	return ec == 0;
+    return ec == 0;
 }
 
-bool Utils::removeFile(const string &path)
+bool Utils::removeFile(const string& path)
 {
-	filesystem::path p = osPath(path);
-	system::error_code ec;
+    filesystem::path p = osPath(path);
+    system::error_code ec;
 
-	boost::filesystem::remove(p, ec);
+    boost::filesystem::remove(p, ec);
 
-	return ec == 0;
+    return ec == 0;
 }
 
-filesystem::path Utils::osPath(const string &path)
+filesystem::path Utils::osPath(const string& path)
 {
 #ifdef __WIN32__
-	return filesystem::path(nowide::widen(path));
+    return filesystem::path(nowide::widen(path));
 #else
-	return filesystem::path(path);
+    return filesystem::path(path);
 #endif
 }
 
-string Utils::osPath(const filesystem::path &path)
+string Utils::osPath(const filesystem::path& path)
 {
 #ifdef __WIN32__
-	return nowide::narrow(path.generic_wstring());
+    return nowide::narrow(path.generic_wstring());
 #else
-	return path.generic_string();
+    return path.generic_string();
 #endif
 }
 
-void Utils::remove(vector<string> &target, const vector<string> &toRemove)
+void Utils::remove(vector<string>& target, const vector<string>& toRemove)
 {
-	BOOST_FOREACH (const string &remove, toRemove)
-	{
-		vector<string>::iterator itr = target.begin();
-		while (itr != target.end())
-		{
-			if (*itr == remove)
-				target.erase(itr);
-			else
-				itr++;
-		}
-	}
+    BOOST_FOREACH (const string& remove, toRemove) {
+        vector<string>::iterator itr = target.begin();
+        while (itr != target.end()) {
+            if (*itr == remove)
+                target.erase(itr);
+            else
+                itr++;
+        }
+    }
 }
 
 void Utils::sleep(int ms)
@@ -258,70 +259,60 @@ void Utils::sleep(int ms)
 #ifdef __WIN32__
     Sleep(DWORD(ms));
 #else
-	struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-	nanosleep(&ts, NULL);
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+    nanosleep(&ts, NULL);
 #endif
 }
 
 const string Utils::emptyValue = ".";
-const vector<string> Utils::_defaultEmptyValues = {"NaN", "nan", ".", "NA"};
+const vector<string> Utils::_defaultEmptyValues = { "NaN", "nan", ".", "NA" };
 vector<double> Utils::_currentDoubleEmptyValues = {};
 vector<string> Utils::_currentEmptyValues = Utils::_defaultEmptyValues;
 
-void Utils::setEmptyValues(const vector<string> &emptyvalues)
+void Utils::setEmptyValues(const vector<string>& emptyvalues)
 {
-	_currentEmptyValues = emptyvalues;
-	_currentDoubleEmptyValues.clear();
+    _currentEmptyValues = emptyvalues;
+    _currentDoubleEmptyValues.clear();
 
-	for (vector<string>::const_iterator it = _currentEmptyValues.begin(); it != _currentEmptyValues.end(); ++it)
-	{
-		double doubleValue;
-		if (Utils::getDoubleValue(*it, doubleValue))
-			_currentDoubleEmptyValues.push_back(doubleValue);
-	}
+    for (vector<string>::const_iterator it = _currentEmptyValues.begin(); it != _currentEmptyValues.end(); ++it) {
+        double doubleValue;
+        if (Utils::getDoubleValue(*it, doubleValue))
+            _currentDoubleEmptyValues.push_back(doubleValue);
+    }
 }
 
-bool Utils::getIntValue(const string &value, int &intValue)
+bool Utils::getIntValue(const string& value, int& intValue)
 {
-	bool success = true;
-	try
-	{
-		intValue = boost::lexical_cast<int>(value);
-	}
-	catch (...)
-	{
-		success = false;
-	}
+    bool success = true;
+    try {
+        intValue = boost::lexical_cast<int>(value);
+    } catch (...) {
+        success = false;
+    }
 
-	return success;
+    return success;
 }
 
-bool Utils::getIntValue(const double &value, int &intValue)
+bool Utils::getIntValue(const double& value, int& intValue)
 {
-	bool success = true;
-	try
-	{
-		intValue = boost::lexical_cast<int>(value);
-	}
-	catch (...)
-	{
-		success = false;
-	}
+    bool success = true;
+    try {
+        intValue = boost::lexical_cast<int>(value);
+    } catch (...) {
+        success = false;
+    }
 
-	return success;
+    return success;
 }
 
-bool Utils::getDoubleValue(const string &value, double &doubleValue)
+bool Utils::getDoubleValue(const string& value, double& doubleValue)
 {
-	bool success = true;
-	try
-	{
-		doubleValue = boost::lexical_cast<double>(value);
-	}
-	catch (...)
-	{
-		success = false;
-	}
+    bool success = true;
+    try {
+        doubleValue = boost::lexical_cast<double>(value);
+    } catch (...) {
+        success = false;
+    }
 
-	return success;
+    return success;
 }

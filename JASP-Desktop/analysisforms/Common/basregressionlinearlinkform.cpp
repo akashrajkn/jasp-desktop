@@ -19,249 +19,225 @@
 #include "basregressionlinearlinkform.h"
 #include "ui_basregressionlinearlinkform.h"
 
-
-BASRegressionLinearLinkForm::BASRegressionLinearLinkForm(QWidget *parent) :
-	AnalysisForm("BASRegressionLinearLinkForm", parent),
-	ui(new Ui::BASRegressionLinearLinkForm)
+BASRegressionLinearLinkForm::BASRegressionLinearLinkForm(QWidget* parent)
+    : AnalysisForm("BASRegressionLinearLinkForm", parent)
+    , ui(new Ui::BASRegressionLinearLinkForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	_availableVariablesModel.setVariableTypesSuggested(Column::ColumnTypeScale);
-	_availableVariablesModel.setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
+    _availableVariablesModel.setVariableTypesSuggested(Column::ColumnTypeScale);
+    _availableVariablesModel.setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
 
-	_dependentListModel = new TableModelVariablesAssigned(this);
-	_dependentListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_dependentListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
-	_dependentListModel->setSource(&_availableVariablesModel);
-	ui->dependent->setModel(_dependentListModel);
+    _dependentListModel = new TableModelVariablesAssigned(this);
+    _dependentListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _dependentListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+    _dependentListModel->setSource(&_availableVariablesModel);
+    ui->dependent->setModel(_dependentListModel);
 
-	_covariatesListModel = new TableModelVariablesAssigned(this);
-	_covariatesListModel->setSource(&_availableVariablesModel);
-	_covariatesListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_covariatesListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->covariates->setModel(_covariatesListModel);
+    _covariatesListModel = new TableModelVariablesAssigned(this);
+    _covariatesListModel->setSource(&_availableVariablesModel);
+    _covariatesListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _covariatesListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->covariates->setModel(_covariatesListModel);
 
-	_wlsWeightsListModel = new TableModelVariablesAssigned();
-	_wlsWeightsListModel->setSource(&_availableVariablesModel);
-	_wlsWeightsListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_wlsWeightsListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->wlsWeights->setModel(_wlsWeightsListModel);
+    _wlsWeightsListModel = new TableModelVariablesAssigned();
+    _wlsWeightsListModel->setSource(&_availableVariablesModel);
+    _wlsWeightsListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _wlsWeightsListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->wlsWeights->setModel(_wlsWeightsListModel);
 
-	ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
-	ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
-	ui->buttonAssignWlsWeights->setSourceAndTarget(ui->listAvailableFields, ui->wlsWeights);
+    ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
+    ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
+    ui->buttonAssignWlsWeights->setSourceAndTarget(ui->listAvailableFields, ui->wlsWeights);
 
-	ui->plotOptions->hide();
-	ui->advancedOptions->hide();
+    ui->plotOptions->hide();
+    ui->advancedOptions->hide();
 
-	_anovaModel = new TableModelAnovaModel(this);
-	_anovaModel->setPiecesCanBeAssigned(false);
-	ui->modelTerms->setModel(_anovaModel);
-	ui->modelTerms->hide();
+    _anovaModel = new TableModelAnovaModel(this);
+    _anovaModel->setPiecesCanBeAssigned(false);
+    ui->modelTerms->setModel(_anovaModel);
+    ui->modelTerms->hide();
 
-	connect(_covariatesListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_covariatesListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
-	connect(_covariatesListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addCovariates(Terms)));
-	connect(_covariatesListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    connect(_covariatesListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_covariatesListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+    connect(_covariatesListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addCovariates(Terms)));
+    connect(_covariatesListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
 
-	// retain widget sizes when hidden
-	QSizePolicy retain = ui->iterationsMCMC->sizePolicy();
-	retain.setRetainSizeWhenHidden(true);
-	ui->iterationsMCMC->setSizePolicy(retain);
+    // retain widget sizes when hidden
+    QSizePolicy retain = ui->iterationsMCMC->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->iterationsMCMC->setSizePolicy(retain);
 
-	retain = ui->betaBinomialParamA->sizePolicy();
-	retain.setRetainSizeWhenHidden(true);
-	ui->betaBinomialParamA->setSizePolicy(retain);
+    retain = ui->betaBinomialParamA->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->betaBinomialParamA->setSizePolicy(retain);
 
-	retain = ui->betaBinomialParamB->sizePolicy();
-	retain.setRetainSizeWhenHidden(true);
-	ui->betaBinomialParamB->setSizePolicy(retain);
+    retain = ui->betaBinomialParamB->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->betaBinomialParamB->setSizePolicy(retain);
 
-	retain = ui->bernoulliParam->sizePolicy();
-	retain.setRetainSizeWhenHidden(true);
-	ui->bernoulliParam->setSizePolicy(retain);
+    retain = ui->bernoulliParam->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->bernoulliParam->setSizePolicy(retain);
 
-	retain = ui->gPriorParameter->sizePolicy();
-	retain.setRetainSizeWhenHidden(true);
-	ui->gPriorParameter->setSizePolicy(retain);
+    retain = ui->gPriorParameter->sizePolicy();
+    retain.setRetainSizeWhenHidden(true);
+    ui->gPriorParameter->setSizePolicy(retain);
 
-	defaultOptions();
+    defaultOptions();
 }
-
 
 BASRegressionLinearLinkForm::~BASRegressionLinearLinkForm()
 {
-	delete ui;
+    delete ui;
 }
-
 
 void BASRegressionLinearLinkForm::defaultOptions()
 {
-	// default behaviour: hide the number of iterations for MCMC
-	ui->label_iterationsMCMC->hide();
-	ui->iterationsMCMC->hide();
-	// hide the g prior parameter, alpha
-	ui->label_gPriorParameter->hide();
-	ui->gPriorParameter->hide();
+    // default behaviour: hide the number of iterations for MCMC
+    ui->label_iterationsMCMC->hide();
+    ui->iterationsMCMC->hide();
+    // hide the g prior parameter, alpha
+    ui->label_gPriorParameter->hide();
+    ui->gPriorParameter->hide();
 
-	// default behaviour: show beta binomial parameters, hide bernoulli params
-	defaultOptionsModelPrior();
+    // default behaviour: show beta binomial parameters, hide bernoulli params
+    defaultOptionsModelPrior();
 }
-
 
 void BASRegressionLinearLinkForm::defaultOptionsModelPrior()
 {
-	ui->label_betaBinomialParamA->show();
-	ui->label_betaBinomialParamB->show();
-	ui->betaBinomialParamA->show();
-	ui->betaBinomialParamB->show();
-	ui->label_bernoulliParam->hide();
-	ui->bernoulliParam->hide();
+    ui->label_betaBinomialParamA->show();
+    ui->label_betaBinomialParamB->show();
+    ui->betaBinomialParamA->show();
+    ui->betaBinomialParamB->show();
+    ui->label_bernoulliParam->hide();
+    ui->bernoulliParam->hide();
 }
 
-
-void BASRegressionLinearLinkForm::bindTo(Options *options, DataSet *dataSet)
+void BASRegressionLinearLinkForm::bindTo(Options* options, DataSet* dataSet)
 {
-	AnalysisForm::bindTo(options, dataSet);
+    AnalysisForm::bindTo(options, dataSet);
 
-	factorsChanging();
+    factorsChanging();
 
-	_anovaModel->setVariables(Terms(), Terms(), _covariatesListModel->assigned());
+    _anovaModel->setVariables(Terms(), Terms(), _covariatesListModel->assigned());
 
-	factorsChanged();
+    factorsChanged();
 }
-
 
 void BASRegressionLinearLinkForm::on_BAS_clicked()
 {
-	ui->label_numberOfModels->show();
-	ui->numberOfModels->show();
-	ui->label_iterationsMCMC->hide();
-	ui->iterationsMCMC->hide();
+    ui->label_numberOfModels->show();
+    ui->numberOfModels->show();
+    ui->label_iterationsMCMC->hide();
+    ui->iterationsMCMC->hide();
 }
-
 
 void BASRegressionLinearLinkForm::on_MCMC_clicked()
 {
-	ui->label_numberOfModels->hide();
-	ui->numberOfModels->hide();
-	ui->label_iterationsMCMC->show();
-	ui->iterationsMCMC->show();
+    ui->label_numberOfModels->hide();
+    ui->numberOfModels->hide();
+    ui->label_iterationsMCMC->show();
+    ui->iterationsMCMC->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_MCMCBAS_clicked()
 {
-	ui->label_numberOfModels->show();
-	ui->numberOfModels->show();
-	ui->label_iterationsMCMC->show();
-	ui->iterationsMCMC->show();
+    ui->label_numberOfModels->show();
+    ui->numberOfModels->show();
+    ui->label_iterationsMCMC->show();
+    ui->iterationsMCMC->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_betaBinomial_clicked()
 {
-	if (ui->betaBinomial->isChecked())
-	{
-		defaultOptionsModelPrior();
-	}
+    if (ui->betaBinomial->isChecked()) {
+        defaultOptionsModelPrior();
+    }
 }
-
 
 void BASRegressionLinearLinkForm::on_Bernoulli_clicked()
 {
-	if (ui->Bernoulli->isChecked())
-	{
-		ui->label_betaBinomialParamA->hide();
-		ui->label_betaBinomialParamB->hide();
-		ui->betaBinomialParamA->hide();
-		ui->betaBinomialParamB->hide();
-		ui->label_bernoulliParam->show();
-		ui->bernoulliParam->show();
-	}
+    if (ui->Bernoulli->isChecked()) {
+        ui->label_betaBinomialParamA->hide();
+        ui->label_betaBinomialParamB->hide();
+        ui->betaBinomialParamA->hide();
+        ui->betaBinomialParamB->hide();
+        ui->label_bernoulliParam->show();
+        ui->bernoulliParam->show();
+    }
 }
-
 
 void BASRegressionLinearLinkForm::on_uniformPrior_clicked()
 {
-	if (ui->uniformPrior->isChecked())
-	{
-		ui->label_betaBinomialParamA->hide();
-		ui->label_betaBinomialParamB->hide();
-		ui->betaBinomialParamA->hide();
-		ui->betaBinomialParamB->hide();
-		ui->label_bernoulliParam->hide();
-		ui->bernoulliParam->hide();
-	}
+    if (ui->uniformPrior->isChecked()) {
+        ui->label_betaBinomialParamA->hide();
+        ui->label_betaBinomialParamB->hide();
+        ui->betaBinomialParamA->hide();
+        ui->betaBinomialParamB->hide();
+        ui->label_bernoulliParam->hide();
+        ui->bernoulliParam->hide();
+    }
 }
-
 
 void BASRegressionLinearLinkForm::on_g_prior_clicked()
 {
-	ui->label_gPriorParameter->show();
-	ui->gPriorParameter->show();
+    ui->label_gPriorParameter->show();
+    ui->gPriorParameter->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_hyper_g_clicked()
 {
-	ui->label_gPriorParameter->show();
-	ui->gPriorParameter->show();
+    ui->label_gPriorParameter->show();
+    ui->gPriorParameter->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_hyper_g_laplace_clicked()
 {
-	ui->label_gPriorParameter->show();
-	ui->gPriorParameter->show();
+    ui->label_gPriorParameter->show();
+    ui->gPriorParameter->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_hyper_g_n_clicked()
 {
-	ui->label_gPriorParameter->show();
-	ui->gPriorParameter->show();
+    ui->label_gPriorParameter->show();
+    ui->gPriorParameter->show();
 }
-
 
 void BASRegressionLinearLinkForm::on_aic_clicked()
 {
-	ui->label_gPriorParameter->hide();
-	ui->gPriorParameter->hide();
+    ui->label_gPriorParameter->hide();
+    ui->gPriorParameter->hide();
 }
-
 
 void BASRegressionLinearLinkForm::on_bic_clicked()
 {
-	ui->label_gPriorParameter->hide();
-	ui->gPriorParameter->hide();
+    ui->label_gPriorParameter->hide();
+    ui->gPriorParameter->hide();
 }
-
 
 void BASRegressionLinearLinkForm::on_eb_global_clicked()
 {
-	ui->label_gPriorParameter->hide();
-	ui->gPriorParameter->hide();
+    ui->label_gPriorParameter->hide();
+    ui->gPriorParameter->hide();
 }
-
 
 void BASRegressionLinearLinkForm::on_eb_local_clicked()
 {
-	ui->label_gPriorParameter->hide();
-	ui->gPriorParameter->hide();
+    ui->label_gPriorParameter->hide();
+    ui->gPriorParameter->hide();
 }
-
 
 void BASRegressionLinearLinkForm::factorsChanging()
 {
-	if (_options != NULL)
-		_options->blockSignals(true);
+    if (_options != NULL)
+        _options->blockSignals(true);
 }
-
 
 void BASRegressionLinearLinkForm::factorsChanged()
 {
-	if (_options != NULL)
-		_options->blockSignals(false);
+    if (_options != NULL)
+        _options->blockSignals(false);
 }

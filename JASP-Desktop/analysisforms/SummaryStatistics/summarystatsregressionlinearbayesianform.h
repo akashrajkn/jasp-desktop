@@ -25,16 +25,15 @@ namespace Ui {
 class SummaryStatsRegressionLinearBayesianForm;
 }
 
-class SummaryStatsRegressionLinearBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class SummaryStatsRegressionLinearBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit SummaryStatsRegressionLinearBayesianForm(QWidget *parent = 0);
-	~SummaryStatsRegressionLinearBayesianForm();
+    explicit SummaryStatsRegressionLinearBayesianForm(QWidget* parent = 0);
+    ~SummaryStatsRegressionLinearBayesianForm();
 
 private:
-	Ui::SummaryStatsRegressionLinearBayesianForm *ui;
+    Ui::SummaryStatsRegressionLinearBayesianForm* ui;
 };
 
 #endif // SUMMARYSTATSREGRESSIONLINEARBAYESIAN_H

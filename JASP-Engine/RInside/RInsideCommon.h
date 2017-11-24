@@ -24,39 +24,40 @@
 
 #include "RInsideConfig.h"
 
-#include <sys/time.h>           // gettimeofday()
-#include <sys/types.h>		// pid_t
-#include <unistd.h>		// getpid()
+#include <sys/time.h> // gettimeofday()
+#include <sys/types.h> // pid_t
+#include <unistd.h> // getpid()
 
-#include <inttypes.h>		// intptr_t (one day we use cinttypes from C++11)
-#include <stdint.h>		// uint64_t (one day we use cstdint from C++11)
+#include <inttypes.h> // intptr_t (one day we use cinttypes from C++11)
+#include <stdint.h> // uint64_t (one day we use cstdint from C++11)
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include <Rcpp.h>
 
 #ifdef __WIN32__
-  #ifndef Win32
-    // needed for parts of Rembedded.h
-    #define Win32
-  #endif
+#ifndef Win32
+// needed for parts of Rembedded.h
+#define Win32
+#endif
 #endif
 
 #ifndef __WIN32__
-  // needed to turn-off stack checking, and we already have uintptr_t
-  #define CSTACK_DEFNS
-  #define HAVE_UINTPTR_T
+// needed to turn-off stack checking, and we already have uintptr_t
+#define CSTACK_DEFNS
+#define HAVE_UINTPTR_T
 #endif
 
-#include <Rembedded.h>
 #include <R_ext/RStartup.h>
+#include <Rembedded.h>
 
 #include "MemBuf.h"
 
 // simple logging help
-inline void logTxtFunction(const char* file, const int line, const char* expression, const bool verbose) {
+inline void logTxtFunction(const char* file, const int line, const char* expression, const bool verbose)
+{
     if (verbose) {
         std::cout << file << ":" << line << " expression: " << expression << std::endl;
     }

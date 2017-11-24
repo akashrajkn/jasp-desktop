@@ -24,75 +24,74 @@
 using namespace Json;
 using namespace std;
 
-OptionsTable::OptionsTable(Options *rowTemplate)
-	: OptionI(true)
+OptionsTable::OptionsTable(Options* rowTemplate)
+    : OptionI(true)
 {
-	_template = rowTemplate;
+    _template = rowTemplate;
 }
 
-void OptionsTable::init(const Json::Value &data)
+void OptionsTable::init(const Json::Value& data)
 {
-	_template = new Options();
+    _template = new Options();
 
-	Json::Value templ4te = data.get("template", Json::nullValue);
+    Json::Value templ4te = data.get("template", Json::nullValue);
 
-	if (templ4te.isNull() == false)
-		_template->init(templ4te);
+    if (templ4te.isNull() == false)
+        _template->init(templ4te);
 
-	Json::Value d3fault = data.get("default", Json::nullValue);
+    Json::Value d3fault = data.get("default", Json::nullValue);
 
-	if (d3fault.isNull() == false)
-		set(d3fault);
+    if (d3fault.isNull() == false)
+        set(d3fault);
 }
 
 Json::Value OptionsTable::asJSON() const
 {
-	Value v = arrayValue;
-	int i = 0;
+    Value v = arrayValue;
+    int i = 0;
 
-	BOOST_FOREACH(Options *item, _value)
-		v[i++] = item->asJSON();
+    BOOST_FOREACH (Options* item, _value)
+        v[i++] = item->asJSON();
 
-	return v;
+    return v;
 }
 
-void OptionsTable::set(const Json::Value &value)
+void OptionsTable::set(const Json::Value& value)
 {
-	BOOST_FOREACH(Options *row, _value)
-		delete row;
-	_value.clear();
+    BOOST_FOREACH (Options* row, _value)
+        delete row;
+    _value.clear();
 
-	for (uint i = 0; i < value.size(); i++)
-	{
-		Options *row = static_cast<Options *>(_template->clone());
-		row->set(value[i]);
-		_value.push_back(row);
-	}
+    for (uint i = 0; i < value.size(); i++) {
+        Options* row = static_cast<Options*>(_template->clone());
+        row->set(value[i]);
+        _value.push_back(row);
+    }
 }
 
-Option *OptionsTable::clone() const
+Option* OptionsTable::clone() const
 {
-	Options *rowTemplate = static_cast<Options*>(this->rowTemplate()->clone());
+    Options* rowTemplate = static_cast<Options*>(this->rowTemplate()->clone());
 
-	OptionsTable *c = new OptionsTable(rowTemplate);
+    OptionsTable* c = new OptionsTable(rowTemplate);
 
-	std::vector<Options *> rows;
+    std::vector<Options*> rows;
 
-	BOOST_FOREACH(Options *row, _value)
-		rows.push_back(static_cast<Options*>(row->clone()));
+    BOOST_FOREACH (Options* row, _value)
+        rows.push_back(static_cast<Options*>(row->clone()));
 
-	c->setValue(rows);
+    c->setValue(rows);
 
-	return c;
+    return c;
 }
 
-void OptionsTable::setValue(const vector<Options *> &value)
+void OptionsTable::setValue(const vector<Options*>& value)
 {
-	_value = value;
-	notifyChanged();
+    _value = value;
+    notifyChanged();
 }
 
-Options *OptionsTable::rowTemplate() const
+Options* OptionsTable::rowTemplate() const
 {
-	return _template;
+    return _template;
 }

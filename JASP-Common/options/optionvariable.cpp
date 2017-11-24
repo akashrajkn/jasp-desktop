@@ -20,43 +20,42 @@
 using namespace std;
 
 OptionVariable::OptionVariable()
-	: OptionVariables(true)
+    : OptionVariables(true)
 {
 }
 
-void OptionVariable::set(const Json::Value &value)
+void OptionVariable::set(const Json::Value& value)
 {
-	vector<string> v;
+    vector<string> v;
 
-	if (value.isString())
-	{
-		string asString = value.asString();
-		if (asString != "")
-			v.push_back(asString);
-	}
+    if (value.isString()) {
+        string asString = value.asString();
+        if (asString != "")
+            v.push_back(asString);
+    }
 
-	setValue(v);
+    setValue(v);
 }
 
 Json::Value OptionVariable::asJSON() const
 {
-	if (_value.size() > 0 && _value.front().size() > 0)
-		return Json::Value(_value.front().front());
+    if (_value.size() > 0 && _value.front().size() > 0)
+        return Json::Value(_value.front().front());
 
-	return Json::Value("");
+    return Json::Value("");
 }
 
-Option *OptionVariable::clone() const
+Option* OptionVariable::clone() const
 {
-	OptionVariable *c = new OptionVariable();
-	c->setValue(this->value());
-	return c;
+    OptionVariable* c = new OptionVariable();
+    c->setValue(this->value());
+    return c;
 }
 
 string OptionVariable::variable() const
 {
-	if (_value.size() > 0 && _value.front().size() > 0)
-		return _value.front().front();
-	else
-		return "";
+    if (_value.size() > 0 && _value.front().size() > 0)
+        return _value.front().front();
+    else
+        return "";
 }

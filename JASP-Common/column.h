@@ -28,203 +28,188 @@
 #include "datablock.h"
 #include "labels.h"
 
-class Column
-{
-	friend class DataSet;
-	friend class Columns;
-	friend class DataSetLoader;
-	friend class boost::iterator_core_access;
+class Column {
+    friend class DataSet;
+    friend class Columns;
+    friend class DataSetLoader;
+    friend class boost::iterator_core_access;
 
-	typedef unsigned long long ull;
-	typedef boost::interprocess::allocator<boost::interprocess::offset_ptr<DataBlock>, boost::interprocess::managed_shared_memory::segment_manager> BlockAllocator;
-	typedef boost::container::map<ull, boost::interprocess::offset_ptr<DataBlock>, BlockAllocator>::value_type BlockEntry;
-	typedef boost::interprocess::allocator<BlockEntry, boost::interprocess::managed_shared_memory::segment_manager> BlockEntryAllocator;
-	typedef boost::container::map<ull, boost::interprocess::offset_ptr<DataBlock>, std::less<ull>, BlockEntryAllocator> BlockMap;
+    typedef unsigned long long ull;
+    typedef boost::interprocess::allocator<boost::interprocess::offset_ptr<DataBlock>, boost::interprocess::managed_shared_memory::segment_manager> BlockAllocator;
+    typedef boost::container::map<ull, boost::interprocess::offset_ptr<DataBlock>, BlockAllocator>::value_type BlockEntry;
+    typedef boost::interprocess::allocator<BlockEntry, boost::interprocess::managed_shared_memory::segment_manager> BlockEntryAllocator;
+    typedef boost::container::map<ull, boost::interprocess::offset_ptr<DataBlock>, std::less<ull>, BlockEntryAllocator> BlockMap;
 
-	typedef boost::interprocess::allocator<char, boost::interprocess::managed_shared_memory::segment_manager> CharAllocator;
-	typedef boost::container::basic_string<char, std::char_traits<char>, CharAllocator> String;
-	typedef boost::interprocess::allocator<String, boost::interprocess::managed_shared_memory::segment_manager> StringAllocator;
+    typedef boost::interprocess::allocator<char, boost::interprocess::managed_shared_memory::segment_manager> CharAllocator;
+    typedef boost::container::basic_string<char, std::char_traits<char>, CharAllocator> String;
+    typedef boost::interprocess::allocator<String, boost::interprocess::managed_shared_memory::segment_manager> StringAllocator;
 
 public:
-	static bool isEmptyValue(const std::string& val);
-	static bool isEmptyValue(const double& val);
+    static bool isEmptyValue(const std::string& val);
+    static bool isEmptyValue(const double& val);
 
-	bool resetEmptyValues(std::map<int, std::string>& emptyValuesMap);
+    bool resetEmptyValues(std::map<int, std::string>& emptyValuesMap);
 
+    typedef struct IntsStruct {
+        friend class Column;
 
-	typedef struct IntsStruct
-	{
-		friend class Column;
+        class iterator : public boost::iterator_facade<iterator, int, boost::forward_traversal_tag> {
+            friend class boost::iterator_core_access;
 
-		class iterator : public boost::iterator_facade<
-				iterator, int, boost::forward_traversal_tag>
-		{
-			friend class boost::iterator_core_access;
+        public:
+            explicit iterator(BlockMap::iterator blockItr, int currentPos);
 
-		public:
+        private:
+            void increment();
+            bool equal(iterator const& other) const;
+            int& dereference() const;
 
-			explicit iterator(BlockMap::iterator blockItr, int currentPos);
+            BlockMap::iterator _blockItr;
+            int _currentPos;
+        };
 
-		private:
+        int& operator[](int index);
 
-			void increment();
-			bool equal(iterator const& other) const;
-			int& dereference() const;
+        iterator begin();
+        iterator end();
 
-			BlockMap::iterator _blockItr;
-			int _currentPos;
-		};
+        IntsStruct();
 
-		int& operator[](int index);
+    private:
+        Column* getParent() const;
 
-		iterator begin();
-		iterator end();
+    } Ints;
 
-		IntsStruct();
+    typedef struct DoublesStruct {
+        friend class Column;
 
-	private:
+        class iterator : public boost::iterator_facade<iterator, double, boost::forward_traversal_tag> {
 
-		Column *getParent() const;
+            friend class boost::iterator_core_access;
 
-	} Ints;
+        public:
+            explicit iterator(BlockMap::iterator blockItr, int currentPos);
 
-	typedef struct DoublesStruct
-	{
-		friend class Column;
+        private:
+            void increment();
+            bool equal(iterator const& other) const;
+            double& dereference() const;
 
-		class iterator : public boost::iterator_facade<
-				iterator, double, boost::forward_traversal_tag>
-		{
+            BlockMap::iterator _blockItr;
+            int _currentPos;
+        };
 
-			friend class boost::iterator_core_access;
+        double& operator[](int index);
 
-		public:
+        iterator begin();
+        iterator end();
 
-			explicit iterator(BlockMap::iterator blockItr, int currentPos);
+    private:
+        DoublesStruct();
 
-		private:
+        Column* getParent() const;
 
-			void increment();
-			bool equal(iterator const& other) const;
-			double& dereference() const;
+    } Doubles;
 
-			BlockMap::iterator _blockItr;
-			int _currentPos;
+    Column(boost::interprocess::managed_shared_memory* mem);
+    Column(const Column& col);
+    ~Column();
 
-		};
+    std::string name() const;
+    void setName(std::string name);
 
-		double& operator[](int index);
+    void setValue(int row, int value);
+    void setValue(int row, double value);
 
-		iterator begin();
-		iterator end();
+    bool isValueEqual(int row, int value);
+    bool isValueEqual(int row, double value);
+    bool isValueEqual(int row, const std::string& value);
 
-	private:
-		DoublesStruct();
+    std::string operator[](int row);
+    std::string getOriginalValue(int row);
 
-		Column *getParent() const;
+    void append(int rows);
+    void truncate(int rows);
 
-	} Doubles;
+    // If the column is a scale, it uses the AsDoubles which is a mapping between the row numbers and the double values.
+    // Scale columns do not have labels.
+    // It the column is Nominal. NominalText or Ordinal, it uses the AsInts structure
+    // For Nominal & Ordinal, the values of the column are integers, so the AsInts get directly these values:
+    // it is a mapping between the row number and the value. The Labels is then a mapping of the unique integer values
+    // and the label strings (this string represents first the integer value, but can be later on modified)
+    // For NominalText, the values are strings, so the values are stored in the labels with some keys (this time the keys have no meaning).
+    // The AsInts is then a mapping between the row numbers and these keys. In this case, if the label of one value
+    // is modified, the new value is in the label object, and the original string value is kept in another mapping
+    // structure (cf. labels.h).
+    // Both AsDoubles & AsInts get their space from the BlockMap _blocks which is a mapping of DataBlock.
+    Doubles AsDoubles;
+    Ints AsInts;
 
-	Column(boost::interprocess::managed_shared_memory *mem);
-	Column(const Column& col);
-	~Column();
+    enum ColumnType { ColumnTypeUnknown = 0,
+        ColumnTypeNominal = 1,
+        ColumnTypeNominalText = 2,
+        ColumnTypeOrdinal = 4,
+        ColumnTypeScale = 8 };
+    static std::string getColumnTypeAsString(ColumnType type);
 
-	std::string name() const;
-	void setName(std::string name);
+    void setColumnType(ColumnType columnType);
+    ColumnType columnType() const;
 
-	void setValue(int row, int value);
-	void setValue(int row, double value);
+    bool changeColumnType(ColumnType newColumnType);
 
-	bool isValueEqual(int row, int value);
-	bool isValueEqual(int row, double value);
-	bool isValueEqual(int row, const std::string &value);
+    int rowCount() const;
 
-	std::string operator[](int row);
-	std::string getOriginalValue(int row);
+    Labels& labels();
 
-	void append(int rows);
-	void truncate(int rows);
+    Column& operator=(const Column& columns);
 
-	// If the column is a scale, it uses the AsDoubles which is a mapping between the row numbers and the double values.
-	// Scale columns do not have labels.
-	// It the column is Nominal. NominalText or Ordinal, it uses the AsInts structure
-	// For Nominal & Ordinal, the values of the column are integers, so the AsInts get directly these values:
-	// it is a mapping between the row number and the value. The Labels is then a mapping of the unique integer values
-	// and the label strings (this string represents first the integer value, but can be later on modified)
-	// For NominalText, the values are strings, so the values are stored in the labels with some keys (this time the keys have no meaning).
-	// The AsInts is then a mapping between the row numbers and these keys. In this case, if the label of one value
-	// is modified, the new value is in the label object, and the original string value is kept in another mapping
-	// structure (cf. labels.h).
-	// Both AsDoubles & AsInts get their space from the BlockMap _blocks which is a mapping of DataBlock.
-	Doubles AsDoubles;
-	Ints AsInts;
+    void setSharedMemory(boost::interprocess::managed_shared_memory* mem);
 
-	enum ColumnType { ColumnTypeUnknown = 0, ColumnTypeNominal = 1, ColumnTypeNominalText = 2, ColumnTypeOrdinal = 4, ColumnTypeScale = 8 };
-	static std::string getColumnTypeAsString(ColumnType type);
-
-	void setColumnType(ColumnType columnType);
-	ColumnType columnType() const;
-
-	bool changeColumnType(ColumnType newColumnType);
-
-	int rowCount() const;
-
-	Labels& labels();
-
-	Column &operator=(const Column &columns);
-
-	void setSharedMemory(boost::interprocess::managed_shared_memory *mem);
-
-	std::map<int, std::string> setColumnAsNominalText(const std::vector<std::string> &values);
-	std::map<int, std::string> setColumnAsNominalText(const std::vector<std::string> &values, const std::map<std::string, std::string> &labels);
-	void setColumnAsNominalOrOrdinal(const std::vector<int> &values, const std::set<int> &uniqueValues, bool is_ordinal = false);
-	void setColumnAsNominalOrOrdinal(const std::vector<int> &values, std::map<int, std::string> &uniqueValues, bool is_ordinal = false);
-	void setColumnAsScale(const std::vector<double> &values);
+    std::map<int, std::string> setColumnAsNominalText(const std::vector<std::string>& values);
+    std::map<int, std::string> setColumnAsNominalText(const std::vector<std::string>& values, const std::map<std::string, std::string>& labels);
+    void setColumnAsNominalOrOrdinal(const std::vector<int>& values, const std::set<int>& uniqueValues, bool is_ordinal = false);
+    void setColumnAsNominalOrOrdinal(const std::vector<int>& values, std::map<int, std::string>& uniqueValues, bool is_ordinal = false);
+    void setColumnAsScale(const std::vector<double>& values);
 
 private:
-	void _setColumnAsNominalOrOrdinal(const std::vector<int> &values, bool is_ordinal = false);
+    void _setColumnAsNominalOrOrdinal(const std::vector<int>& values, bool is_ordinal = false);
 
-	boost::interprocess::managed_shared_memory *_mem;
+    boost::interprocess::managed_shared_memory* _mem;
 
-	String _name;
-	ColumnType _columnType;
-	int _rowCount;
+    String _name;
+    ColumnType _columnType;
+    int _rowCount;
 
-	BlockMap _blocks;
-	Labels _labels;
+    BlockMap _blocks;
+    Labels _labels;
 
-	int id;
-	static int count;
+    int id;
+    static int count;
 
-	void _setRowCount(int rowCount);
-	std::string _getLabelFromKey(int key) const;
-	std::string _getScaleValue(int row);
+    void _setRowCount(int rowCount);
+    std::string _getLabelFromKey(int key) const;
+    std::string _getScaleValue(int row);
 
-	void _convertVectorIntToDouble(std::vector<int> &intValues, std::vector<double> &doubleValues);
+    void _convertVectorIntToDouble(std::vector<int>& intValues, std::vector<double>& doubleValues);
 
-	bool _resetEmptyValuesForNominal(std::map<int, std::string> &emptyValuesMap);
-	bool _resetEmptyValuesForScale(std::map<int, std::string> &emptyValuesMap);
-	bool _resetEmptyValuesForNominalText(std::map<int, std::string> &emptyValuesMap, bool tryToConvert = true);
+    bool _resetEmptyValuesForNominal(std::map<int, std::string>& emptyValuesMap);
+    bool _resetEmptyValuesForScale(std::map<int, std::string>& emptyValuesMap);
+    bool _resetEmptyValuesForNominalText(std::map<int, std::string>& emptyValuesMap, bool tryToConvert = true);
 
-	bool _changeColumnToNominalOrOrdinal(ColumnType newColumnType);
-	bool _changeColumnToScale();
-
+    bool _changeColumnToNominalOrOrdinal(ColumnType newColumnType);
+    bool _changeColumnToScale();
 };
 
-namespace boost
-{
-	template <>
-	struct range_const_iterator< Column::Ints >
-	{
-		typedef Column::Ints::iterator type;
-	};
+namespace boost {
+template <>
+struct range_const_iterator<Column::Ints> {
+    typedef Column::Ints::iterator type;
+};
 
-	template <>
-	struct range_const_iterator< Column::Doubles >
-	{
-		typedef Column::Doubles::iterator type;
-	};
+template <>
+struct range_const_iterator<Column::Doubles> {
+    typedef Column::Doubles::iterator type;
+};
 }
-
 
 #endif // COLUMN_H

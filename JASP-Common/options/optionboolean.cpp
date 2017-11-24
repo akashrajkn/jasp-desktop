@@ -18,27 +18,27 @@
 #include "optionboolean.h"
 
 OptionBoolean::OptionBoolean(bool defaultValue)
-	: OptionI()
+    : OptionI()
 {
-	_value = defaultValue;
+    _value = defaultValue;
 }
 
-void OptionBoolean::init(const Json::Value &data)
+void OptionBoolean::init(const Json::Value& data)
 {
-	_value = data.get("default", false).asBool();
+    _value = data.get("default", false).asBool();
 }
 
 Json::Value OptionBoolean::asJSON() const
 {
-	return Json::Value(value());
+    return Json::Value(value());
 }
 
-void OptionBoolean::set(const Json::Value &value)
+void OptionBoolean::set(const Json::Value& value)
 {
-	setValue(value.asBool());
+    setValue(value.asBool());
 }
 
-Option *OptionBoolean::clone() const
+Option* OptionBoolean::clone() const
 {
-	return new OptionBoolean(_value);
+    return new OptionBoolean(_value);
 }

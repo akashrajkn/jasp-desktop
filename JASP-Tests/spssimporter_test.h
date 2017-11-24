@@ -22,36 +22,32 @@
 #include <sstream>
 #define private public
 
-#include <vector>
-#include <string>
-#include <boost/filesystem.hpp>
 #include "AutomatedTests.h"
 #include "asyncloader.h"
-#include "sharedmemory.h"
+#include "datasetpackage.h"
 #include "fileevent.h"
 #include "mainwindow.h"
-#include "datasetpackage.h"
+#include "sharedmemory.h"
+#include <boost/filesystem.hpp>
+#include <string>
+#include <vector>
 
-
-class SPSSImporterTest : public QObject
-{
+class SPSSImporterTest : public QObject {
     Q_OBJECT
 
 public:
+    struct fileContent {
+        int columns;
+        int rows;
+        std::vector<std::string> headers;
+        std::vector<std::vector<std::string>> data;
+    };
 
-  struct fileContent
-  {
-    int columns;
-    int rows;
-    std::vector <std::string> headers;
-    std::vector< std::vector<std::string> > data;
-  };
+    FileEvent *fe_spss, *fe_csv;
+    AsyncLoader *asl_spss, *asl_csv;
 
-  FileEvent *fe_spss, *fe_csv;
-  AsyncLoader *asl_spss, *asl_csv;
-
-  bool checkIfEqual(struct fileContent*, struct fileContent*);
-  void copyToStructure(DataSetPackage*, struct fileContent*);
+    bool checkIfEqual(struct fileContent*, struct fileContent*);
+    void copyToStructure(DataSetPackage*, struct fileContent*);
 
 private slots:
     void init();
@@ -59,7 +55,6 @@ private slots:
     void spssTester();
     void spssTester_data();
 };
-
 
 DECLARE_TEST(SPSSImporterTest)
 

@@ -20,97 +20,96 @@
 #include "ui_regressionlogisticform.h"
 #include <QStringList>
 
-RegressionLogisticForm::RegressionLogisticForm(QWidget *parent) :
-	AnalysisForm("RegressionLogisticForm", parent),
-	ui(new Ui::RegressionLogisticForm)
+RegressionLogisticForm::RegressionLogisticForm(QWidget* parent)
+    : AnalysisForm("RegressionLogisticForm", parent)
+    , ui(new Ui::RegressionLogisticForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableFields->setModel(&this->_availableVariablesModel);
+    ui->listAvailableFields->setModel(&this->_availableVariablesModel);
 
-	ui->method->addItem("Enter");
-	ui->method->addItem("Backward");
-	ui->method->addItem("Forward");
-	ui->method->addItem("Stepwise");
+    ui->method->addItem("Enter");
+    ui->method->addItem("Backward");
+    ui->method->addItem("Forward");
+    ui->method->addItem("Stepwise");
 
-	_dependentModel = new TableModelVariablesAssigned();
-	_dependentModel->setSource(&_availableVariablesModel);
-	_dependentModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
-	_dependentModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
-	ui->dependent->setModel(_dependentModel);
+    _dependentModel = new TableModelVariablesAssigned();
+    _dependentModel->setSource(&_availableVariablesModel);
+    _dependentModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
+    _dependentModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
+    ui->dependent->setModel(_dependentModel);
 
-	_covariatesModel = new TableModelVariablesAssigned();
-	_covariatesModel->setSource(&_availableVariablesModel);
-	_covariatesModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	_covariatesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	ui->covariates->setModel(_covariatesModel);
+    _covariatesModel = new TableModelVariablesAssigned();
+    _covariatesModel->setSource(&_availableVariablesModel);
+    _covariatesModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    _covariatesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    ui->covariates->setModel(_covariatesModel);
 
-	_factorsModel = new TableModelVariablesAssigned();
-	_factorsModel->setSource(&_availableVariablesModel);
-	_factorsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	_factorsModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
-	ui->factors->setModel(_factorsModel);
+    _factorsModel = new TableModelVariablesAssigned();
+    _factorsModel->setSource(&_availableVariablesModel);
+    _factorsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    _factorsModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
+    ui->factors->setModel(_factorsModel);
 
-	_wlsWeightsModel = new TableModelVariablesAssigned();
-	_wlsWeightsModel->setSource(&_availableVariablesModel);
-	_wlsWeightsModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_wlsWeightsModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal);
-	ui->wlsWeights->setModel(_wlsWeightsModel);
+    _wlsWeightsModel = new TableModelVariablesAssigned();
+    _wlsWeightsModel->setSource(&_availableVariablesModel);
+    _wlsWeightsModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _wlsWeightsModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal);
+    ui->wlsWeights->setModel(_wlsWeightsModel);
 
-	ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
-	ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
-	ui->buttonAssignFactors->setSourceAndTarget(ui->listAvailableFields, ui->factors);
-	ui->buttonAssignWlsWeights->setSourceAndTarget(ui->listAvailableFields, ui->wlsWeights);
+    ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
+    ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
+    ui->buttonAssignFactors->setSourceAndTarget(ui->listAvailableFields, ui->factors);
+    ui->buttonAssignWlsWeights->setSourceAndTarget(ui->listAvailableFields, ui->wlsWeights);
 
-	_modelModel = new TableModelAnovaModel(this);
-	_modelModel->setPiecesCanBeAssigned(false);
-	ui->modelTerms->setModel(_modelModel);
+    _modelModel = new TableModelAnovaModel(this);
+    _modelModel->setPiecesCanBeAssigned(false);
+    ui->modelTerms->setModel(_modelModel);
 
-	connect(_covariatesModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_covariatesModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
-	connect(_covariatesModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addCovariates(Terms)));
-	connect(_covariatesModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
+    connect(_covariatesModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_covariatesModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+    connect(_covariatesModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addCovariates(Terms)));
+    connect(_covariatesModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
 
-	connect(_factorsModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_factorsModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
-	connect(_factorsModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addFixedFactors(Terms)));
-	connect(_factorsModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
+    connect(_factorsModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_factorsModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+    connect(_factorsModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addFixedFactors(Terms)));
+    connect(_factorsModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
 
-	ui->panelStatistics->hide();
-	ui->panelPlots->hide();
-	ui->panelModel->hide();
+    ui->panelStatistics->hide();
+    ui->panelPlots->hide();
+    ui->panelModel->hide();
 
 #ifdef QT_NO_DEBUG
-	ui->labelWLSWeights->hide();
-	ui->wlsWeights->hide();
-	ui->buttonAssignWlsWeights->hide();
+    ui->labelWLSWeights->hide();
+    ui->wlsWeights->hide();
+    ui->buttonAssignWlsWeights->hide();
 #else
-	ui->labelWLSWeights->setStyleSheet("background-color: pink ;");
-	ui->wlsWeights->setStyleSheet("background-color: pink ;");
-	ui->buttonAssignWlsWeights->setStyleSheet("background-color: pink ;");
+    ui->labelWLSWeights->setStyleSheet("background-color: pink ;");
+    ui->wlsWeights->setStyleSheet("background-color: pink ;");
+    ui->buttonAssignWlsWeights->setStyleSheet("background-color: pink ;");
 #endif
-
 }
 
 void RegressionLogisticForm::factorsChanging()
 {
-	if (_options != NULL)
-		_options->blockSignals(true);
+    if (_options != NULL)
+        _options->blockSignals(true);
 }
 
 void RegressionLogisticForm::factorsChanged()
 {
-	if (_options != NULL)
-		_options->blockSignals(false);
+    if (_options != NULL)
+        _options->blockSignals(false);
 }
 
 RegressionLogisticForm::~RegressionLogisticForm()
 {
-	delete ui;
+    delete ui;
 }
 
-void RegressionLogisticForm:: bindTo(Options *options, DataSet *dataSet)
+void RegressionLogisticForm::bindTo(Options* options, DataSet* dataSet)
 {
-	AnalysisForm::bindTo(options, dataSet);
-	_modelModel->setVariables(Terms(), Terms(), _covariatesModel->assigned());
+    AnalysisForm::bindTo(options, dataSet);
+    _modelModel->setVariables(Terms(), Terms(), _covariatesModel->assigned());
 }

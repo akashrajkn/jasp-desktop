@@ -19,66 +19,63 @@
 #include "reliabilityanalysisform.h"
 #include "ui_reliabilityanalysisform.h"
 
-ReliabilityAnalysisForm::ReliabilityAnalysisForm(QWidget *parent) :
-	AnalysisForm("ReliabilityAnalysisForm", parent),
-	ui(new Ui::ReliabilityAnalysisForm)
+ReliabilityAnalysisForm::ReliabilityAnalysisForm(QWidget* parent)
+    : AnalysisForm("ReliabilityAnalysisForm", parent)
+    , ui(new Ui::ReliabilityAnalysisForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->reverseScaledItems->setLabels("Normal-Scaled Items", "Reverse-Scaled Items");
+    ui->reverseScaledItems->setLabels("Normal-Scaled Items", "Reverse-Scaled Items");
 
-	ui->listAvailableVariables->setModel(&_availableVariablesModel);
+    ui->listAvailableVariables->setModel(&_availableVariablesModel);
 
-	_variableListModel = new TableModelVariablesAssigned(this);
-	_variableListModel->setSource(&_availableVariablesModel);
-	_variableListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	_variableListModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
-	ui->variables->setModel(_variableListModel);
+    _variableListModel = new TableModelVariablesAssigned(this);
+    _variableListModel->setSource(&_availableVariablesModel);
+    _variableListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    _variableListModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
+    ui->variables->setModel(_variableListModel);
 
     ui->listAvailableVariables->setDoubleClickTarget(ui->variables);
     ui->variables->setDoubleClickTarget(ui->listAvailableVariables);
     ui->assignButton->setSourceAndTarget(ui->listAvailableVariables, ui->variables);
 
-	connect(_variableListModel, SIGNAL(assignmentsChanging()), this, SLOT(variablesChanging()));
-	connect(_variableListModel, SIGNAL(assignmentsChanged()), this, SLOT(variablesChanged()));
-	connect(_variableListModel, SIGNAL(termsChanged()), this, SLOT(termsChanged()));
+    connect(_variableListModel, SIGNAL(assignmentsChanging()), this, SLOT(variablesChanging()));
+    connect(_variableListModel, SIGNAL(assignmentsChanged()), this, SLOT(variablesChanged()));
+    connect(_variableListModel, SIGNAL(termsChanged()), this, SLOT(termsChanged()));
 
-	ui->containerRevScaledItems->hide();
+    ui->containerRevScaledItems->hide();
     ui->containerAdvOptions->hide();
-
 }
 
 void ReliabilityAnalysisForm::variablesChanging()
 {
-	if (_options != NULL)
-		_options->blockSignals(true);
+    if (_options != NULL)
+        _options->blockSignals(true);
 }
 
 void ReliabilityAnalysisForm::variablesChanged()
 {
-	Terms variablesAvailable;
+    Terms variablesAvailable;
 
-	variablesAvailable.add(_variableListModel->assigned());
+    variablesAvailable.add(_variableListModel->assigned());
 
-	ui->reverseScaledItems->setVariables(variablesAvailable);
+    ui->reverseScaledItems->setVariables(variablesAvailable);
 
-	if (_options != NULL)
-		_options->blockSignals(false);
-
+    if (_options != NULL)
+        _options->blockSignals(false);
 }
 
 ReliabilityAnalysisForm::~ReliabilityAnalysisForm()
 {
-	delete ui;
+    delete ui;
 }
 
-void ReliabilityAnalysisForm::bindTo(Options *options, DataSet *dataSet)
+void ReliabilityAnalysisForm::bindTo(Options* options, DataSet* dataSet)
 {
 
-	AnalysisForm::bindTo(options, dataSet);
+    AnalysisForm::bindTo(options, dataSet);
 
-	variablesChanging();
+    variablesChanging();
 
-	variablesChanged();
-
+    variablesChanged();
 }

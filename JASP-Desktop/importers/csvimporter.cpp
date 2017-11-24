@@ -16,104 +16,97 @@
 //
 
 #include "csvimporter.h"
-#include "csvimportcolumn.h"
 #include "csv.h"
+#include "csvimportcolumn.h"
 #include <boost/foreach.hpp>
 
 using namespace std;
 
-CSVImporter::CSVImporter(DataSetPackage *packageData) : Importer(packageData)
+CSVImporter::CSVImporter(DataSetPackage* packageData)
+    : Importer(packageData)
 {
-	_packageData->isArchive = false;
+    _packageData->isArchive = false;
 }
 
-ImportDataSet* CSVImporter::loadFile(const string &locator, boost::function<void(const string &, int)> progressCallback)
+ImportDataSet* CSVImporter::loadFile(const string& locator, boost::function<void(const string&, int)> progressCallback)
 {
-	ImportDataSet* result = new ImportDataSet(this);
-	vector<string> colNames;
-	CSV csv(locator);
-	csv.open();
+    ImportDataSet* result = new ImportDataSet(this);
+    vector<string> colNames;
+    CSV csv(locator);
+    csv.open();
 
-	csv.readLine(colNames);
-	vector<CSVImportColumn *> importColumns;
-	importColumns.reserve(colNames.size());
+    csv.readLine(colNames);
+    vector<CSVImportColumn*> importColumns;
+    importColumns.reserve(colNames.size());
 
-	int colNo = 0;
-	for (vector<string>::iterator it = colNames.begin(); it != colNames.end(); ++it, ++colNo)
-	{
-		string colName = *it;
-		if (colName == "")
-		{
-			stringstream ss;
-			ss << "V";
-			ss << (colNo + 1);
-			colName = ss.str();
-		}
+    int colNo = 0;
+    for (vector<string>::iterator it = colNames.begin(); it != colNames.end(); ++it, ++colNo) {
+        string colName = *it;
+        if (colName == "") {
+            stringstream ss;
+            ss << "V";
+            ss << (colNo + 1);
+            colName = ss.str();
+        }
 
-		if (it != colNames.begin())
-		{
-			// col name must be unique
-			if (std::find(colNames.begin(), it, colName) != it)
-			{
-				stringstream ss;
-				ss << colName;
-				ss << "_";
-				ss << (colNo + 1);
-				colName = ss.str();
-				colNames[colNo] = colName;
-			}
-		}
+        if (it != colNames.begin()) {
+            // col name must be unique
+            if (std::find(colNames.begin(), it, colName) != it) {
+                stringstream ss;
+                ss << colName;
+                ss << "_";
+                ss << (colNo + 1);
+                colName = ss.str();
+                colNames[colNo] = colName;
+            }
+        }
 
-		importColumns.push_back(new CSVImportColumn(result, colName));
-	}
+        importColumns.push_back(new CSVImportColumn(result, colName));
+    }
 
-	unsigned long long progress;
-	unsigned long long lastProgress = -1;
+    unsigned long long progress;
+    unsigned long long lastProgress = -1;
 
-	size_t columnCount = colNames.size();
+    size_t columnCount = colNames.size();
 
-//	for (size_t i = 0; i < columnCount; i++)  // columns
-//		cells.push_back(vector<string>());
+    //	for (size_t i = 0; i < columnCount; i++)  // columns
+    //		cells.push_back(vector<string>());
 
-	vector<string> line;
-	bool success = csv.readLine(line);
+    vector<string> line;
+    bool success = csv.readLine(line);
 
-	while (success)
-	{
-		progress = 50 * csv.pos() / csv.size();
-		if (progress != lastProgress)
-		{
-			progressCallback("Loading Data Set", progress);
-			lastProgress = progress;
-		}
+    while (success) {
+        progress = 50 * csv.pos() / csv.size();
+        if (progress != lastProgress) {
+            progressCallback("Loading Data Set", progress);
+            lastProgress = progress;
+        }
 
-		if (line.size() != 0) {
-			size_t i = 0;
-			for (; i < line.size() && i < columnCount; i++)
-				importColumns.at(i)->addValue(line[i]);
-			for (; i < columnCount; i++)
-				importColumns.at(i)->addValue(string());
-		}
+        if (line.size() != 0) {
+            size_t i = 0;
+            for (; i < line.size() && i < columnCount; i++)
+                importColumns.at(i)->addValue(line[i]);
+            for (; i < columnCount; i++)
+                importColumns.at(i)->addValue(string());
+        }
 
-		line.clear();
-		success = csv.readLine(line);
-	}
+        line.clear();
+        success = csv.readLine(line);
+    }
 
-	for (vector<CSVImportColumn *>::iterator it = importColumns.begin(); it != importColumns.end(); ++it)
-		result->addColumn(*it);
+    for (vector<CSVImportColumn*>::iterator it = importColumns.begin(); it != importColumns.end(); ++it)
+        result->addColumn(*it);
 
-	// Build dictionary for sync.
-	result->buildDictionary();
+    // Build dictionary for sync.
+    result->buildDictionary();
 
-	return result;
+    return result;
 }
 
-
-void CSVImporter::fillSharedMemoryColumn(ImportColumn *importColumn, Column &column)
+void CSVImporter::fillSharedMemoryColumn(ImportColumn* importColumn, Column& column)
 {
-	CSVImportColumn *csvColumn = dynamic_cast<CSVImportColumn *>(importColumn);
-	const vector<string> &values = csvColumn->getValues();
+    CSVImportColumn* csvColumn = dynamic_cast<CSVImportColumn*>(importColumn);
+    const vector<string>& values = csvColumn->getValues();
 
-	fillSharedMemoryColumnWithStrings(values, column);
+    fillSharedMemoryColumnWithStrings(values, column);
 }
-

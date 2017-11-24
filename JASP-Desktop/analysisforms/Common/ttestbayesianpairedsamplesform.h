@@ -25,16 +25,15 @@ namespace Ui {
 class TTestBayesianPairedSamplesForm;
 }
 
-class TTestBayesianPairedSamplesForm : public AnalysisForm
-{
-	Q_OBJECT
+class TTestBayesianPairedSamplesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit TTestBayesianPairedSamplesForm(QWidget *parent = 0);
-	~TTestBayesianPairedSamplesForm();
+    explicit TTestBayesianPairedSamplesForm(QWidget* parent = 0);
+    ~TTestBayesianPairedSamplesForm();
 
 private:
-	Ui::TTestBayesianPairedSamplesForm *ui;
+    Ui::TTestBayesianPairedSamplesForm* ui;
 };
 
 #endif // TTESTBAYESIANPAIREDSAMPLESFORM_H

@@ -21,13 +21,11 @@
 
 #include <QString>
 
-class AppDirs
-{
+class AppDirs {
 public:
-
-	static const QString examples();
-	static const QString help();
-	static const QString analysisDefaultsDir();
+    static const QString examples();
+    static const QString help();
+    static const QString analysisDefaultsDir();
 };
 
 #endif // APPDIRS_H

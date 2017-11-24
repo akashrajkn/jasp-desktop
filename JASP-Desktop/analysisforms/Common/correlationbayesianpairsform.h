@@ -25,16 +25,15 @@ namespace Ui {
 class CorrelationBayesianPairsForm;
 }
 
-class CorrelationBayesianPairsForm : public AnalysisForm
-{
-	Q_OBJECT
+class CorrelationBayesianPairsForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit CorrelationBayesianPairsForm(QWidget *parent = 0);
-	~CorrelationBayesianPairsForm();
+    explicit CorrelationBayesianPairsForm(QWidget* parent = 0);
+    ~CorrelationBayesianPairsForm();
 
 private:
-	Ui::CorrelationBayesianPairsForm *ui;
+    Ui::CorrelationBayesianPairsForm* ui;
 };
 
 #endif // CORRELATIONBAYESIANPAIRSFORM_H

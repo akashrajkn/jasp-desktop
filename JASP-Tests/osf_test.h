@@ -22,35 +22,33 @@
 #include <sstream>
 #define private public
 
-#include <QEventLoop>
-#include <QSignalSpy>
-#include <QMetaType>
-#include <fstream>
 #include "AutomatedTests.h"
-#include "backstage/fsbrowser.h"
-#include "backstage/fsbmosf.h"
-#include "backstage/fsbmodel.h"
-#include "backstage/fsentrywidget.h"
-#include "backstage/fsentry.h"
-#include "backstage/backstageosf.h"
-#include "sharedmemory.h"
-#include "onlinedatamanager.h"
-#include "fileevent.h"
 #include "asyncloader.h"
+#include "backstage/backstageosf.h"
+#include "backstage/fsbmodel.h"
+#include "backstage/fsbmosf.h"
+#include "backstage/fsbrowser.h"
+#include "backstage/fsentry.h"
+#include "backstage/fsentrywidget.h"
 #include "datasetpackage.h"
+#include "fileevent.h"
+#include "onlinedatamanager.h"
+#include "sharedmemory.h"
+#include <QEventLoop>
+#include <QMetaType>
+#include <QSignalSpy>
+#include <fstream>
 
-
-class OSFTest : public QObject
-{
+class OSFTest : public QObject {
     Q_OBJECT
 
 public:
-    FSBrowser *fs;
-    FSBMOSF *_model;
-    OnlineDataManager *_odm;
+    FSBrowser* fs;
+    FSBMOSF* _model;
+    OnlineDataManager* _odm;
 
     bool authenticationTest(QString, QString);
-    void waitTillExists(QButtonGroup *);
+    void waitTillExists(QButtonGroup*);
 
 private slots:
     void initTestCase();

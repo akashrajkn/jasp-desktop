@@ -21,18 +21,21 @@
 
 #include <QString>
 
-class FSEntry
-{
+class FSEntry {
 public:
-	enum EntryType { JASP = 0, CSV = 1, SPSS = 2, Folder = 3, Other = 4, NoOfTypes = 5 };
+    enum EntryType { JASP = 0,
+        CSV = 1,
+        SPSS = 2,
+        Folder = 3,
+        Other = 4,
+        NoOfTypes = 5 };
 
-	FSEntry() { entryType = Other; }
+    FSEntry() { entryType = Other; }
 
-	QString name;
-	QString path;
-	QString description;
-	EntryType entryType;
-
+    QString name;
+    QString path;
+    QString description;
+    EntryType entryType;
 };
 
 #endif // FSENTRY_H

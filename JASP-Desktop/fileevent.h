@@ -19,67 +19,71 @@
 #ifndef FILEEVENT_H
 #define FILEEVENT_H
 
-#include <QObject>
 #include <QMetaType>
+#include <QObject>
 
 #include "exporters/exporter.h"
 
-class FileEvent : public QObject
-{
-	Q_OBJECT
+class FileEvent : public QObject {
+    Q_OBJECT
 
 public:
-	enum FileMode { FileSave, FileOpen, FileExportResults, FileExportData, FileSyncData, FileClose };
+    enum FileMode { FileSave,
+        FileOpen,
+        FileExportResults,
+        FileExportData,
+        FileSyncData,
+        FileClose };
 
-    FileEvent(QObject *parent = NULL, FileMode fileMode = FileEvent::FileOpen);
-	virtual ~FileEvent();
-	FileEvent(const FileEvent&) = default;
+    FileEvent(QObject* parent = NULL, FileMode fileMode = FileEvent::FileOpen);
+    virtual ~FileEvent();
+    FileEvent(const FileEvent&) = default;
 
-	bool setPath(const QString &path);
-	void setDataFilePath(const QString &path);
-	void setReadOnly();
-	Exporter *getExporter() const {return _exporter;}
-	QString getLastError() const;
+    bool setPath(const QString& path);
+    void setDataFilePath(const QString& path);
+    void setReadOnly();
+    Exporter* getExporter() const { return _exporter; }
+    QString getLastError() const;
 
-	bool IsOnlineNode() const;
+    bool IsOnlineNode() const;
 
-	FileMode operation() const;
-	Utils::FileType type() const;
-	const QString &path() const;
-	const QString &dataFilePath() const;
-	bool isReadOnly() const;
+    FileMode operation() const;
+    Utils::FileType type() const;
+    const QString& path() const;
+    const QString& dataFilePath() const;
+    bool isReadOnly() const;
 
-	void setComplete(bool success = true, const QString &message = "");
+    void setComplete(bool success = true, const QString& message = "");
 
-	bool isCompleted() const;
-	bool successful() const;
-	const QString &message() const;
+    bool isCompleted() const;
+    bool successful() const;
+    const QString& message() const;
 
-	void chain(FileEvent *event);
+    void chain(FileEvent* event);
 
 signals:
-	void completed(FileEvent *event);
-	void dataFileChanged(QString dataFilePath);
+    void completed(FileEvent* event);
+    void dataFileChanged(QString dataFilePath);
 
 private slots:
-	void chainedComplete(FileEvent *event);
+    void chainedComplete(FileEvent* event);
 
 private:
-	FileMode _operation;
-	Utils::FileType _type;
-	QString _path;
-	QString _dataFilePath;
-	QString _last_error;
-	bool _readOnly;
+    FileMode _operation;
+    Utils::FileType _type;
+    QString _path;
+    QString _dataFilePath;
+    QString _last_error;
+    bool _readOnly;
 
-	bool _isComplete;
-	bool _success;
-	QString _message;
+    bool _isComplete;
+    bool _success;
+    QString _message;
 
-	FileEvent *_chainedTo;
+    FileEvent* _chainedTo;
 
-	Exporter *_exporter;
+    Exporter* _exporter;
 };
 
-Q_DECLARE_METATYPE(FileEvent *)
+Q_DECLARE_METATYPE(FileEvent*)
 #endif // FILEEVENT_H

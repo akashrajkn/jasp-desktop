@@ -30,44 +30,37 @@
 typedef boost::interprocess::allocator<Column, boost::interprocess::managed_shared_memory::segment_manager> ColumnAllocator;
 typedef boost::container::vector<Column, ColumnAllocator> ColumnVector;
 
-class Columns
-{
-	friend class DataSet;
+class Columns {
+    friend class DataSet;
 
 public:
+    Columns(boost::interprocess::managed_shared_memory* mem);
 
-	Columns(boost::interprocess::managed_shared_memory *mem);
+    Column& at(int index);
+    Column& get(std::string name);
+    void removeColumn(int index);
 
-	Column& at(int index);
-	Column& get(std::string name);
-	void removeColumn(int index);
+    ColumnVector _columnStore;
 
-	ColumnVector _columnStore;
+    typedef ColumnVector::iterator iterator;
 
-	typedef ColumnVector::iterator iterator;
-
-	iterator begin();
-	iterator end();
+    iterator begin();
+    iterator end();
 
 private:
+    void setSharedMemory(boost::interprocess::managed_shared_memory* mem);
 
-	void setSharedMemory(boost::interprocess::managed_shared_memory *mem);
+    boost::interprocess::managed_shared_memory* _mem;
 
-	boost::interprocess::managed_shared_memory *_mem;
-
-	void setRowCount(int rowCount);
-	void setColumnCount(int columnCount);
-
+    void setRowCount(int rowCount);
+    void setColumnCount(int columnCount);
 };
 
-namespace boost
-{
-	template <>
-	struct range_const_iterator< Columns >
-	{
-		typedef Columns::iterator type;
-	};
+namespace boost {
+template <>
+struct range_const_iterator<Columns> {
+    typedef Columns::iterator type;
+};
 }
-
 
 #endif // COLUMNS_H

@@ -19,35 +19,32 @@
 #ifndef TABLEVIEWMENUEDITOR_H
 #define TABLEVIEWMENUEDITOR_H
 
-#include <QWidget>
 #include <QMenu>
+#include <QWidget>
 
 #include "common.h"
 
-class TableViewMenuEditor : public QWidget
-{
-	Q_OBJECT
+class TableViewMenuEditor : public QWidget {
+    Q_OBJECT
 public:
-	explicit TableViewMenuEditor(QWidget *parent = 0);
-	QString selected();
+    explicit TableViewMenuEditor(QWidget* parent = 0);
+    QString selected();
 
-	void setMenuContent(QStringList menuItems, QString selected);
+    void setMenuContent(QStringList menuItems, QString selected);
 
 signals:
-	void editingFinished();
+    void editingFinished();
 
 protected:
-	virtual void showEvent(QShowEvent *) OVERRIDE;
-	virtual void paintEvent(QPaintEvent *event) OVERRIDE;
+    virtual void showEvent(QShowEvent*) OVERRIDE;
+    virtual void paintEvent(QPaintEvent* event) OVERRIDE;
 
 private slots:
-	void aboutToHide();
+    void aboutToHide();
 
 private:
-
-	QMenu *_menu;
-	QString _selected;
-
+    QMenu* _menu;
+    QString _selected;
 };
 
 #endif // TABLEVIEWMENUEDITOR_H

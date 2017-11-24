@@ -25,16 +25,15 @@ namespace Ui {
 class SEMSimpleForm;
 }
 
-class SEMSimpleForm : public AnalysisForm
-{
-	Q_OBJECT
+class SEMSimpleForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit SEMSimpleForm(QWidget *parent = 0);
-	~SEMSimpleForm();
+    explicit SEMSimpleForm(QWidget* parent = 0);
+    ~SEMSimpleForm();
 
 private:
-	Ui::SEMSimpleForm *ui;
+    Ui::SEMSimpleForm* ui;
 };
 
 #endif // SEMSIMPLEFORM_H

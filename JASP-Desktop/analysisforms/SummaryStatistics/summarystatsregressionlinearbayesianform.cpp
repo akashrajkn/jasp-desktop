@@ -19,16 +19,16 @@
 #include "summarystatsregressionlinearbayesianform.h"
 #include "ui_summarystatsregressionlinearbayesianform.h"
 
-SummaryStatsRegressionLinearBayesianForm::SummaryStatsRegressionLinearBayesianForm(QWidget *parent) :
-	AnalysisForm("SummaryStatsRegressionLinearBayesianForm", parent),
-	ui(new Ui::SummaryStatsRegressionLinearBayesianForm)
+SummaryStatsRegressionLinearBayesianForm::SummaryStatsRegressionLinearBayesianForm(QWidget* parent)
+    : AnalysisForm("SummaryStatsRegressionLinearBayesianForm", parent)
+    , ui(new Ui::SummaryStatsRegressionLinearBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-  ui->advancedOptions->hide();
+    ui->advancedOptions->hide();
 }
 
 SummaryStatsRegressionLinearBayesianForm::~SummaryStatsRegressionLinearBayesianForm()
 {
-	delete ui;
+    delete ui;
 }

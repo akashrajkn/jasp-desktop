@@ -19,17 +19,16 @@
 #include "networkanalysisform.h"
 #include "ui_networkanalysisform.h"
 
-
-NetworkAnalysisForm::NetworkAnalysisForm(QWidget *parent) :
-    AnalysisForm("NetworkAnalysisForm", parent),
-    ui(new Ui::NetworkAnalysisForm)
+NetworkAnalysisForm::NetworkAnalysisForm(QWidget* parent)
+    : AnalysisForm("NetworkAnalysisForm", parent)
+    , ui(new Ui::NetworkAnalysisForm)
 {
     ui->setupUi(this);
 
     ui->listAvailableFields->setModel(&_availableVariablesModel);
     ui->listAvailableFields->setDoubleClickTarget(ui->variables);
 
-    TableModelVariablesAssigned *variablesModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* variablesModel = new TableModelVariablesAssigned(this);
     variablesModel->setSource(&_availableVariablesModel);
     variablesModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
     variablesModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
@@ -38,7 +37,7 @@ NetworkAnalysisForm::NetworkAnalysisForm(QWidget *parent) :
 
     ui->listAvailableFields_layout->setModel(&_availableVariablesModel);
 
-    TableModelVariablesAssigned *groupingVariableModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* groupingVariableModel = new TableModelVariablesAssigned(this);
     groupingVariableModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeNominal | Column::ColumnTypeNominalText);
     groupingVariableModel->setVariableTypesAllowed(Column::ColumnTypeOrdinal | Column::ColumnTypeNominal | Column::ColumnTypeNominalText);
     groupingVariableModel->setSource(&_availableVariablesModel);
@@ -47,14 +46,14 @@ NetworkAnalysisForm::NetworkAnalysisForm(QWidget *parent) :
 
     ui->listAvailableFields_nodes->setModel(&_availableVariablesModel);
 
-    TableModelVariablesAssigned *colorNodesByModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* colorNodesByModel = new TableModelVariablesAssigned(this);
     colorNodesByModel->setVariableTypesSuggested(Column::ColumnTypeNominalText);
     colorNodesByModel->setVariableTypesAllowed(Column::ColumnTypeNominalText);
     colorNodesByModel->setSource(&_availableVariablesModel);
     ui->colorNodesBy->setModel(colorNodesByModel);
     ui->colorNodesBy->setDoubleClickTarget(ui->listAvailableFields_nodes);
 
-    TableModelVariablesAssigned *mgmVariableTypeModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* mgmVariableTypeModel = new TableModelVariablesAssigned(this);
     mgmVariableTypeModel->setVariableTypesSuggested(Column::ColumnTypeNominalText);
     mgmVariableTypeModel->setVariableTypesAllowed(Column::ColumnTypeNominalText);
     mgmVariableTypeModel->setSource(&_availableVariablesModel);
@@ -62,14 +61,14 @@ NetworkAnalysisForm::NetworkAnalysisForm(QWidget *parent) :
     ui->mgmVariableType->setDoubleClickTarget(ui->listAvailableFields);
 
     // layout
-    TableModelVariablesAssigned *layoutXModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* layoutXModel = new TableModelVariablesAssigned(this);
     layoutXModel->setVariableTypesSuggested(Column::ColumnTypeNominalText);
     layoutXModel->setVariableTypesAllowed(Column::ColumnTypeNominalText);
     layoutXModel->setSource(&_availableVariablesModel);
     ui->layoutX->setModel(layoutXModel);
     ui->layoutX->setDoubleClickTarget(ui->listAvailableFields_layout);
 
-    TableModelVariablesAssigned *layoutYModel = new TableModelVariablesAssigned(this);
+    TableModelVariablesAssigned* layoutYModel = new TableModelVariablesAssigned(this);
     layoutYModel->setVariableTypesSuggested(Column::ColumnTypeNominalText);
     layoutYModel->setVariableTypesAllowed(Column::ColumnTypeNominalText);
     layoutYModel->setSource(&_availableVariablesModel);
@@ -102,7 +101,7 @@ NetworkAnalysisForm::~NetworkAnalysisForm()
     delete ui;
 }
 
-void NetworkAnalysisForm::on_estimator_currentIndexChanged(const QString &choice)
+void NetworkAnalysisForm::on_estimator_currentIndexChanged(const QString& choice)
 {
     std::string choice_str = choice.toStdString();
 
@@ -260,7 +259,7 @@ void NetworkAnalysisForm::on__1ebic_clicked()
 
 void NetworkAnalysisForm::on_graphicalOptionsExpander_clicked()
 {
-    if (! ui->_3Data->isChecked()) {
+    if (!ui->_3Data->isChecked()) {
         ui->layoutDataBox->setVisible(false);
     }
 }

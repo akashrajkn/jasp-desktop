@@ -21,35 +21,35 @@
 
 DataBlock::DataBlock()
 {
-	_rowCount = 0;
+    _rowCount = 0;
 }
 
 bool DataBlock::insert(int rows)
 {
-	if (_rowCount + rows > BLOCK_SIZE)
-		return false;
+    if (_rowCount + rows > BLOCK_SIZE)
+        return false;
 
-	_rowCount += rows;
+    _rowCount += rows;
 
-	return true;
+    return true;
 }
 
 bool DataBlock::erase(int rows)
 {
-	if (_rowCount - rows < 0)
-		return false;
+    if (_rowCount - rows < 0)
+        return false;
 
-	_rowCount -= rows;
+    _rowCount -= rows;
 
-	return true;
+    return true;
 }
 
 int DataBlock::rowCount()
 {
-	return _rowCount;
+    return _rowCount;
 }
 
 int DataBlock::capacity()
 {
-	return BLOCK_SIZE;
+    return BLOCK_SIZE;
 }

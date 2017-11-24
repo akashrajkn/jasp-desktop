@@ -19,33 +19,30 @@
 #ifndef ASSIGNBUTTON_H
 #define ASSIGNBUTTON_H
 
-#include "listview.h"
 #include "button.h"
+#include "listview.h"
 
-class AssignButton : public Button
-{
-	Q_OBJECT
+class AssignButton : public Button {
+    Q_OBJECT
 public:
-	explicit AssignButton(QWidget *parent = 0);
+    explicit AssignButton(QWidget* parent = 0);
 
-	void setAssignDirection(bool assign);
-	bool isAssign();
+    void setAssignDirection(bool assign);
+    bool isAssign();
 
-	void setSourceAndTarget(DropTarget *source, DropTarget *target);
+    void setSourceAndTarget(DropTarget* source, DropTarget* target);
 
 protected:
-
-	DropTarget *_source;
-	DropTarget *_target;
+    DropTarget* _source;
+    DropTarget* _target;
 
 private:
-	bool _assignDirection;
+    bool _assignDirection;
 
 private slots:
-	void buttonClicked();
-	void sourceChanged();
-	void targetChanged();
-
+    void buttonClicked();
+    void sourceChanged();
+    void targetChanged();
 };
 
 #endif // ASSIGNBUTTON_H

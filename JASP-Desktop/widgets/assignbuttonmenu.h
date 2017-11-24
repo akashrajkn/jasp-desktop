@@ -22,25 +22,24 @@
 #include "button.h"
 #include "droptarget.h"
 
-class AssignButtonMenu : public Button
-{
-	Q_OBJECT
+class AssignButtonMenu : public Button {
+    Q_OBJECT
 public:
-	AssignButtonMenu(QWidget *parent = 0);
+    AssignButtonMenu(QWidget* parent = 0);
 
-	void setSourceAndTarget(DropTarget *source, DropTarget *target);
+    void setSourceAndTarget(DropTarget* source, DropTarget* target);
 
 protected:
-	DropTarget *_source;
-	DropTarget *_target;
+    DropTarget* _source;
+    DropTarget* _target;
 
 private:
-	bool _assignDirection;
+    bool _assignDirection;
 
 private slots:
-	void buttonClicked();
-	void sourceChanged();
-	void targetChanged();
+    void buttonClicked();
+    void sourceChanged();
+    void targetChanged();
 };
 
 #endif // ASSIGNBUTTONMENU_H

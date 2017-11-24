@@ -20,19 +20,17 @@
 
 #include "optionterms.h"
 
-class OptionTerm : public OptionTerms
-{
+class OptionTerm : public OptionTerms {
 public:
-	OptionTerm();
+    OptionTerm();
 
-	virtual Json::Value asJSON()const OVERRIDE;
-	virtual void set(const Json::Value& value) OVERRIDE;
-	virtual Option* clone() const OVERRIDE;
+    virtual Json::Value asJSON() const OVERRIDE;
+    virtual void set(const Json::Value& value) OVERRIDE;
+    virtual Option* clone() const OVERRIDE;
 
-	virtual void setValue(const std::vector<std::string> &value) OVERRIDE;
+    virtual void setValue(const std::vector<std::string>& value) OVERRIDE;
 
-	std::vector<std::string> term() const;
-
+    std::vector<std::string> term() const;
 };
 
 #endif // OPTIONTERM_H

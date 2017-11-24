@@ -20,15 +20,15 @@
 // You should have received a copy of the GNU General Public License
 // along with RInside.  If not, see <http://www.gnu.org/licenses/>.
 
-class MemBuf {			// simple C++-ification of littler's membuf
+class MemBuf { // simple C++-ification of littler's membuf
 private:
-    std::string buffer ;
-    
-public:    
-    MemBuf(int sizebytes=1024);
+    std::string buffer;
+
+public:
+    MemBuf(int sizebytes = 1024);
     ~MemBuf();
     void resize();
     void rewind();
-    void add(const std::string& );
-    inline const char* getBufPtr() { return buffer.c_str() ; };
+    void add(const std::string&);
+    inline const char* getBufPtr() { return buffer.c_str(); };
 };

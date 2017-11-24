@@ -25,24 +25,23 @@ namespace Ui {
 class ReliabilityAnalysisForm;
 }
 
-class ReliabilityAnalysisForm : public AnalysisForm
-{
-	Q_OBJECT
+class ReliabilityAnalysisForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit ReliabilityAnalysisForm(QWidget *parent = 0);
-	~ReliabilityAnalysisForm();
+    explicit ReliabilityAnalysisForm(QWidget* parent = 0);
+    ~ReliabilityAnalysisForm();
 
-	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    virtual void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void variablesChanging();
-	void variablesChanged();
+    void variablesChanging();
+    void variablesChanged();
 
 private:
-	Ui::ReliabilityAnalysisForm *ui;
+    Ui::ReliabilityAnalysisForm* ui;
 
-	TableModelVariablesAssigned *_variableListModel;
+    TableModelVariablesAssigned* _variableListModel;
 };
 
 #endif // RELIABILITYANALYSISFORM_H

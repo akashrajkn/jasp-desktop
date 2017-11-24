@@ -19,44 +19,44 @@
 #include "ribbonsummarystatistics.h"
 #include "ui_ribbonsummarystatistics.h"
 
-#include <QMenu>
 #include <QDebug>
+#include <QMenu>
 
-RibbonSummaryStatistics::RibbonSummaryStatistics(QWidget *parent) :
-	RibbonWidget(parent),
-	ui(new Ui::RibbonSummaryStatistics)
+RibbonSummaryStatistics::RibbonSummaryStatistics(QWidget* parent)
+    : RibbonWidget(parent)
+    , ui(new Ui::RibbonSummaryStatistics)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	addRibbonButton(ui->bfFromTButton);
-	addRibbonButton(ui->regressionButton);
-	addRibbonButton(ui->frequenciesButton);
-	ui->bfFromTButton->setDataSetNotNeeded();
-	ui->regressionButton->setDataSetNotNeeded();
-	ui->frequenciesButton->setDataSetNotNeeded();
+    addRibbonButton(ui->bfFromTButton);
+    addRibbonButton(ui->regressionButton);
+    addRibbonButton(ui->frequenciesButton);
+    ui->bfFromTButton->setDataSetNotNeeded();
+    ui->regressionButton->setDataSetNotNeeded();
+    ui->frequenciesButton->setDataSetNotNeeded();
 
-	QMenu *menu;
+    QMenu* menu;
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Bayesian Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianIndependentSamples");
-	menu->addAction(QString("Bayesian Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianPairedSamples");
-	menu->addAction(QString("Bayesian One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianOneSample");
+    menu = new QMenu(this);
+    menu->addAction(QString("Bayesian Independent Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianIndependentSamples");
+    menu->addAction(QString("Bayesian Paired Samples T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianPairedSamples");
+    menu->addAction(QString("Bayesian One Sample T-Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsTTestBayesianOneSample");
 
-	ui->bfFromTButton->setMenu(menu);
+    ui->bfFromTButton->setMenu(menu);
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Bayesian Correlation Pairs"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsCorrelationBayesianPairs");
-	menu->addAction(QString("Bayesian Linear Regression"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsRegressionLinearBayesian");
+    menu = new QMenu(this);
+    menu->addAction(QString("Bayesian Correlation Pairs"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsCorrelationBayesianPairs");
+    menu->addAction(QString("Bayesian Linear Regression"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsRegressionLinearBayesian");
 
-	ui->regressionButton->setMenu(menu);
+    ui->regressionButton->setMenu(menu);
 
-	menu = new QMenu(this);
-	menu->addAction(QString("Bayesian Binomial Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsBinomialTestBayesian");
+    menu = new QMenu(this);
+    menu->addAction(QString("Bayesian Binomial Test"), this, SLOT(itemSelected()))->setObjectName("SummaryStatsBinomialTestBayesian");
 
-	ui->frequenciesButton->setMenu(menu);
+    ui->frequenciesButton->setMenu(menu);
 }
 
 RibbonSummaryStatistics::~RibbonSummaryStatistics()
 {
-	delete ui;
+    delete ui;
 }

@@ -21,12 +21,11 @@
 #include "exporter.h"
 #include <QWebFrame>
 
-class ResultExporter: public Exporter
-{
+class ResultExporter : public Exporter {
 
 public:
-	ResultExporter();
-	void saveDataSet(const std::string &path, DataSetPackage* package, boost::function<void (const std::string &, int)> progressCallback) OVERRIDE;
+    ResultExporter();
+    void saveDataSet(const std::string& path, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback) OVERRIDE;
 };
 
 #endif // RESULTEXPORTER_H

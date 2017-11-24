@@ -19,28 +19,26 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QApplication>
 #include "mainwindow.h"
+#include <QApplication>
 
 #include "common.h"
 
-class Application : public QApplication
-{
-	Q_OBJECT
+class Application : public QApplication {
+    Q_OBJECT
 public:
-	explicit Application(int &argc, char **argv);
-	~Application();
+    explicit Application(int& argc, char** argv);
+    ~Application();
 
-	virtual bool notify(QObject *receiver, QEvent *event) OVERRIDE;
-	virtual bool event(QEvent *event) OVERRIDE;
+    virtual bool notify(QObject* receiver, QEvent* event) OVERRIDE;
+    virtual bool event(QEvent* event) OVERRIDE;
 
 signals:
 
 public slots:
 
 private:
-	MainWindow *_mainWindow;
-
+    MainWindow* _mainWindow;
 };
 
 #endif // APPLICATION_H

@@ -18,35 +18,35 @@
 #ifndef OPTIONI_H
 #define OPTIONI_H
 
-#include "option.h"
 #include "../common.h"
+#include "option.h"
 
 template <class T>
-class OptionI : public Option
-{
+class OptionI : public Option {
 
 public:
+    OptionI(bool transient = false)
+        : Option(transient)
+    {
+    }
 
-	OptionI(bool transient = false) : Option(transient) { }
+    virtual T value() const
+    {
+        return _value;
+    }
 
-	virtual T value() const
-	{
-		return _value;
-	}
+    virtual void setValue(const T& value)
+    {
+        if (_value == value)
+            return;
 
-	virtual void setValue(const T &value)
-	{
-		if (_value == value)
-			return;
+        _value = value;
 
-		_value = value;
-
-		notifyChanged();
-	}
+        notifyChanged();
+    }
 
 protected:
-	T _value;
-
+    T _value;
 };
 
 #endif // OPTIONI_H

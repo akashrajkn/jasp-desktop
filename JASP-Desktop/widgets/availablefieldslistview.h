@@ -26,12 +26,10 @@
 #include "assignbutton.h"
 #include "listview.h"
 
-class AvailableFieldsListView : public ListView
-{
-	Q_OBJECT
+class AvailableFieldsListView : public ListView {
+    Q_OBJECT
 public:
-	explicit AvailableFieldsListView(QWidget *parent = 0);
-
+    explicit AvailableFieldsListView(QWidget* parent = 0);
 };
 
 #endif // AVAILABLEFIELDSLISTVIEW_H

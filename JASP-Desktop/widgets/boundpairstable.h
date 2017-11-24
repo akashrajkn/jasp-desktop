@@ -19,36 +19,32 @@
 #ifndef BOUNDPAIRSTABLE_H
 #define BOUNDPAIRSTABLE_H
 
-#include <QTableView>
-#include "bound.h"
-#include "availablefieldslistview.h"
 #include "assignbutton.h"
+#include "availablefieldslistview.h"
+#include "bound.h"
 #include "tablemodelpairsassigned.h"
 #include "tableview.h"
+#include <QTableView>
 
-class BoundPairsTable : public TableView, public Bound
-{
-	Q_OBJECT
+class BoundPairsTable : public TableView, public Bound {
+    Q_OBJECT
 public:
-	explicit BoundPairsTable(QWidget *parent = 0);
+    explicit BoundPairsTable(QWidget* parent = 0);
 
-	virtual void setModel(QAbstractItemModel *model) OVERRIDE;
-	virtual void bindTo(Option *option) OVERRIDE;
-	virtual void notifyDragWasDropped() OVERRIDE;
+    virtual void setModel(QAbstractItemModel* model) OVERRIDE;
+    virtual void bindTo(Option* option) OVERRIDE;
+    virtual void notifyDragWasDropped() OVERRIDE;
 
 protected:
+    void resizeEvent(QResizeEvent* e) OVERRIDE;
+    void moveEvent(QMoveEvent* e) OVERRIDE;
 
-	void resizeEvent(QResizeEvent *e) OVERRIDE;
-	void moveEvent(QMoveEvent *e) OVERRIDE;
-
-	void setupKey();
-	void repositionKey();
+    void setupKey();
+    void repositionKey();
 
 private:
-
-	TableModelPairsAssigned *_tableModel;
-	QWidget *_variableTypeKey;
-
+    TableModelPairsAssigned* _tableModel;
+    QWidget* _variableTypeKey;
 };
 
 #endif // BOUNDPAIRSTABLE_H

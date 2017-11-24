@@ -20,199 +20,171 @@
 
 #include <boost/foreach.hpp>
 
-#include <QIntValidator>
 #include <QDoubleValidator>
-#include <QRegExpValidator>
+#include <QIntValidator>
 #include <QKeyEvent>
-#include <sstream>
+#include <QRegExpValidator>
 #include <iostream>
+#include <sstream>
 
-
-BoundTextBox::BoundTextBox(QWidget *parent) :
-	QLineEdit(parent)
+BoundTextBox::BoundTextBox(QWidget* parent)
+    : QLineEdit(parent)
 {
-	_integer = NULL;
-	_integerArray = NULL;
-	_number = NULL;
-	_string = NULL;
+    _integer = NULL;
+    _integerArray = NULL;
+    _number = NULL;
+    _string = NULL;
 
-	//connect(this, SIGNAL(textEdited(QString)), this, SLOT(textEditedHandler(QString)));
+    //connect(this, SIGNAL(textEdited(QString)), this, SLOT(textEditedHandler(QString)));
 }
 
-void BoundTextBox::bindTo(Option *option)
+void BoundTextBox::bindTo(Option* option)
 {
-	setLegal();
+    setLegal();
 
-	_string = dynamic_cast<OptionString *>(option);
-	if (_string != NULL)
-	{
-		int max = _string->max();
-		std::string regExpStr = _string->regexp();
-		if (max > 0 && regExpStr.empty())
-		{
-			std::ostringstream strs;
-			strs << "^.{0," << max << "}$";
-			regExpStr = strs.str();
-		}
-		if (!regExpStr.empty())
-			this->setValidator(new QRegExpValidator(QRegExp(QString::fromStdString(regExpStr)), this));
+    _string = dynamic_cast<OptionString*>(option);
+    if (_string != NULL) {
+        int max = _string->max();
+        std::string regExpStr = _string->regexp();
+        if (max > 0 && regExpStr.empty()) {
+            std::ostringstream strs;
+            strs << "^.{0," << max << "}$";
+            regExpStr = strs.str();
+        }
+        if (!regExpStr.empty())
+            this->setValidator(new QRegExpValidator(QRegExp(QString::fromStdString(regExpStr)), this));
 
-		this->setText(QString::fromStdString(_string->value()));
-		return;
-	}
+        this->setText(QString::fromStdString(_string->value()));
+        return;
+    }
 
-	_integer = dynamic_cast<OptionInteger *>(option);
+    _integer = dynamic_cast<OptionInteger*>(option);
 
-	if (_integer != NULL)
-	{
-		int min = _integer->min();
-		int max = _integer->max();
+    if (_integer != NULL) {
+        int min = _integer->min();
+        int max = _integer->max();
 
-		this->setValidator(new QIntValidator(min, max, this));
-		this->setText(QString::number(_integer->value()));
-		return;
-	}
+        this->setValidator(new QIntValidator(min, max, this));
+        this->setText(QString::number(_integer->value()));
+        return;
+    }
 
-	_integerArray = dynamic_cast<OptionIntegerArray *>(option);
+    _integerArray = dynamic_cast<OptionIntegerArray*>(option);
 
-	if (_integerArray != NULL)
-	{
-		this->setValidator(new QIntArrayValidator());
-		return;
-	}
+    if (_integerArray != NULL) {
+        this->setValidator(new QIntArrayValidator());
+        return;
+    }
 
-	_number = dynamic_cast<OptionNumber *>(option);
+    _number = dynamic_cast<OptionNumber*>(option);
 
-	if (_number != NULL)
-	{
-		double v = _number->value();
-		double min = _number->min();
-		double max = _number->max();
+    if (_number != NULL) {
+        double v = _number->value();
+        double min = _number->min();
+        double max = _number->max();
 
-		if (_number->format() == "%")
-		{
-			v *= 100;
-			min *= 100;
-			max *= 100;
-		}
+        if (_number->format() == "%") {
+            v *= 100;
+            min *= 100;
+            max *= 100;
+        }
 
-		this->setValidator(new QDoubleValidator(min, max, 4, this));
-		this->setText(QString::number(v));
-		return;
-	}
-
+        this->setValidator(new QDoubleValidator(min, max, 4, this));
+        this->setText(QString::number(v));
+        return;
+    }
 }
 
-void BoundTextBox::setLabel(const QString &label)
+void BoundTextBox::setLabel(const QString& label)
 {
-	_label = label;
+    _label = label;
 }
 
-void BoundTextBox::keyPressEvent(QKeyEvent *event)
+void BoundTextBox::keyPressEvent(QKeyEvent* event)
 {
-	QLineEdit::keyPressEvent(event);
-	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-		finalise();
+    QLineEdit::keyPressEvent(event);
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        finalise();
 }
 
-void BoundTextBox::focusOutEvent(QFocusEvent *event)
+void BoundTextBox::focusOutEvent(QFocusEvent* event)
 {
-	QLineEdit::focusOutEvent(event);
-	finalise();
+    QLineEdit::focusOutEvent(event);
+    finalise();
 }
 
 void BoundTextBox::finalise()
 {
-	QString value = text();
+    QString value = text();
 
-	if (_string != NULL)
-	{
-		_string->setValue(value.toStdString());
-		setLegal();
-		return;
-	}
+    if (_string != NULL) {
+        _string->setValue(value.toStdString());
+        setLegal();
+        return;
+    }
 
-	while (value.endsWith(","))
-		value = value.left(value.length() - 1);
+    while (value.endsWith(","))
+        value = value.left(value.length() - 1);
 
-	if (_integerArray != NULL)
-	{
-		_integerArray->setValue(QIntArrayValidator::parse(value));
-	}
-	else if (_integer != NULL)
-	{
-		//_integer->setValue(value.toInt());
+    if (_integerArray != NULL) {
+        _integerArray->setValue(QIntArrayValidator::parse(value));
+    } else if (_integer != NULL) {
+        //_integer->setValue(value.toInt());
 
-		double v = value.toInt();
-		double min = _integer->min();
-		double max = _integer->max();
+        double v = value.toInt();
+        double min = _integer->min();
+        double max = _integer->max();
 
-		bool pc = _integer->format() == "%";
+        bool pc = _integer->format() == "%";
 
-		if (pc)
-		{
-			v /= 100;
-			min *= 100;
-			max *= 100;
-		}
+        if (pc) {
+            v /= 100;
+            min *= 100;
+            max *= 100;
+        }
 
-		if (v > _integer->max() || v < _integer->min())
-		{
-			if (pc)
-			{
-				setIllegal(QString("%1 must be between %2% and %3%").arg(_label).arg(min).arg(max));
-			}
-			else
-			{
-				setIllegal(QString("%1 must be between %2 and %3").arg(_label).arg(min).arg(max));
-			}
-		}
-		else
-		{
-			_integer->setValue(v);
-			setLegal();
-		}
-	}
-	else if (_number != NULL)
-	{
-		double v = value.toDouble();
-		double min = _number->min();
-		double max = _number->max();
+        if (v > _integer->max() || v < _integer->min()) {
+            if (pc) {
+                setIllegal(QString("%1 must be between %2% and %3%").arg(_label).arg(min).arg(max));
+            } else {
+                setIllegal(QString("%1 must be between %2 and %3").arg(_label).arg(min).arg(max));
+            }
+        } else {
+            _integer->setValue(v);
+            setLegal();
+        }
+    } else if (_number != NULL) {
+        double v = value.toDouble();
+        double min = _number->min();
+        double max = _number->max();
 
-		bool pc = _number->format() == "%";
+        bool pc = _number->format() == "%";
 
-		if (pc)
-		{
-			v /= 100;
-			min *= 100;
-			max *= 100;
-		}
+        if (pc) {
+            v /= 100;
+            min *= 100;
+            max *= 100;
+        }
 
-		if (v > _number->max() || v < _number->min())
-		{
-			if (pc)
-			{
-				setIllegal(QString("%1 must be between %2% and %3%").arg(_label).arg(min).arg(max));
-			}
-			else
-			{
-				setIllegal(QString("%1 must be between %2 and %3").arg(_label).arg(min).arg(max));
-			}
-		}
-		else
-		{
-			_number->setValue(v);
-			setLegal();
-		}
-	}
+        if (v > _number->max() || v < _number->min()) {
+            if (pc) {
+                setIllegal(QString("%1 must be between %2% and %3%").arg(_label).arg(min).arg(max));
+            } else {
+                setIllegal(QString("%1 must be between %2 and %3").arg(_label).arg(min).arg(max));
+            }
+        } else {
+            _number->setValue(v);
+            setLegal();
+        }
+    }
 }
 
 void BoundTextBox::textEditedHandler(QString text)
 {
-	this->validator()->fixup(text);
-	setText(text);
+    this->validator()->fixup(text);
+    setText(text);
 
-	/*if (_integerArray != NULL)
+    /*if (_integerArray != NULL)
 		_integerArray->setValue(QIntArrayValidator::parse(text));
 	else if (_integer != NULL)
 		_integer->setValue(text.toInt());
@@ -224,67 +196,66 @@ BoundTextBox::QIntArrayValidator::QIntArrayValidator()
 {
 }
 
-QValidator::State BoundTextBox::QIntArrayValidator::validate(QString &input, int &pos) const
+QValidator::State BoundTextBox::QIntArrayValidator::validate(QString& input, int& pos) const
 {
-	// this needs some TLC
+    // this needs some TLC
 
-	if (pos > input.length())
-		pos = input.length();
+    if (pos > input.length())
+        pos = input.length();
 
-	if (pos == 0 || input.at(pos-1) == ',')
-		return QValidator::Intermediate;
+    if (pos == 0 || input.at(pos - 1) == ',')
+        return QValidator::Intermediate;
 
-	fixup(input);
+    fixup(input);
 
-	if (pos > input.size())
-		pos = input.size();
+    if (pos > input.size())
+        pos = input.size();
 
-	return QValidator::Acceptable;
+    return QValidator::Acceptable;
 }
 
-void BoundTextBox::QIntArrayValidator::fixup(QString &input) const
+void BoundTextBox::QIntArrayValidator::fixup(QString& input) const
 {
-	QString trimmed = input.trimmed();
+    QString trimmed = input.trimmed();
 
-	std::vector<int> array = parse(input);
-	input = stringify(array);
+    std::vector<int> array = parse(input);
+    input = stringify(array);
 
-	if (trimmed.length() > 0 && trimmed.at(trimmed.length() - 1) == ',')
-		input = input + ",";
+    if (trimmed.length() > 0 && trimmed.at(trimmed.length() - 1) == ',')
+        input = input + ",";
 }
 
-std::vector<int> BoundTextBox::QIntArrayValidator::parse(QString &input)
+std::vector<int> BoundTextBox::QIntArrayValidator::parse(QString& input)
 {
-	input.replace(QString(" "), QString(","));
+    input.replace(QString(" "), QString(","));
 
-	std::vector<int> result;
+    std::vector<int> result;
 
-	QStringList chunks = input.split(QChar(','), QString::SkipEmptyParts);
+    QStringList chunks = input.split(QChar(','), QString::SkipEmptyParts);
 
-	BOOST_FOREACH(QString &chunk, chunks)
-	{
-		bool ok;
-		int value = chunk.toInt(&ok);
+    BOOST_FOREACH (QString& chunk, chunks) {
+        bool ok;
+        int value = chunk.toInt(&ok);
 
-		if (ok)
-			result.push_back(value);
-	}
+        if (ok)
+            result.push_back(value);
+    }
 
-	return result;
+    return result;
 }
 
-QString BoundTextBox::QIntArrayValidator::stringify(std::vector<int> &input)
+QString BoundTextBox::QIntArrayValidator::stringify(std::vector<int>& input)
 {
-	if (input.size() == 0)
-		return QString();
+    if (input.size() == 0)
+        return QString();
 
-	std::vector<int>::iterator itr = input.begin();
+    std::vector<int>::iterator itr = input.begin();
 
-	QString result = QString::number(*itr);
-	itr++;
+    QString result = QString::number(*itr);
+    itr++;
 
-	for (; itr != input.end(); itr++)
-		result += QString(",%1").arg(*itr);
+    for (; itr != input.end(); itr++)
+        result += QString(",%1").arg(*itr);
 
-	return result;
+    return result;
 }

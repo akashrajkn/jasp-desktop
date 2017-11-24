@@ -18,102 +18,95 @@
 
 #include "fsbmodel.h"
 
-FSBModel::FSBModel(QObject *parent) : QObject(parent)
+FSBModel::FSBModel(QObject* parent)
+    : QObject(parent)
 {
-
 }
 
-const FSBModel::FileSystemEntryList &FSBModel::entries() const
+const FSBModel::FileSystemEntryList& FSBModel::entries() const
 {
-	return _entries;
+    return _entries;
 }
 
 void FSBModel::setPath(QString path)
 {
-	_path = path;
+    _path = path;
 
-	refresh();
+    refresh();
 
-	emit pathChanged(path);
+    emit pathChanged(path);
 }
 
-const QString &FSBModel::path() const
+const QString& FSBModel::path() const
 {
-	return _path;
+    return _path;
 }
 
-const QString &FSBModel::rootPath() const
+const QString& FSBModel::rootPath() const
 {
-	return _rootPath;
+    return _rootPath;
 }
 
-bool FSBModel::contains(const QString &path) const
+bool FSBModel::contains(const QString& path) const
 {
-	foreach (const FSEntry &entry, _entries)
-	{
-		if (entry.path == path)
-			return true;
-	}
+    foreach (const FSEntry& entry, _entries) {
+        if (entry.path == path)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
-bool FSBModel::hasFileEntry(QString name, QString &path)
+bool FSBModel::hasFileEntry(QString name, QString& path)
 {
-	for (int i =0; i < _entries.length(); i++)
-	{
-		if (_entries[i].entryType != FSEntry::Folder && _entries[i].name.toLower() == name) {
-			path = _entries[i].path;
-			return true;
-		}
-	}
-	return false;
+    for (int i = 0; i < _entries.length(); i++) {
+        if (_entries[i].entryType != FSEntry::Folder && _entries[i].name.toLower() == name) {
+            path = _entries[i].path;
+            return true;
+        }
+    }
+    return false;
 }
 
 bool FSBModel::hasFolderEntry(QString name)
 {
-	for (int i =0; i < _entries.length(); i++)
-	{
-		if (_entries[i].entryType == FSEntry::Folder && _entries[i].name.toLower() == name)
-			return true;
-	}
-	return false;
+    for (int i = 0; i < _entries.length(); i++) {
+        if (_entries[i].entryType == FSEntry::Folder && _entries[i].name.toLower() == name)
+            return true;
+    }
+    return false;
 }
 
-FSEntry FSBModel::createEntry(const QString &path, FSEntry::EntryType type)
+FSEntry FSBModel::createEntry(const QString& path, FSEntry::EntryType type)
 {
-	FSEntry entry;
-	entry.entryType = type;
+    FSEntry entry;
+    entry.entryType = type;
 
-	int index = path.lastIndexOf("/");
-	if (index == -1) {
-		index = path.lastIndexOf("\\");
-	}
-	if (index != -1)
-	{
-		entry.name = path.mid(index + 1);
-		entry.path = path;
-		entry.description = path.mid(0, index);
-	}
-	else
-	{
-		entry.name = path;
-		entry.path = path;
-		entry.description = "";
-	}
+    int index = path.lastIndexOf("/");
+    if (index == -1) {
+        index = path.lastIndexOf("\\");
+    }
+    if (index != -1) {
+        entry.name = path.mid(index + 1);
+        entry.path = path;
+        entry.description = path.mid(0, index);
+    } else {
+        entry.name = path;
+        entry.path = path;
+        entry.description = "";
+    }
 
-	return entry;
+    return entry;
 }
 
-FSEntry FSBModel::createEntry(const QString &path, const QString &name, const QString &description, FSEntry::EntryType type)
+FSEntry FSBModel::createEntry(const QString& path, const QString& name, const QString& description, FSEntry::EntryType type)
 {
-	FSEntry entry;
+    FSEntry entry;
 
-	entry.name = name;
-	entry.path = path;
-	entry.description = description;
-	entry.entryType = type;
+    entry.name = name;
+    entry.path = path;
+    entry.description = description;
+    entry.entryType = type;
 
-	return entry;
+    return entry;
 }
-

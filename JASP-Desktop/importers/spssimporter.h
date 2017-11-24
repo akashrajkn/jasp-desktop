@@ -24,12 +24,11 @@
 //#include <boost/nowide/fstream.hpp>
 #include <string>
 
-#include "spss/systemfileformat.h"
 #include "column.h"
 #include "spss/spssimportcolumn.h"
+#include "spss/systemfileformat.h"
 
-namespace spss
-{
+namespace spss {
 
 /*
  * built with information from
@@ -37,53 +36,51 @@ namespace spss
  * http://www.gnu.org/software/pspp/pspp-dev/html_node/System-File-Format.html
  */
 
-class SPSSImporter : public Importer
-{
+class SPSSImporter : public Importer {
 public:
-	SPSSImporter(DataSetPackage *packageData);
-	virtual ~SPSSImporter();
+    SPSSImporter(DataSetPackage* packageData);
+    virtual ~SPSSImporter();
 
-	/**
+    /**
 	* @brief ReportProgress Reports progress for stream.
 	* @param position Position to report.
 	* @param progress report to here.
 	*/
-	void reportFileProgress(SPSSStream::pos_type position, boost::function<void (const std::string &, int)> progress);
+    void reportFileProgress(SPSSStream::pos_type position, boost::function<void(const std::string&, int)> progress);
 
-	/**
+    /**
 	 * @brief resetNextCol reset the next col iterator
 	 *
 	 */
-	void resetNextCol(SPSSImportDataSet *dataset);
+    void resetNextCol(SPSSImportDataSet* dataset);
 
-	/**
+    /**
 	 * @brief getColumn Get next column wrapping as required.
 	 * @return
 	 */
-	SPSSImportColumn& getNextColumn(SPSSImportDataSet *dataset);
+    SPSSImportColumn& getNextColumn(SPSSImportDataSet* dataset);
 
-	/**
+    /**
 	 * @brief isSpaning
 	 * @return True if the last getColumn() call found a contination column.
 	 */
-	bool isSpaning() const { return _isSpaning; }
+    bool isSpaning() const { return _isSpaning; }
 
 protected:
-	virtual ImportDataSet* loadFile(const std::string &locator, boost::function<void(const std::string &, int)> progressCallback);
-	virtual void fillSharedMemoryColumn(ImportColumn *importColumn, Column &column);
+    virtual ImportDataSet* loadFile(const std::string& locator, boost::function<void(const std::string&, int)> progressCallback);
+    virtual void fillSharedMemoryColumn(ImportColumn* importColumn, Column& column);
 
 private:
-	double						_fileSize = 0.0;
-	ImportColumns::iterator		_currentColIter;
-	size_t						_remainingColSpan;
-	bool						_isSpaning;
+    double _fileSize = 0.0;
+    ImportColumns::iterator _currentColIter;
+    size_t _remainingColSpan;
+    bool _isSpaning;
 
-	/**
+    /**
 	 * @brief _processStringsPostLoad - Delas with very Long strings (len > 255) and CP processes all strings.
 	 * Call after the data is loaded!.
 	 */
-	void _processStringsPostLoad(SPSSImportDataSet* dataset, boost::function<void (const std::string &, int)> progress);
-
+    void _processStringsPostLoad(SPSSImportDataSet* dataset, boost::function<void(const std::string&, int)> progress);
 };
 
 } // end namespace

@@ -24,71 +24,67 @@
 using namespace std;
 using boost::interprocess::offset_ptr;
 
-Columns::Columns(boost::interprocess::managed_shared_memory *mem) :
-	_columnStore(mem->get_segment_manager())
+Columns::Columns(boost::interprocess::managed_shared_memory* mem)
+    : _columnStore(mem->get_segment_manager())
 {
-	_mem = mem;
+    _mem = mem;
 }
 
-Column &Columns::get(string name)
-{	
-	BOOST_FOREACH(Column &column, *this)
-	{
-		if (column.name() == name)
-			return column;
-	}
+Column& Columns::get(string name)
+{
+    BOOST_FOREACH (Column& column, *this) {
+        if (column.name() == name)
+            return column;
+    }
 
-	string message = "Cannot find column ";
-	message += name;
-	throw runtime_error(message);
+    string message = "Cannot find column ";
+    message += name;
+    throw runtime_error(message);
 }
 
 void Columns::setRowCount(int rowCount)
 {
-	BOOST_FOREACH(Column &column, *this)
-		column._setRowCount(rowCount);
+    BOOST_FOREACH (Column& column, *this)
+        column._setRowCount(rowCount);
 }
 
 void Columns::setColumnCount(int columnCount)
 {
-	_columnStore.reserve(columnCount);
-	for (int i = _columnStore.size(); i < columnCount; i++)
-		_columnStore.push_back(Column(_mem));
+    _columnStore.reserve(columnCount);
+    for (int i = _columnStore.size(); i < columnCount; i++)
+        _columnStore.push_back(Column(_mem));
 }
 
-Column &Columns::at(int index)
+Column& Columns::at(int index)
 {
-	return _columnStore.at(index);
+    return _columnStore.at(index);
 }
 
 void Columns::removeColumn(int index)
 {
-	int i = 0;
-	for (ColumnVector::iterator it = _columnStore.begin(); it != _columnStore.end(); ++it, ++i)
-	{
-		if (i == index)
-		{
-			_columnStore.erase(it);
-			break;
-		}
-	}
+    int i = 0;
+    for (ColumnVector::iterator it = _columnStore.begin(); it != _columnStore.end(); ++it, ++i) {
+        if (i == index) {
+            _columnStore.erase(it);
+            break;
+        }
+    }
 }
 
 Columns::iterator Columns::begin()
 {
-	return _columnStore.begin();
+    return _columnStore.begin();
 }
 
 Columns::iterator Columns::end()
 {
-	return _columnStore.end();
+    return _columnStore.end();
 }
 
-void Columns::setSharedMemory(boost::interprocess::managed_shared_memory *mem)
+void Columns::setSharedMemory(boost::interprocess::managed_shared_memory* mem)
 {
-	_mem = mem;
+    _mem = mem;
 
-	BOOST_FOREACH(Column &column, *this)
-		column.setSharedMemory(mem);
+    BOOST_FOREACH (Column& column, *this)
+        column.setSharedMemory(mem);
 }
-

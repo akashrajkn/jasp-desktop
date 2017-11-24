@@ -20,265 +20,259 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 
+#include "appinfo.h"
 #include "options/options.h"
 #include "tempfiles.h"
-#include "appinfo.h"
 
 using namespace boost::uuids;
 using namespace boost;
 using namespace std;
 
-Analysis::Analysis(int id, string module, string name, Options *options, const Version &version, bool autorun, bool usedata)
+Analysis::Analysis(int id, string module, string name, Options* options, const Version& version, bool autorun, bool usedata)
 {
-	_id = id;
-	_module = module;
-	_name = name;
-	_options = options;
-	_autorun = autorun;
-	_usedata = usedata;
-	_version = version;
-	_results = Json::nullValue;
-	_imgResults = Json::nullValue;
-	_userData = Json::nullValue;
-	_saveImgOptions = Json::nullValue;
-	_revision = 0;
+    _id = id;
+    _module = module;
+    _name = name;
+    _options = options;
+    _autorun = autorun;
+    _usedata = usedata;
+    _version = version;
+    _results = Json::nullValue;
+    _imgResults = Json::nullValue;
+    _userData = Json::nullValue;
+    _saveImgOptions = Json::nullValue;
+    _revision = 0;
 
-	_options->changed.connect(boost::bind(&Analysis::optionsChangedHandler, this, _1));
+    _options->changed.connect(boost::bind(&Analysis::optionsChangedHandler, this, _1));
 
-	_status = Empty;
-	_progress = -1;
+    _status = Empty;
+    _progress = -1;
 }
 
 Analysis::~Analysis()
 {
-	delete _options;
+    delete _options;
 }
 
 void Analysis::abort()
 {
-	_status = Aborting;
-	optionsChanged(this);
+    _status = Aborting;
+    optionsChanged(this);
 }
 
 void Analysis::scheduleRun()
 {
-	if (_autorun)
-		return;
+    if (_autorun)
+        return;
 
-	setStatus(Inited);
-	optionsChanged(this);
+    setStatus(Inited);
+    optionsChanged(this);
 }
 
 void Analysis::setResults(Json::Value results, int progress)
 {
-	_results = results;
-	_progress = progress;
-	resultsChanged(this);
+    _results = results;
+    _progress = progress;
+    resultsChanged(this);
 }
 
 void Analysis::setImageResults(Json::Value results)
 {
-	_imgResults = results;
-	imageSaved(this);
+    _imgResults = results;
+    imageSaved(this);
 }
 
 void Analysis::setUserData(Json::Value userData, bool silient)
 {
-	_userData = userData;
-	if ( ! silient)
-		userDataLoaded(this);
+    _userData = userData;
+    if (!silient)
+        userDataLoaded(this);
 }
 
-const Json::Value &Analysis::results() const
+const Json::Value& Analysis::results() const
 {
-	return _results;
+    return _results;
 }
 
-const Json::Value &Analysis::userData() const
+const Json::Value& Analysis::userData() const
 {
-	return _userData;
+    return _userData;
 }
 
 void Analysis::refresh()
 {
-	_status = Empty;
-	_revision++;
-	toRefresh(this);
+    _status = Empty;
+    _revision++;
+    toRefresh(this);
 }
 
 Analysis::Status Analysis::parseStatus(string name)
 {
-	if (name == "empty")
-		return Analysis::Empty;
-	else if (name == "waiting")
-		return Analysis::Inited;
-	else if (name == "running")
-		return Analysis::Running;
-	else if (name == "complete")
-		return Analysis::Complete;
-	else if (name == "aborted")
-		return Analysis::Aborted;
-	else if (name == "SaveImg")
-		return Analysis::SaveImg;
-	else if (name == "exception")
-		return Analysis::Exception;
-	else
-		return Analysis::Error;
+    if (name == "empty")
+        return Analysis::Empty;
+    else if (name == "waiting")
+        return Analysis::Inited;
+    else if (name == "running")
+        return Analysis::Running;
+    else if (name == "complete")
+        return Analysis::Complete;
+    else if (name == "aborted")
+        return Analysis::Aborted;
+    else if (name == "SaveImg")
+        return Analysis::SaveImg;
+    else if (name == "exception")
+        return Analysis::Exception;
+    else
+        return Analysis::Error;
 }
 
 Json::Value Analysis::asJSON() const
 {
-	Json::Value analysisAsJson = Json::objectValue;
+    Json::Value analysisAsJson = Json::objectValue;
 
-	analysisAsJson["id"] = _id;
-	analysisAsJson["name"] = _name;
-	analysisAsJson["module"] = _module;
-	analysisAsJson["progress"] = _progress;
-	analysisAsJson["version"] = _version.asString();
-	analysisAsJson["results"] = _results;
+    analysisAsJson["id"] = _id;
+    analysisAsJson["name"] = _name;
+    analysisAsJson["module"] = _module;
+    analysisAsJson["progress"] = _progress;
+    analysisAsJson["version"] = _version.asString();
+    analysisAsJson["results"] = _results;
 
-	string status;
+    string status;
 
-	switch (_status)
-	{
-	case Analysis::Empty:
-		status = "empty";
-		break;
-	case Analysis::Inited:
-		status = "waiting";
-		break;
-	case Analysis::Running:
-		status = "running";
-		break;
-	case Analysis::Complete:
-		status = "complete";
-		break;
-	case Analysis::Aborted:
-		status = "aborted";
-		break;
-	case Analysis::SaveImg:
-		status = "SaveImg";
-	case Analysis::Exception:
-		status = "exception";
-		break;
-	default:
-		status = "error";
-		break;
-	}
+    switch (_status) {
+    case Analysis::Empty:
+        status = "empty";
+        break;
+    case Analysis::Inited:
+        status = "waiting";
+        break;
+    case Analysis::Running:
+        status = "running";
+        break;
+    case Analysis::Complete:
+        status = "complete";
+        break;
+    case Analysis::Aborted:
+        status = "aborted";
+        break;
+    case Analysis::SaveImg:
+        status = "SaveImg";
+    case Analysis::Exception:
+        status = "exception";
+        break;
+    default:
+        status = "error";
+        break;
+    }
 
-	analysisAsJson["status"] = status;
+    analysisAsJson["status"] = status;
 
-	return analysisAsJson;
+    return analysisAsJson;
 }
 
 void Analysis::setVisible(bool visible)
 {
-	_visible = visible;
+    _visible = visible;
 }
 
 int Analysis::revision()
 {
-	return _revision;
+    return _revision;
 }
 
 bool Analysis::isVisible()
 {
-	return _visible;
+    return _visible;
 }
 
 bool Analysis::isRefreshBlocked()
 {
-	return _refreshBlocked;
+    return _refreshBlocked;
 }
 
 void Analysis::setRefreshBlocked(bool block)
 {
-	_refreshBlocked = block;
+    _refreshBlocked = block;
 }
 
 Analysis::Status Analysis::status() const
 {
-	return _status;
+    return _status;
 }
 
 void Analysis::setStatus(Analysis::Status status)
 {
-	if ((status == Analysis::Running || status == Analysis::Initing) && _version != AppInfo::version)
-	{
-		tempfiles_deleteList(tempfiles_retrieveList(_id));
-		_version = AppInfo::version;
-	}
-	_status = status;
+    if ((status == Analysis::Running || status == Analysis::Initing) && _version != AppInfo::version) {
+        tempfiles_deleteList(tempfiles_retrieveList(_id));
+        _version = AppInfo::version;
+    }
+    _status = status;
 }
 
-const string &Analysis::name() const
+const string& Analysis::name() const
 {
-	return _name;
+    return _name;
 }
 
-const string &Analysis::module() const
+const string& Analysis::module() const
 {
-	return _module;
+    return _module;
 }
 
 int Analysis::id() const
 {
-	return _id;
+    return _id;
 }
 
 bool Analysis::isAutorun() const
 {
-	return _autorun;
+    return _autorun;
 }
 
 bool Analysis::useData() const
 {
-	return _usedata;
+    return _usedata;
 }
 
-Options *Analysis::options() const
+Options* Analysis::options() const
 {
-	return _options;
+    return _options;
 }
 
-void Analysis::optionsChangedHandler(Option *option)
+void Analysis::optionsChangedHandler(Option* option)
 {
-	if (_refreshBlocked)
-		return;
+    if (_refreshBlocked)
+        return;
 
-	_status = Empty;
-	_revision++;
-	optionsChanged(this);
+    _status = Empty;
+    _revision++;
+    optionsChanged(this);
 }
 
 int Analysis::callback(Json::Value results)
 {
-	if (_status != Empty && _status != Aborted)
-	{
-		if (results != Json::nullValue)
-		{
-			_results = results;
-			resultsChanged(this);
-		}
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+    if (_status != Empty && _status != Aborted) {
+        if (results != Json::nullValue) {
+            _results = results;
+            resultsChanged(this);
+        }
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
-void Analysis::setSaveImgOptions(Json::Value &options)
+void Analysis::setSaveImgOptions(Json::Value& options)
 {
-	_saveImgOptions = options;
+    _saveImgOptions = options;
 }
 
 Json::Value Analysis::getSaveImgOptions()
 {
-	return _saveImgOptions;
+    return _saveImgOptions;
 }
 
 Json::Value Analysis::getImgResults()
 {
-	return _imgResults;
+    return _imgResults;
 }

@@ -25,16 +25,15 @@ namespace Ui {
 class RibbonSummaryStatistics;
 }
 
-class RibbonSummaryStatistics : public RibbonWidget
-{
-	Q_OBJECT
-	
+class RibbonSummaryStatistics : public RibbonWidget {
+    Q_OBJECT
+
 public:
-	explicit RibbonSummaryStatistics(QWidget *parent = 0);
-	~RibbonSummaryStatistics();
+    explicit RibbonSummaryStatistics(QWidget* parent = 0);
+    ~RibbonSummaryStatistics();
 
 private:
-	Ui::RibbonSummaryStatistics *ui;
+    Ui::RibbonSummaryStatistics* ui;
 };
 
 #endif // RIBBONSUMMARYSTATISTICS_H

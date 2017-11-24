@@ -26,26 +26,24 @@
 #include <string>
 #include <vector>
 
-namespace ods
-{
+namespace ods {
 class ODSImportDataSet;
 
-class ODSImporter : public Importer
-{
+class ODSImporter : public Importer {
 public:
-	//	static void loadDataSet(DataSetPackage *packageData, const std::string &locator, boost::function<void (const std::string &, int)> progressCallback);
-	ODSImporter(DataSetPackage *packageData);
-	virtual ~ODSImporter();
+    //	static void loadDataSet(DataSetPackage *packageData, const std::string &locator, boost::function<void (const std::string &, int)> progressCallback);
+    ODSImporter(DataSetPackage* packageData);
+    virtual ~ODSImporter();
 
 protected:
-	// Implmemtation of Inporter base class.
-	virtual ImportDataSet* loadFile(const std::string &locator, boost::function<void(const std::string &, int)> progressCallback);
-	virtual void fillSharedMemoryColumn(ImportColumn *importColumn, Column &column);
+    // Implmemtation of Inporter base class.
+    virtual ImportDataSet* loadFile(const std::string& locator, boost::function<void(const std::string&, int)> progressCallback);
+    virtual void fillSharedMemoryColumn(ImportColumn* importColumn, Column& column);
 
 private:
-	static const std::string _contentFile;
+    static const std::string _contentFile;
 
-	/**
+    /**
 	 * @brief readManifest Reads the ODS manifest.
 	 * @param path The file path to the archive file
 	 * @param dataset The data set to import into.
@@ -53,15 +51,14 @@ private:
 	 *
 	 * After JaspImporter::readManifest.
 	 */
-	void readManifest(const std::string &path, ODSImportDataSet *dataset);
+    void readManifest(const std::string& path, ODSImportDataSet* dataset);
 
-	/**
+    /**
 	 * @brief readContents Reads contents to _dta;
 	 * @param path The file path to the archive file
 	 * @param dataset The data set to import into.
 	 */
-	void readContents(const std::string &path, ODSImportDataSet *dataset);
-
+    void readContents(const std::string& path, ODSImportDataSet* dataset);
 };
 
 } // end namespace ods

@@ -18,31 +18,31 @@
 
 #include "boundtableview.h"
 
-BoundTableView::BoundTableView(QWidget *parent)
-	: TableView(parent)
+BoundTableView::BoundTableView(QWidget* parent)
+    : TableView(parent)
 {
-	_model = NULL;
+    _model = NULL;
 
-	this->setDragEnabled(true);
-	this->viewport()->setAcceptDrops(true);
-	this->setDropIndicatorShown(true);
-	this->setDragDropMode(QAbstractItemView::DragDrop);
+    this->setDragEnabled(true);
+    this->viewport()->setAcceptDrops(true);
+    this->setDropIndicatorShown(true);
+    this->setDragDropMode(QAbstractItemView::DragDrop);
 }
 
-void BoundTableView::bindTo(Option *option)
+void BoundTableView::bindTo(Option* option)
 {
-	if (_model != NULL)
-		_model->bindTo(option);
+    if (_model != NULL)
+        _model->bindTo(option);
 }
 
 void BoundTableView::unbind()
 {
-	if (_model != NULL)
-		_model->unbind();
+    if (_model != NULL)
+        _model->unbind();
 }
 
-void BoundTableView::setModel(QAbstractItemModel *model)
+void BoundTableView::setModel(QAbstractItemModel* model)
 {
-	_model = dynamic_cast<BoundModel *>(model);
-	TableView::setModel(model);
+    _model = dynamic_cast<BoundModel*>(model);
+    TableView::setModel(model);
 }

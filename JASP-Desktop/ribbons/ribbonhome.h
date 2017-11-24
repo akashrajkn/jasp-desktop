@@ -25,16 +25,15 @@ namespace Ui {
 class RibbonHome;
 }
 
-class RibbonHome : public RibbonWidget
-{
+class RibbonHome : public RibbonWidget {
     Q_OBJECT
-    
+
 public:
-	explicit RibbonHome(QWidget *parent = 0);
-	~RibbonHome();
-    
+    explicit RibbonHome(QWidget* parent = 0);
+    ~RibbonHome();
+
 private:
-	Ui::RibbonHome *ui;
+    Ui::RibbonHome* ui;
 };
 
 #endif // HOMERIBBON_H

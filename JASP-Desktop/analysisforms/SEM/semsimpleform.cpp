@@ -21,23 +21,23 @@
 
 #include "widgets/itemmodelselectvariable.h"
 
-SEMSimpleForm::SEMSimpleForm(QWidget *parent) :
-	AnalysisForm("SEMSimpleForm", parent),
-	ui(new Ui::SEMSimpleForm)
+SEMSimpleForm::SEMSimpleForm(QWidget* parent)
+    : AnalysisForm("SEMSimpleForm", parent)
+    , ui(new Ui::SEMSimpleForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ItemModelSelectVariable *model = new ItemModelSelectVariable(this);
-	model->setSource(&_availableVariablesModel);
+    ItemModelSelectVariable* model = new ItemModelSelectVariable(this);
+    model->setSource(&_availableVariablesModel);
 
-	ui->groupingVariable->setModel(model);
+    ui->groupingVariable->setModel(model);
 
-	ui->containerStatistics->hide();
-	ui->containerOptions->hide();
-	ui->containerAdvanced->hide();
+    ui->containerStatistics->hide();
+    ui->containerOptions->hide();
+    ui->containerAdvanced->hide();
 }
 
 SEMSimpleForm::~SEMSimpleForm()
 {
-	delete ui;
+    delete ui;
 }

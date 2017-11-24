@@ -18,224 +18,212 @@
 
 #include "tablemodelvariablesassigned.h"
 
-#include <vector>
-#include <string>
+#include <QDebug>
 #include <QMimeData>
 #include <QTimer>
-#include <QDebug>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-TableModelVariablesAssigned::TableModelVariablesAssigned(QObject *parent)
-	: TableModelVariables(parent)
+TableModelVariablesAssigned::TableModelVariablesAssigned(QObject* parent)
+    : TableModelVariables(parent)
 {
-	_boundTo = NULL;
-	_source = NULL;
-	_sorted = false;
+    _boundTo = NULL;
+    _source = NULL;
+    _sorted = false;
 }
 
-void TableModelVariablesAssigned::bindTo(Option *option)
+void TableModelVariablesAssigned::bindTo(Option* option)
 {
-	_boundTo = dynamic_cast<OptionTerms *>(option);
+    _boundTo = dynamic_cast<OptionTerms*>(option);
 
-	if (_boundTo != NULL)
-	{
-		if (_source != NULL)
-		{
-			const vector<vector<string> > assigned = _boundTo->value();
+    if (_boundTo != NULL) {
+        if (_source != NULL) {
+            const vector<vector<string>> assigned = _boundTo->value();
 
-			beginResetModel();
-			Terms test = _variables;
-			_variables.set(assigned);
-			endResetModel();
+            beginResetModel();
+            Terms test = _variables;
+            _variables.set(assigned);
+            endResetModel();
 
-			_source->notifyAlreadyAssigned(_variables);
-		}
-		else
-		{
-			qDebug() << "TableModelVariablesAssigned::bindTo(); source not set";
-		}
-	}
-	else
-	{
-		qDebug() << "TableModelVariablesAssigned::bindTo(); option not of type OptionVariables*";
-	}
+            _source->notifyAlreadyAssigned(_variables);
+        } else {
+            qDebug() << "TableModelVariablesAssigned::bindTo(); source not set";
+        }
+    } else {
+        qDebug() << "TableModelVariablesAssigned::bindTo(); option not of type OptionVariables*";
+    }
 }
 
 void TableModelVariablesAssigned::unbind()
 {
-	_boundTo = NULL;
+    _boundTo = NULL;
 }
 
-void TableModelVariablesAssigned::setSource(TableModelVariablesAvailable *source)
+void TableModelVariablesAssigned::setSource(TableModelVariablesAvailable* source)
 {
-	_source = source;
-	setInfoProvider(source);
+    _source = source;
+    setInfoProvider(source);
 
-	if (_sorted)
-		_variables.setSortParent(_source->allVariables());
+    if (_sorted)
+        _variables.setSortParent(_source->allVariables());
 
-	connect(source, SIGNAL(variablesChanged()), this, SLOT(sourceVariablesChanged()));
+    connect(source, SIGNAL(variablesChanged()), this, SLOT(sourceVariablesChanged()));
 }
 
-bool TableModelVariablesAssigned::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+bool TableModelVariablesAssigned::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 {
-	if (_boundTo == NULL)
-		return false;
+    if (_boundTo == NULL)
+        return false;
 
-	if (isDroppingToSelf(data))
-		return false;
+    if (isDroppingToSelf(data))
+        return false;
 
-	if ( ! TableModelVariables::canDropMimeData(data, action, row, column, parent))
-		return false;
+    if (!TableModelVariables::canDropMimeData(data, action, row, column, parent))
+        return false;
 
-	if (_boundTo->onlyOneTerm())
-	{
-		QByteArray encodedData = data->data(_mimeType);
+    if (_boundTo->onlyOneTerm()) {
+        QByteArray encodedData = data->data(_mimeType);
 
-		Terms variables;
-		variables.set(encodedData);
+        Terms variables;
+        variables.set(encodedData);
 
-		if (variables.size() != 1)
-			return false;
-	}
+        if (variables.size() != 1)
+            return false;
+    }
 
-	return true;
+    return true;
 }
 
-bool TableModelVariablesAssigned::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool TableModelVariablesAssigned::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-	if (_boundTo == NULL)
-		return false;
+    if (_boundTo == NULL)
+        return false;
 
-	if (action == Qt::IgnoreAction)
-		return true;
+    if (action == Qt::IgnoreAction)
+        return true;
 
-	if ( ! canDropMimeData(data, action, row, column, parent))
-		return false;
+    if (!canDropMimeData(data, action, row, column, parent))
+        return false;
 
-	if (action != Qt::MoveAction && action != Qt::CopyAction)
-		return false;
+    if (action != Qt::MoveAction && action != Qt::CopyAction)
+        return false;
 
-	QByteArray encodedData = data->data(_mimeType);
+    QByteArray encodedData = data->data(_mimeType);
 
-	_delayDropped.set(encodedData);
-	QTimer::singleShot(0, this, SLOT(delayAssignDroppedData()));
+    _delayDropped.set(encodedData);
+    QTimer::singleShot(0, this, SLOT(delayAssignDroppedData()));
 
-	emit assignmentsChanging();
+    emit assignmentsChanging();
 
-	return true;
+    return true;
 }
 
 void TableModelVariablesAssigned::delayAssignDroppedData()
 {
-	assign(_delayDropped);
+    assign(_delayDropped);
 
-	emit assignmentsChanged();
+    emit assignmentsChanged();
 }
 
-void TableModelVariablesAssigned::mimeDataMoved(const QModelIndexList &indices)
+void TableModelVariablesAssigned::mimeDataMoved(const QModelIndexList& indices)
 {
-	emit assignmentsChanging();
+    emit assignmentsChanging();
 
-	Terms variablesToRemove;
+    Terms variablesToRemove;
 
-	foreach (const QModelIndex &index, indices)
-		variablesToRemove.add(_variables.at(index.row()));
+    foreach (const QModelIndex& index, indices)
+        variablesToRemove.add(_variables.at(index.row()));
 
-	unassign(variablesToRemove);
+    unassign(variablesToRemove);
 
-	emit assignmentsChanged();
+    emit assignmentsChanged();
 }
 
 void TableModelVariablesAssigned::setSorted(bool sorted)
 {
-	_sorted = sorted;
+    _sorted = sorted;
 
-	if (sorted && _source != NULL)
-		_variables.setSortParent(_source->allVariables());
+    if (sorted && _source != NULL)
+        _variables.setSortParent(_source->allVariables());
 }
 
-const Terms &TableModelVariablesAssigned::assigned() const
+const Terms& TableModelVariablesAssigned::assigned() const
 {
-	return _variables;
+    return _variables;
 }
 
 void TableModelVariablesAssigned::sourceVariablesChanged()
 {
-	emit assignmentsChanging();
+    emit assignmentsChanging();
 
-	const Terms &variables = _source->allVariables();
-	Terms variablesToKeep;
-	bool variableRemoved = false;
+    const Terms& variables = _source->allVariables();
+    Terms variablesToKeep;
+    bool variableRemoved = false;
 
-	variablesToKeep.set(_variables);
-	variableRemoved = variablesToKeep.discardWhatDoesntContainTheseComponents(variables);
+    variablesToKeep.set(_variables);
+    variableRemoved = variablesToKeep.discardWhatDoesntContainTheseComponents(variables);
 
-	if (variableRemoved)
-		setAssigned(variablesToKeep);
+    if (variableRemoved)
+        setAssigned(variablesToKeep);
 
-	emit assignmentsChanged(variableRemoved);
+    emit assignmentsChanged(variableRemoved);
 }
 
-void TableModelVariablesAssigned::assign(const Terms &variables)
+void TableModelVariablesAssigned::assign(const Terms& variables)
 {
-	if (_boundTo == NULL)
-		return;
+    if (_boundTo == NULL)
+        return;
 
-	Terms v;
+    Terms v;
 
-	if (_boundTo->onlyOneTerm())
-	{
-		if (variables.size() > 0)
-			v.add(variables.at(0));
+    if (_boundTo->onlyOneTerm()) {
+        if (variables.size() > 0)
+            v.add(variables.at(0));
 
-		if (_variables.size() > 0)
-		{
-			_toSendBack.set(_variables);
-			_variables.clear();
-			QTimer::singleShot(0, this, SLOT(sendBack()));
-		}
-	}
-	else
-	{
-		v.set(_variables);
-		v.add(variables);
-	}
+        if (_variables.size() > 0) {
+            _toSendBack.set(_variables);
+            _variables.clear();
+            QTimer::singleShot(0, this, SLOT(sendBack()));
+        }
+    } else {
+        v.set(_variables);
+        v.add(variables);
+    }
 
-	setAssigned(v);
+    setAssigned(v);
 
-	emit assignedTo(variables);
+    emit assignedTo(variables);
 }
 
-void TableModelVariablesAssigned::unassign(const Terms &variables)
+void TableModelVariablesAssigned::unassign(const Terms& variables)
 {
-	Terms variablesToKeep;
-	variablesToKeep.set(_variables);
-	variablesToKeep.remove(variables);
-	setAssigned(variablesToKeep);
+    Terms variablesToKeep;
+    variablesToKeep.set(_variables);
+    variablesToKeep.remove(variables);
+    setAssigned(variablesToKeep);
 
-	emit unassigned(variables);
+    emit unassigned(variables);
 }
 
-void TableModelVariablesAssigned::setAssigned(const Terms &variables)
+void TableModelVariablesAssigned::setAssigned(const Terms& variables)
 {
-	if (_source == NULL)
-	{
-		qDebug() << "TableModelVariablesAssigned::setAssigned() : Source not set!";
-		return;
-	}
+    if (_source == NULL) {
+        qDebug() << "TableModelVariablesAssigned::setAssigned() : Source not set!";
+        return;
+    }
 
-	beginResetModel();
-	_variables.set(variables);
-	endResetModel();
+    beginResetModel();
+    _variables.set(variables);
+    endResetModel();
 
-	if (_boundTo != NULL)
-		_boundTo->setValue(_variables.asVectorOfVectors());
+    if (_boundTo != NULL)
+        _boundTo->setValue(_variables.asVectorOfVectors());
 }
 
 void TableModelVariablesAssigned::sendBack()
 {
-	_source->sendBack(_toSendBack);
-	_toSendBack.clear();
+    _source->sendBack(_toSendBack);
+    _toSendBack.clear();
 }

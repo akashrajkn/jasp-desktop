@@ -19,23 +19,22 @@
 #ifndef TTESTINDEPENDENTSAMPLESFORM_H
 #define TTESTINDEPENDENTSAMPLESFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class TTestIndependentSamplesForm;
 }
 
-class TTestIndependentSamplesForm : public AnalysisForm
-{
-	Q_OBJECT
+class TTestIndependentSamplesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit TTestIndependentSamplesForm(QWidget *parent = 0);
-	~TTestIndependentSamplesForm();
+    explicit TTestIndependentSamplesForm(QWidget* parent = 0);
+    ~TTestIndependentSamplesForm();
 
 private:
-	Ui::TTestIndependentSamplesForm *ui;
+    Ui::TTestIndependentSamplesForm* ui;
 };
 
 #endif // TTESTINDEPENDENTSAMPLESFORM_H

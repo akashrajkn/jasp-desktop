@@ -23,52 +23,50 @@
 
 using namespace std;
 
-std::string fq(const QString &from)
+std::string fq(const QString& from)
 {
-	QByteArray bytes = from.toUtf8();
-	return std::string(bytes.constData(), bytes.length());
+    QByteArray bytes = from.toUtf8();
+    return std::string(bytes.constData(), bytes.length());
 }
 
-QString tq(const std::string &from)
+QString tq(const std::string& from)
 {
-	return QString::fromUtf8(from.c_str(), from.length());
+    return QString::fromUtf8(from.c_str(), from.length());
 }
 
-QStringList tql(const std::vector<string> &from)
+QStringList tql(const std::vector<string>& from)
 {
-	(void)from;
+    (void)from;
 
-	QStringList result;
+    QStringList result;
 
-	BOOST_FOREACH(const std::string &str, from)
-	{
-		(void)from;
-		result.append(tq(str));
-	}
+    BOOST_FOREACH (const std::string& str, from) {
+        (void)from;
+        result.append(tq(str));
+    }
 
-	return result;
+    return result;
 }
 
-vector<string> fromQstringToStdVector(const QString &input, const QString &delimetor)
+vector<string> fromQstringToStdVector(const QString& input, const QString& delimetor)
 {
-	QStringList list;
-	vector<string> result;
-	list = input.split(delimetor);
-	foreach (QString itm, list)
-	{
-		itm = stripFirstAndLastChar(itm,"\"");
-		result.push_back(itm.toStdString());
-	}
-	
-	return result;
+    QStringList list;
+    vector<string> result;
+    list = input.split(delimetor);
+    foreach (QString itm, list) {
+        itm = stripFirstAndLastChar(itm, "\"");
+        result.push_back(itm.toStdString());
+    }
+
+    return result;
 }
 
-QString stripFirstAndLastChar(const QString &in, const QString &strip)
+QString stripFirstAndLastChar(const QString& in, const QString& strip)
 {
-	QString result = in;
-	if (result.left(1) == strip) result.remove(0,1);
-	if (result.right(1) == strip) result.remove(result.length()-1,1);
-	return result;	
+    QString result = in;
+    if (result.left(1) == strip)
+        result.remove(0, 1);
+    if (result.right(1) == strip)
+        result.remove(result.length() - 1, 1);
+    return result;
 }
-
-	

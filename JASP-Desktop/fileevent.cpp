@@ -18,163 +18,159 @@
 
 #include "fileevent.h"
 #include "exporters/dataexporter.h"
-#include "exporters/resultexporter.h"
 #include "exporters/jaspexporter.h"
+#include "exporters/resultexporter.h"
 
 #include <QTimer>
 
-FileEvent::FileEvent(QObject *parent, FileEvent::FileMode fileMode)
-	: QObject(parent)
+FileEvent::FileEvent(QObject* parent, FileEvent::FileMode fileMode)
+    : QObject(parent)
 {
-	_readOnly = false;
-	_chainedTo = NULL;
-	_operation = fileMode;
-	_last_error = "Unkown error";
-	switch (fileMode)
-	{
-	case FileEvent::FileExportResults:
-		_exporter = new ResultExporter();
-		break;
-	case FileEvent::FileExportData:
-		_exporter = new DataExporter();
-		break;
-	case FileEvent::FileSave:
-		_exporter = new JASPExporter();
-		break;
-	default:
-		_exporter = NULL;
-	}
+    _readOnly = false;
+    _chainedTo = NULL;
+    _operation = fileMode;
+    _last_error = "Unkown error";
+    switch (fileMode) {
+    case FileEvent::FileExportResults:
+        _exporter = new ResultExporter();
+        break;
+    case FileEvent::FileExportData:
+        _exporter = new DataExporter();
+        break;
+    case FileEvent::FileSave:
+        _exporter = new JASPExporter();
+        break;
+    default:
+        _exporter = NULL;
+    }
 }
 
 FileEvent::~FileEvent()
 {
-	if (_exporter != NULL) {
-		delete _exporter;
-	}
+    if (_exporter != NULL) {
+        delete _exporter;
+    }
 }
 
-void FileEvent::setDataFilePath(const QString &path)
+void FileEvent::setDataFilePath(const QString& path)
 {
-	_dataFilePath = path;
+    _dataFilePath = path;
 }
 
-bool FileEvent::setPath(const QString &path)
+bool FileEvent::setPath(const QString& path)
 {
-	_path = path;
-	bool result = true;
-	Utils::FileType filetype = Utils::getTypeFromFileName(path.toStdString());
+    _path = path;
+    bool result = true;
+    Utils::FileType filetype = Utils::getTypeFromFileName(path.toStdString());
 
+    if (filetype == Utils::unknown) {
+        if (_exporter != NULL) {
+            filetype = _exporter->getDefaultFileType();
+            _path.append('.');
+            _path.append(Utils::getFileTypeString(filetype));
+        }
+    }
 
-    if (filetype == Utils::unknown)
-	{
-		if (_exporter != NULL) {
-			filetype = _exporter->getDefaultFileType();
-			_path.append('.');
-			_path.append(Utils::getFileTypeString(filetype));
-		}
-	}
+    if (_exporter != NULL) {
+        result = _exporter->isFileTypeAllowed(filetype);
+        if (result) {
+            _exporter->setFileType(filetype);
+        } else {
+            _last_error = "File must be of type ";
+            bool first = true;
+            bool last = false;
+            Utils::FileTypeVector allowedFileTypes = _exporter->getAllowedFileTypes();
+            for (Utils::FileTypeVector::const_iterator it = allowedFileTypes.begin(); it != allowedFileTypes.end(); it++) {
+                Utils::FileTypeVector::const_iterator next = it;
+                next++;
+                if (next == allowedFileTypes.end())
+                    last = true;
+                if (last && !first)
+                    _last_error.append(" or ");
+                if (!last && !first)
+                    _last_error.append(", ");
+                _last_error.append(Utils::getFileTypeString(*it));
+                first = false;
+            }
+        }
+    }
 
-	if (_exporter != NULL)
-	{
-		result = _exporter->isFileTypeAllowed(filetype);
-		if (result)
-		{
-			_exporter->setFileType(filetype);
-		}
-		else
-		{
-			_last_error = "File must be of type ";
-			bool first = true;
-			bool last = false;
-			Utils::FileTypeVector allowedFileTypes = _exporter->getAllowedFileTypes();
-			for (Utils::FileTypeVector::const_iterator it = allowedFileTypes.begin(); it != allowedFileTypes.end(); it++) {
-				Utils::FileTypeVector::const_iterator next = it; next++;
-				if (next == allowedFileTypes.end()) last = true;
-				if (last && !first) _last_error.append(" or ");
-				if (!last && !first) _last_error.append(", ");
-				_last_error.append(Utils::getFileTypeString(*it));
-				first = false;
-			}
-		}
-	}
+    _type = filetype;
 
-	_type = filetype;
-
-	return result;
-
+    return result;
 }
 
-QString FileEvent::getLastError() const {
-	return _last_error;
+QString FileEvent::getLastError() const
+{
+    return _last_error;
 }
 
 void FileEvent::setReadOnly()
 {
-	_readOnly = true;
+    _readOnly = true;
 }
 
 FileEvent::FileMode FileEvent::operation() const
 {
-	return _operation;
+    return _operation;
 }
 
 Utils::FileType FileEvent::type() const
 {
-	return _type;
+    return _type;
 }
 
-
-const QString &FileEvent::path() const
+const QString& FileEvent::path() const
 {
-	return _path;
+    return _path;
 }
 
-const QString &FileEvent::dataFilePath() const
+const QString& FileEvent::dataFilePath() const
 {
-	return _dataFilePath;
+    return _dataFilePath;
 }
 
 bool FileEvent::isReadOnly() const
 {
-	return _readOnly;
+    return _readOnly;
 }
 
-void FileEvent::setComplete(bool success, const QString &message)
+void FileEvent::setComplete(bool success, const QString& message)
 {
-	_isComplete = true;
-	_success = success;
-	_message = message;
+    _isComplete = true;
+    _success = success;
+    _message = message;
 
-	emit completed(this);
+    emit completed(this);
 }
 
 bool FileEvent::isCompleted() const
 {
-	return _isComplete;
+    return _isComplete;
 }
 
 bool FileEvent::successful() const
 {
-	return _success;
+    return _success;
 }
 
-const QString &FileEvent::message() const
+const QString& FileEvent::message() const
 {
-	return _message;
+    return _message;
 }
 
-void FileEvent::chain(FileEvent *event)
+void FileEvent::chain(FileEvent* event)
 {
-	_chainedTo = event;
-	connect(event, SIGNAL(completed(FileEvent*)), this, SLOT(chainedComplete(FileEvent*)));
+    _chainedTo = event;
+    connect(event, SIGNAL(completed(FileEvent*)), this, SLOT(chainedComplete(FileEvent*)));
 }
 
-void FileEvent::chainedComplete(FileEvent *event)
+void FileEvent::chainedComplete(FileEvent* event)
 {
-	setComplete(event->successful(), event->message());
+    setComplete(event->successful(), event->message());
 }
 
 bool FileEvent::IsOnlineNode() const
 {
-	return _path.startsWith("http");
+    return _path.startsWith("http");
 }

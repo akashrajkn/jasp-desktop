@@ -18,27 +18,25 @@
 #ifndef OPTIONSTRING_H
 #define OPTIONSTRING_H
 
-#include "options/optioni.h"
 #include "common.h"
+#include "options/optioni.h"
 
-class OptionString : public OptionI<std::string>
-{
+class OptionString : public OptionI<std::string> {
 public:
-	OptionString(std::string value = "", std::string regexp = "", int max = -1);
+    OptionString(std::string value = "", std::string regexp = "", int max = -1);
 
-	virtual void init(const Json::Value &data) OVERRIDE;
+    virtual void init(const Json::Value& data) OVERRIDE;
 
-	Json::Value asJSON() const OVERRIDE;
-	void set(const Json::Value &value) OVERRIDE;
-	virtual Option* clone() const OVERRIDE;
+    Json::Value asJSON() const OVERRIDE;
+    void set(const Json::Value& value) OVERRIDE;
+    virtual Option* clone() const OVERRIDE;
 
-	int max() const;
-	std::string regexp() const;
+    int max() const;
+    std::string regexp() const;
 
-  protected:
-	int _max;
-	std::string _regexp;
-
+protected:
+    int _max;
+    std::string _regexp;
 };
 
 #endif // OPTIONSTRING_H

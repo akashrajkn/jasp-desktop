@@ -20,241 +20,237 @@
 #include "ui_subjectivepriorswidget.h"
 #include <QGridLayout>
 
-
-SubjectivePriorsWidget::SubjectivePriorsWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::SubjectivePriorsWidget)
+SubjectivePriorsWidget::SubjectivePriorsWidget(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::SubjectivePriorsWidget)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	// default
-	ui->effectSizeStandardized->setEnabled(true);
-	ui->dienesEffectSize->setEnabled(false);
+    // default
+    ui->effectSizeStandardized->setEnabled(true);
+    ui->dienesEffectSize->setEnabled(false);
 
-	ui->defaultStandardizedEffectSize->setEnabled(true);
-	ui->informativeStandardizedEffectSize->setEnabled(false);
-	ui->cauchyInformative->setEnabled(true);
+    ui->defaultStandardizedEffectSize->setEnabled(true);
+    ui->informativeStandardizedEffectSize->setEnabled(false);
+    ui->cauchyInformative->setEnabled(true);
 
-	ui->label_informativeNormalMean->hide();
-	ui->label_informativeNormalStd->hide();
-	ui->label_informativeTLocation->hide();
-	ui->label_informativeTScale->hide();
-	ui->label_informativeTDf->hide();
+    ui->label_informativeNormalMean->hide();
+    ui->label_informativeNormalStd->hide();
+    ui->label_informativeTLocation->hide();
+    ui->label_informativeTScale->hide();
+    ui->label_informativeTDf->hide();
 
-	QSizePolicy retainWidgetSize = ui->informativeCauchyLocation->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->informativeCauchyLocation->setSizePolicy(retainWidgetSize);
+    QSizePolicy retainWidgetSize = ui->informativeCauchyLocation->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->informativeCauchyLocation->setSizePolicy(retainWidgetSize);
 
-	retainWidgetSize = ui->informativeNormalMean->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->informativeNormalMean->setSizePolicy(retainWidgetSize);
-	ui->informativeNormalMean->hide();
+    retainWidgetSize = ui->informativeNormalMean->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->informativeNormalMean->setSizePolicy(retainWidgetSize);
+    ui->informativeNormalMean->hide();
 
-	ui->informativeNormalStd->hide();
+    ui->informativeNormalStd->hide();
 
-	retainWidgetSize = ui->informativeTLocation->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->informativeTLocation->setSizePolicy(retainWidgetSize);
-	ui->informativeTLocation->hide();
+    retainWidgetSize = ui->informativeTLocation->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->informativeTLocation->setSizePolicy(retainWidgetSize);
+    ui->informativeTLocation->hide();
 
-	ui->informativeTScale->hide();
+    ui->informativeTScale->hide();
 
-	retainWidgetSize = ui->informativeTDf->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->informativeTDf->setSizePolicy(retainWidgetSize);
-	ui->informativeTDf->hide();
+    retainWidgetSize = ui->informativeTDf->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->informativeTDf->setSizePolicy(retainWidgetSize);
+    ui->informativeTDf->hide();
 
-	retainWidgetSize = ui->halfNormalDienesStd->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->halfNormalDienesStd->setSizePolicy(retainWidgetSize);
+    retainWidgetSize = ui->halfNormalDienesStd->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->halfNormalDienesStd->setSizePolicy(retainWidgetSize);
 
-	retainWidgetSize = ui->normalDienesStd->sizePolicy();
-	retainWidgetSize.setRetainSizeWhenHidden(true);
-	ui->normalDienesStd->setSizePolicy(retainWidgetSize);
+    retainWidgetSize = ui->normalDienesStd->sizePolicy();
+    retainWidgetSize.setRetainSizeWhenHidden(true);
+    ui->normalDienesStd->setSizePolicy(retainWidgetSize);
 
-	ui->label_normalDienesMean->hide();
-	ui->normalDienesMean->hide();
-	ui->label_normalDienesStd->hide();
-	ui->normalDienesStd->hide();
-	ui->label_uniformDienesLowerBound->hide();
-	ui->uniformDienesLowerBound->hide();
-	ui->label_uniformDienesUpperBound->hide();
-	ui->uniformDienesUpperBound->hide();
+    ui->label_normalDienesMean->hide();
+    ui->normalDienesMean->hide();
+    ui->label_normalDienesStd->hide();
+    ui->normalDienesStd->hide();
+    ui->label_uniformDienesLowerBound->hide();
+    ui->uniformDienesLowerBound->hide();
+    ui->label_uniformDienesUpperBound->hide();
+    ui->uniformDienesUpperBound->hide();
 
 #ifdef QT_NO_DEBUG
-	QGridLayout *gridLayout = (QGridLayout *)ui->effectSize->layout();
-	gridLayout->setMargin(0);
-	gridLayout = (QGridLayout *)ui->effectSizeStandardized->layout();
-	gridLayout->setContentsMargins(7, 0, 0, 0);
-	ui->_2dienesRawEffectSize->hide();
-	ui->line_2->hide();
-	ui->dienesEffectSize->hide();
-	ui->_1standardizedEffectSize->hide();
+    QGridLayout* gridLayout = (QGridLayout*)ui->effectSize->layout();
+    gridLayout->setMargin(0);
+    gridLayout = (QGridLayout*)ui->effectSizeStandardized->layout();
+    gridLayout->setContentsMargins(7, 0, 0, 0);
+    ui->_2dienesRawEffectSize->hide();
+    ui->line_2->hide();
+    ui->dienesEffectSize->hide();
+    ui->_1standardizedEffectSize->hide();
 #else
-	ui->_1standardizedEffectSize->setStyleSheet("background-color: pink;");
-	ui->line_2->setStyleSheet("background-color: pink;");
-	ui->dienesEffectSize->setStyleSheet("background-color: pink;");
-	ui->_2dienesRawEffectSize->setStyleSheet("background-color: pink;");
+    ui->_1standardizedEffectSize->setStyleSheet("background-color: pink;");
+    ui->line_2->setStyleSheet("background-color: pink;");
+    ui->dienesEffectSize->setStyleSheet("background-color: pink;");
+    ui->_2dienesRawEffectSize->setStyleSheet("background-color: pink;");
 
 #endif
-
 }
 
 SubjectivePriorsWidget::~SubjectivePriorsWidget()
 {
-	delete ui;
+    delete ui;
 }
 
 void SubjectivePriorsWidget::on__1standardizedEffectSize_toggled(bool checked)
 {
-	if (checked) {
-		ui->effectSizeStandardized->setEnabled(true);
-		ui->dienesEffectSize->setEnabled(false);
-	}
+    if (checked) {
+        ui->effectSizeStandardized->setEnabled(true);
+        ui->dienesEffectSize->setEnabled(false);
+    }
 }
 
 void SubjectivePriorsWidget::on__2dienesRawEffectSize_toggled(bool checked)
 {
-	if (checked) {
-		ui->dienesEffectSize->setEnabled(true);
-		ui->effectSizeStandardized->setEnabled(false);
-	}
+    if (checked) {
+        ui->dienesEffectSize->setEnabled(true);
+        ui->effectSizeStandardized->setEnabled(false);
+    }
 }
 
 void SubjectivePriorsWidget::on_defaultStandardEffectSize_toggled(bool checked)
 {
-	if (checked && ui->_1standardizedEffectSize->isChecked())
-	{
-		ui->defaultStandardizedEffectSize->setEnabled(true);
-		ui->informativeStandardizedEffectSize->setEnabled(false);
-	}
+    if (checked && ui->_1standardizedEffectSize->isChecked()) {
+        ui->defaultStandardizedEffectSize->setEnabled(true);
+        ui->informativeStandardizedEffectSize->setEnabled(false);
+    }
 }
 
 void SubjectivePriorsWidget::on_informativeStandardEffectSize_toggled(bool checked)
 {
-	if (checked && ui->_1standardizedEffectSize->isChecked())
-	{
-		ui->informativeStandardizedEffectSize->setEnabled(true);
-		ui->defaultStandardizedEffectSize->setEnabled(false);
-	}
+    if (checked && ui->_1standardizedEffectSize->isChecked()) {
+        ui->informativeStandardizedEffectSize->setEnabled(true);
+        ui->defaultStandardizedEffectSize->setEnabled(false);
+    }
 }
 
 void SubjectivePriorsWidget::on_cauchyInformative_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_informativeCauchyLocation->show();
-		ui->label_informativeCauchyScale->show();
-		ui->informativeCauchyLocation->show();
-		ui->informativeCauchyScale->show();
+    if (checked) {
+        ui->label_informativeCauchyLocation->show();
+        ui->label_informativeCauchyScale->show();
+        ui->informativeCauchyLocation->show();
+        ui->informativeCauchyScale->show();
 
-		ui->label_informativeNormalMean->hide();
-		ui->label_informativeNormalStd->hide();
-		ui->informativeNormalMean->hide();
-		ui->informativeNormalStd->hide();
+        ui->label_informativeNormalMean->hide();
+        ui->label_informativeNormalStd->hide();
+        ui->informativeNormalMean->hide();
+        ui->informativeNormalStd->hide();
 
-		ui->label_informativeTLocation->hide();
-		ui->label_informativeTScale->hide();
-		ui->label_informativeTDf->hide();
-		ui->informativeTLocation->hide();
-		ui->informativeTScale->hide();
-		ui->informativeTDf->hide();
-	}
+        ui->label_informativeTLocation->hide();
+        ui->label_informativeTScale->hide();
+        ui->label_informativeTDf->hide();
+        ui->informativeTLocation->hide();
+        ui->informativeTScale->hide();
+        ui->informativeTDf->hide();
+    }
 }
 
 void SubjectivePriorsWidget::on_normalInformative_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_informativeCauchyLocation->hide();
-		ui->label_informativeCauchyScale->hide();
-		ui->informativeCauchyLocation->hide();
-		ui->informativeCauchyScale->hide();
+    if (checked) {
+        ui->label_informativeCauchyLocation->hide();
+        ui->label_informativeCauchyScale->hide();
+        ui->informativeCauchyLocation->hide();
+        ui->informativeCauchyScale->hide();
 
-		ui->label_informativeNormalMean->show();
-		ui->label_informativeNormalStd->show();
-		ui->informativeNormalMean->show();
-		ui->informativeNormalStd->show();
+        ui->label_informativeNormalMean->show();
+        ui->label_informativeNormalStd->show();
+        ui->informativeNormalMean->show();
+        ui->informativeNormalStd->show();
 
-		ui->label_informativeTLocation->hide();
-		ui->label_informativeTScale->hide();
-		ui->label_informativeTDf->hide();
-		ui->informativeTLocation->hide();
-		ui->informativeTScale->hide();
-		ui->informativeTDf->hide();
-	}
+        ui->label_informativeTLocation->hide();
+        ui->label_informativeTScale->hide();
+        ui->label_informativeTDf->hide();
+        ui->informativeTLocation->hide();
+        ui->informativeTScale->hide();
+        ui->informativeTDf->hide();
+    }
 }
 
 void SubjectivePriorsWidget::on_tInformative_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_informativeCauchyLocation->hide();
-		ui->label_informativeCauchyScale->hide();
-		ui->informativeCauchyLocation->hide();
-		ui->informativeCauchyScale->hide();
+    if (checked) {
+        ui->label_informativeCauchyLocation->hide();
+        ui->label_informativeCauchyScale->hide();
+        ui->informativeCauchyLocation->hide();
+        ui->informativeCauchyScale->hide();
 
-		ui->label_informativeNormalMean->hide();
-		ui->label_informativeNormalStd->hide();
-		ui->informativeNormalMean->hide();
-		ui->informativeNormalStd->hide();
+        ui->label_informativeNormalMean->hide();
+        ui->label_informativeNormalStd->hide();
+        ui->informativeNormalMean->hide();
+        ui->informativeNormalStd->hide();
 
-		ui->label_informativeTLocation->show();
-		ui->label_informativeTScale->show();
-		ui->label_informativeTDf->show();
-		ui->informativeTLocation->show();
-		ui->informativeTScale->show();
-		ui->informativeTDf->show();
-	}
+        ui->label_informativeTLocation->show();
+        ui->label_informativeTScale->show();
+        ui->label_informativeTDf->show();
+        ui->informativeTLocation->show();
+        ui->informativeTScale->show();
+        ui->informativeTDf->show();
+    }
 }
 
 void SubjectivePriorsWidget::on_halfNormalDienes_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_halfNormalDienesStd->show();
-		ui->halfNormalDienesStd->show();
+    if (checked) {
+        ui->label_halfNormalDienesStd->show();
+        ui->halfNormalDienesStd->show();
 
-		ui->label_normalDienesMean->hide();
-		ui->normalDienesMean->hide();
-		ui->label_normalDienesStd->hide();
-		ui->normalDienesStd->hide();
+        ui->label_normalDienesMean->hide();
+        ui->normalDienesMean->hide();
+        ui->label_normalDienesStd->hide();
+        ui->normalDienesStd->hide();
 
-		ui->label_uniformDienesLowerBound->hide();
-		ui->uniformDienesLowerBound->hide();
-		ui->label_uniformDienesUpperBound->hide();
-		ui->uniformDienesUpperBound->hide();
-	}
+        ui->label_uniformDienesLowerBound->hide();
+        ui->uniformDienesLowerBound->hide();
+        ui->label_uniformDienesUpperBound->hide();
+        ui->uniformDienesUpperBound->hide();
+    }
 }
 
 void SubjectivePriorsWidget::on_normalDienes_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_halfNormalDienesStd->hide();
-		ui->halfNormalDienesStd->hide();
+    if (checked) {
+        ui->label_halfNormalDienesStd->hide();
+        ui->halfNormalDienesStd->hide();
 
-		ui->label_normalDienesMean->show();
-		ui->normalDienesMean->show();
-		ui->label_normalDienesStd->show();
-		ui->normalDienesStd->show();
+        ui->label_normalDienesMean->show();
+        ui->normalDienesMean->show();
+        ui->label_normalDienesStd->show();
+        ui->normalDienesStd->show();
 
-		ui->label_uniformDienesLowerBound->hide();
-		ui->uniformDienesLowerBound->hide();
-		ui->label_uniformDienesUpperBound->hide();
-		ui->uniformDienesUpperBound->hide();
-	}
+        ui->label_uniformDienesLowerBound->hide();
+        ui->uniformDienesLowerBound->hide();
+        ui->label_uniformDienesUpperBound->hide();
+        ui->uniformDienesUpperBound->hide();
+    }
 }
 
 void SubjectivePriorsWidget::on_uniformDienes_toggled(bool checked)
 {
-	if (checked) {
-		ui->label_halfNormalDienesStd->hide();
-		ui->halfNormalDienesStd->hide();
+    if (checked) {
+        ui->label_halfNormalDienesStd->hide();
+        ui->halfNormalDienesStd->hide();
 
-		ui->label_normalDienesMean->hide();
-		ui->normalDienesMean->hide();
-		ui->label_normalDienesStd->hide();
-		ui->normalDienesStd->hide();
+        ui->label_normalDienesMean->hide();
+        ui->normalDienesMean->hide();
+        ui->label_normalDienesStd->hide();
+        ui->normalDienesStd->hide();
 
-		ui->label_uniformDienesLowerBound->show();
-		ui->uniformDienesLowerBound->show();
-		ui->label_uniformDienesUpperBound->show();
-		ui->uniformDienesUpperBound->show();
-	}
+        ui->label_uniformDienesLowerBound->show();
+        ui->uniformDienesLowerBound->show();
+        ui->label_uniformDienesUpperBound->show();
+        ui->uniformDienesUpperBound->show();
+    }
 }

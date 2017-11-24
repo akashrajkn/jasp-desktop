@@ -20,55 +20,50 @@
 
 #include "common.h"
 #include "dataset.h"
-#include "version.h"
 #include "lib_json/json.h"
+#include "version.h"
 #include <map>
 
 #include "boost/signals2.hpp"
 
-class DataSetPackage
-{
+class DataSetPackage {
 public:
-	DataSetPackage();
+    DataSetPackage();
 
-	DataSet *dataSet = NULL;
-	std::map<std::string, std::map<int, std::string> > emptyValuesMap;
-	std::string analysesHTML;
-	Json::Value analysesData;
-	Version archiveVersion;
-	Version dataArchiveVersion;
-	bool isArchive = false;
-	std::string warningMessage;
+    DataSet* dataSet = NULL;
+    std::map<std::string, std::map<int, std::string>> emptyValuesMap;
+    std::string analysesHTML;
+    Json::Value analysesData;
+    Version archiveVersion;
+    Version dataArchiveVersion;
+    bool isArchive = false;
+    std::string warningMessage;
 
-	std::string id;
-	std::string initalMD5;
+    std::string id;
+    std::string initalMD5;
 
-	std::string dataFilePath;
-	uint dataFileTimestamp;
-	bool dataFileReadOnly;
+    std::string dataFilePath;
+    uint dataFileTimestamp;
+    bool dataFileReadOnly;
 
-	bool hasAnalyses;
+    bool hasAnalyses;
 
-	void reset();
-	void setModified(bool value);
-	bool isModified() const;
-	void setLoaded();
-	bool isLoaded() const;
-	bool isReady() const;
-	void setWaitingForReady();
-	void setAnalysesHTMLReady();
+    void reset();
+    void setModified(bool value);
+    bool isModified() const;
+    void setLoaded();
+    bool isLoaded() const;
+    bool isReady() const;
+    void setWaitingForReady();
+    void setAnalysesHTMLReady();
 
-	boost::signals2::signal<void (DataSetPackage *source)> isModifiedChanged;
-	boost::signals2::signal<void (DataSetPackage *source
-								  , std::vector<std::string> &changedColumns
-								  , std::vector<std::string> &missingColumns
-								  , std::map<std::string, std::string> &changeNameColumns
-								  )> dataChanged;
+    boost::signals2::signal<void(DataSetPackage* source)> isModifiedChanged;
+    boost::signals2::signal<void(DataSetPackage* source, std::vector<std::string>& changedColumns, std::vector<std::string>& missingColumns, std::map<std::string, std::string>& changeNameColumns)> dataChanged;
 
 private:
-	bool _isModified = false;
-	bool _isLoaded = false;
-	bool _analysesHTMLReady = false;
+    bool _isModified = false;
+    bool _isLoaded = false;
+    bool _analysesHTMLReady = false;
 };
 
 #endif // FILEPACKAGE_H

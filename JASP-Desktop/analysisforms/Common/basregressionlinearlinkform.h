@@ -21,58 +21,56 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 
-#include <QSizePolicy>
 #include <QDebug>
-
+#include <QSizePolicy>
 
 namespace Ui {
 class BASRegressionLinearLinkForm;
 }
 
-class BASRegressionLinearLinkForm : public AnalysisForm
-{
-	Q_OBJECT
+class BASRegressionLinearLinkForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit BASRegressionLinearLinkForm(QWidget *parent = 0);
-	~BASRegressionLinearLinkForm();
+    explicit BASRegressionLinearLinkForm(QWidget* parent = 0);
+    ~BASRegressionLinearLinkForm();
 
-	void defaultOptions();
-	void defaultOptionsModelPrior();
+    void defaultOptions();
+    void defaultOptionsModelPrior();
 
-	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    virtual void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void on_BAS_clicked();
-	void on_MCMC_clicked();
-	void on_MCMCBAS_clicked();
-	void on_betaBinomial_clicked();
-	void on_Bernoulli_clicked();
-	void on_uniformPrior_clicked();
-	void on_g_prior_clicked();
-	void on_hyper_g_clicked();
-	void on_hyper_g_laplace_clicked();
-	void on_hyper_g_n_clicked();
-	void on_aic_clicked();
-	void on_bic_clicked();
-	void on_eb_global_clicked();
-	void on_eb_local_clicked();
-	void factorsChanging();
-	void factorsChanged();
+    void on_BAS_clicked();
+    void on_MCMC_clicked();
+    void on_MCMCBAS_clicked();
+    void on_betaBinomial_clicked();
+    void on_Bernoulli_clicked();
+    void on_uniformPrior_clicked();
+    void on_g_prior_clicked();
+    void on_hyper_g_clicked();
+    void on_hyper_g_laplace_clicked();
+    void on_hyper_g_n_clicked();
+    void on_aic_clicked();
+    void on_bic_clicked();
+    void on_eb_global_clicked();
+    void on_eb_local_clicked();
+    void factorsChanging();
+    void factorsChanged();
 
 private:
-	Ui::BASRegressionLinearLinkForm *ui;
+    Ui::BASRegressionLinearLinkForm* ui;
 
-	TableModelVariablesAssigned *_dependentListModel;
-	TableModelVariablesAssigned *_covariatesListModel;
-	TableModelVariablesAssigned *_wlsWeightsListModel;
+    TableModelVariablesAssigned* _dependentListModel;
+    TableModelVariablesAssigned* _covariatesListModel;
+    TableModelVariablesAssigned* _wlsWeightsListModel;
 
-	TableModelAnovaModel *_anovaModel;
+    TableModelAnovaModel* _anovaModel;
 
-	TableModelVariablesAvailable *_factorsAvailableListModel;
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 };
 
 #endif // BASREGRESSIONLINEARLINKFORM_H

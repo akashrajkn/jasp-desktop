@@ -23,26 +23,24 @@
 
 #include "../analysisform.h"
 
-
 namespace Ui {
 class SummaryStatsCorrelationBayesianPairsForm;
 }
 
-class SummaryStatsCorrelationBayesianPairsForm : public AnalysisForm
-{
-	Q_OBJECT
+class SummaryStatsCorrelationBayesianPairsForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit SummaryStatsCorrelationBayesianPairsForm(QWidget *parent = 0);
-	~SummaryStatsCorrelationBayesianPairsForm();
+    explicit SummaryStatsCorrelationBayesianPairsForm(QWidget* parent = 0);
+    ~SummaryStatsCorrelationBayesianPairsForm();
 
 private slots:
-	void on_pearsonRho_clicked(bool checked);
+    void on_pearsonRho_clicked(bool checked);
 
-	void on_kendallTau_clicked(bool checked);
+    void on_kendallTau_clicked(bool checked);
 
 private:
-	Ui::SummaryStatsCorrelationBayesianPairsForm *ui;
+    Ui::SummaryStatsCorrelationBayesianPairsForm* ui;
 };
 
 #endif // SUMMARYSTATSCORRELATIONBAYESIANPAIRS_H

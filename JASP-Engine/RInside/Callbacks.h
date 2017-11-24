@@ -28,42 +28,42 @@
 
 class Callbacks {
 public:
-	
-	Callbacks() : R_is_busy(false), buffer() {} ;
-	virtual ~Callbacks(){} ;
-	
-	virtual void ShowMessage(const char* message) {} ;
-	virtual void Suicide(const char* message) {};
-	virtual std::string ReadConsole( const char* prompt, bool addtohistory ) { return ""; };
-	virtual void WriteConsole( const std::string& line, int type ) {};
-	virtual void FlushConsole() {};
-	virtual void ResetConsole() {};
-	virtual void CleanerrConsole(){} ;
-	virtual void Busy( bool is_busy ) {} ;
-	
-	void Busy_( int which ) ;
-	int ReadConsole_( const char* prompt, unsigned char* buf, int len, int addtohistory ) ;
-	void WriteConsole_( const char* buf, int len, int oType ) ;
-	
-	// TODO: ShowFiles
-	// TODO: ChooseFile
-	// TODO: loadHistory
-	// TODO: SaveHistory                                                                                      
-	
-	virtual bool has_ShowMessage() { return false ; } ;
-	virtual bool has_Suicide() { return false ; } ;
-	virtual bool has_ReadConsole() { return false ; } ;
-	virtual bool has_WriteConsole() { return false ; } ;
-	virtual bool has_ResetConsole() { return false ; } ;
-	virtual bool has_CleanerrConsole() { return false ; } ;
-	virtual bool has_Busy() { return false ; } ;
-	virtual bool has_FlushConsole(){ return false; } ;
-	
+    Callbacks()
+        : R_is_busy(false)
+        , buffer(){};
+    virtual ~Callbacks(){};
+
+    virtual void ShowMessage(const char* message){};
+    virtual void Suicide(const char* message){};
+    virtual std::string ReadConsole(const char* prompt, bool addtohistory) { return ""; };
+    virtual void WriteConsole(const std::string& line, int type){};
+    virtual void FlushConsole(){};
+    virtual void ResetConsole(){};
+    virtual void CleanerrConsole(){};
+    virtual void Busy(bool is_busy){};
+
+    void Busy_(int which);
+    int ReadConsole_(const char* prompt, unsigned char* buf, int len, int addtohistory);
+    void WriteConsole_(const char* buf, int len, int oType);
+
+    // TODO: ShowFiles
+    // TODO: ChooseFile
+    // TODO: loadHistory
+    // TODO: SaveHistory
+
+    virtual bool has_ShowMessage() { return false; };
+    virtual bool has_Suicide() { return false; };
+    virtual bool has_ReadConsole() { return false; };
+    virtual bool has_WriteConsole() { return false; };
+    virtual bool has_ResetConsole() { return false; };
+    virtual bool has_CleanerrConsole() { return false; };
+    virtual bool has_Busy() { return false; };
+    virtual bool has_FlushConsole() { return false; };
+
 private:
-	bool R_is_busy ;
-	std::string buffer ;
-	
-} ;                                       
+    bool R_is_busy;
+    std::string buffer;
+};
 
 #endif
 

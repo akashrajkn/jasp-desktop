@@ -19,13 +19,13 @@
 #include "appdirs.h"
 
 #include <QApplication>
-#include <QDir>
 #include <QDebug>
+#include <QDir>
 
 #ifdef __WIN32__
-#include <windows.h>
 #include "qutils.h"
 #include "utils.h"
+#include <windows.h>
 #endif
 
 #include "dirs.h"
@@ -40,25 +40,25 @@ const QString AppDirs::examples()
     static QString dir = QApplication::applicationDirPath() + QDir::separator() + "Resources/Data Sets";
 #endif
 
-	return dir;
+    return dir;
 }
 
 const QString AppDirs::help()
 {
 #ifdef __APPLE__
-	static QString dir = QApplication::applicationDirPath() + "/../Resources/Help";
+    static QString dir = QApplication::applicationDirPath() + "/../Resources/Help";
 #else
-	static QString dir = QApplication::applicationDirPath() + QDir::separator() + "Resources/Help";
+    static QString dir = QApplication::applicationDirPath() + QDir::separator() + "Resources/Help";
 #endif
 
-	return dir;
+    return dir;
 }
 
 const QString AppDirs::analysisDefaultsDir()
 {
-	QString path = QString::fromStdString(Dirs::appDataDir()) + "/AnalysisDefaults";
-	QDir dir(path);
-	dir.mkpath(".");
+    QString path = QString::fromStdString(Dirs::appDataDir()) + "/AnalysisDefaults";
+    QDir dir(path);
+    dir.mkpath(".");
 
-	return path;
+    return path;
 }

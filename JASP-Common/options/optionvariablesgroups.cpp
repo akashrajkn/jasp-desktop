@@ -22,92 +22,85 @@
 using namespace std;
 
 OptionVariablesGroups::OptionVariablesGroups()
-	: OptionI(true)
+    : OptionI(true)
 {
 }
 
 Json::Value OptionVariablesGroups::asJSON() const
 {
-	Json::Value v = Json::arrayValue;
+    Json::Value v = Json::arrayValue;
 
-	BOOST_FOREACH(const vector<string> &group, _value)
-	{
-		Json::Value u = Json::arrayValue;
+    BOOST_FOREACH (const vector<string>& group, _value) {
+        Json::Value u = Json::arrayValue;
 
-		BOOST_FOREACH(const string &variable, group)
-			u.append(variable);
+        BOOST_FOREACH (const string& variable, group)
+            u.append(variable);
 
-		v.append(u);
-	}
+        v.append(u);
+    }
 
-	return v;
+    return v;
 }
 
-void OptionVariablesGroups::set(const Json::Value &value)
+void OptionVariablesGroups::set(const Json::Value& value)
 {
-	vector<vector<string> > groups;
+    vector<vector<string>> groups;
 
-	for (Json::ValueIterator itr = value.begin(); itr != value.end(); itr++)
-	{
-		vector<string> group;
+    for (Json::ValueIterator itr = value.begin(); itr != value.end(); itr++) {
+        vector<string> group;
 
-		Json::Value &g = *itr;
+        Json::Value& g = *itr;
 
-		for (Json::ValueIterator gtr = g.begin(); gtr != g.end(); gtr++)
-		{
-			Json::Value &v = *gtr;
-			string variable = v.asString();
-			group.push_back(variable);
-		}
+        for (Json::ValueIterator gtr = g.begin(); gtr != g.end(); gtr++) {
+            Json::Value& v = *gtr;
+            string variable = v.asString();
+            group.push_back(variable);
+        }
 
-		groups.push_back(group);
-	}
+        groups.push_back(group);
+    }
 
-	setValue(groups);
+    setValue(groups);
 }
 
-Option *OptionVariablesGroups::clone() const
+Option* OptionVariablesGroups::clone() const
 {
-	OptionVariablesGroups *c = new OptionVariablesGroups();
-	c->setValue(value());
-	return c;
+    OptionVariablesGroups* c = new OptionVariablesGroups();
+    c->setValue(value());
+    return c;
 }
 
 std::vector<std::string> OptionVariablesGroups::variables() const
 {
-	std::vector<std::string> variables;
-	vector<vector<string> > values = value();
-	for (vector<vector<string> >::iterator it = values.begin(); it != values.end(); ++it)
-	{
-		variables.insert(variables.end(), it->begin(), it->end());
-	}
+    std::vector<std::string> variables;
+    vector<vector<string>> values = value();
+    for (vector<vector<string>>::iterator it = values.begin(); it != values.end(); ++it) {
+        variables.insert(variables.end(), it->begin(), it->end());
+    }
 
-	return variables;
+    return variables;
 }
 
 void OptionVariablesGroups::replaceName(string oldName, string newName)
 {
-	vector<vector<string> > values = value();
-	vector<vector<string> > values_updated;
-	for (vector<vector<string> >::iterator values_it = values.begin(); values_it != values.end(); ++values_it)
-	{
-		vector<string> row = *values_it;
-		replace(row.begin(), row.end(), oldName, newName);
-		values_updated.push_back(row);
-	}
-	setValue(values_updated);
+    vector<vector<string>> values = value();
+    vector<vector<string>> values_updated;
+    for (vector<vector<string>>::iterator values_it = values.begin(); values_it != values.end(); ++values_it) {
+        vector<string> row = *values_it;
+        replace(row.begin(), row.end(), oldName, newName);
+        values_updated.push_back(row);
+    }
+    setValue(values_updated);
 }
 
 void OptionVariablesGroups::removeName(string name)
 {
-	vector<vector<string> > values = value();
-	vector<vector<string> > values_updated;
-	for (vector<vector<string> >::iterator values_it = values.begin(); values_it != values.end(); ++values_it)
-	{
-		vector<string> row = *values_it;
-		if (std::find(row.begin(), row.end(), name) == row.end())
-			values_updated.push_back(row);
-	}
-	setValue(values_updated);
-
+    vector<vector<string>> values = value();
+    vector<vector<string>> values_updated;
+    for (vector<vector<string>>::iterator values_it = values.begin(); values_it != values.end(); ++values_it) {
+        vector<string> row = *values_it;
+        if (std::find(row.begin(), row.end(), name) == row.end())
+            values_updated.push_back(row);
+    }
+    setValue(values_updated);
 }

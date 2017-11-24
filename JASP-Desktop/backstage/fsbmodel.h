@@ -19,61 +19,58 @@
 #ifndef FSBMODEL_H
 #define FSBMODEL_H
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 #include <QStringList>
 
 #include "fsentry.h"
 
-class FSBModel : public QObject
-{
-	Q_OBJECT
+class FSBModel : public QObject {
+    Q_OBJECT
 
-	friend class FileSystemTableModel;
+    friend class FileSystemTableModel;
 
 public:
-	explicit FSBModel(QObject *parent = NULL);
-	typedef QList<FSEntry> FileSystemEntryList;
+    explicit FSBModel(QObject* parent = NULL);
+    typedef QList<FSEntry> FileSystemEntryList;
 
-	virtual void refresh() = 0;
+    virtual void refresh() = 0;
 
-	const FileSystemEntryList &entries() const;
+    const FileSystemEntryList& entries() const;
 
-	const QString &path() const;
-	const QString &rootPath() const;
+    const QString& path() const;
+    const QString& rootPath() const;
 
-	bool contains(const QString &path) const;
+    bool contains(const QString& path) const;
 
-	virtual bool requiresAuthentication() const { return false; }
-	virtual bool isAuthenticated() const { return false; }
-	virtual void authenticate(const QString &, const QString &) { }
-	virtual void clearAuthentication() { }
+    virtual bool requiresAuthentication() const { return false; }
+    virtual bool isAuthenticated() const { return false; }
+    virtual void authenticate(const QString&, const QString&) {}
+    virtual void clearAuthentication() {}
 
-	bool hasFileEntry(QString name, QString &path);
-	bool hasFolderEntry(QString name);
+    bool hasFileEntry(QString name, QString& path);
+    bool hasFolderEntry(QString name);
 
 public slots:
-	void setPath(QString path);
+    void setPath(QString path);
 
 signals:
-	void processingEntries();
-	void entriesChanged();
-	void pathChanged(QString path);
+    void processingEntries();
+    void entriesChanged();
+    void pathChanged(QString path);
 
-	void authenticationFail(const QString &message);
-	void authenticationSuccess();
-	void authenticationClear();
+    void authenticationFail(const QString& message);
+    void authenticationSuccess();
+    void authenticationClear();
 
 protected:
+    QString _rootPath;
+    QString _path;
 
-	QString _rootPath;
-	QString _path;
+    static FSEntry createEntry(const QString& path, FSEntry::EntryType type = FSEntry::Other);
+    static FSEntry createEntry(const QString& path, const QString& name, const QString& description, FSEntry::EntryType type = FSEntry::Other);
 
-	static FSEntry createEntry(const QString &path, FSEntry::EntryType type = FSEntry::Other);
-	static FSEntry createEntry(const QString &path, const QString &name, const QString &description, FSEntry::EntryType type = FSEntry::Other);
-
-	FileSystemEntryList _entries;
-
+    FileSystemEntryList _entries;
 };
 
 #endif // FSBMODEL_H

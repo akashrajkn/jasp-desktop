@@ -25,16 +25,15 @@ namespace Ui {
 class RibbonMetaAnalysis;
 }
 
-class RibbonMetaAnalysis : public RibbonWidget
-{
-	Q_OBJECT
-	
+class RibbonMetaAnalysis : public RibbonWidget {
+    Q_OBJECT
+
 public:
-    explicit RibbonMetaAnalysis(QWidget *parent = 0);
+    explicit RibbonMetaAnalysis(QWidget* parent = 0);
     ~RibbonMetaAnalysis();
 
 private:
-    Ui::RibbonMetaAnalysis *ui;
+    Ui::RibbonMetaAnalysis* ui;
 };
 
 #endif // RIBBONMETA_ANALYSIS_H

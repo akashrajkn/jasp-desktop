@@ -21,14 +21,14 @@
 
 using namespace std;
 
-map<int, map<int, string> > Labels::_orgStringValues;
+map<int, map<int, string>> Labels::_orgStringValues;
 int Labels::_counter = 0;
 
-Labels::Labels(boost::interprocess::managed_shared_memory *mem)
-	: _labels(mem->get_segment_manager())
+Labels::Labels(boost::interprocess::managed_shared_memory* mem)
+    : _labels(mem->get_segment_manager())
 {
-	 _id = ++Labels::_counter;
-	_mem = mem;
+    _id = ++Labels::_counter;
+    _mem = mem;
 }
 
 Labels::~Labels()
@@ -37,289 +37,264 @@ Labels::~Labels()
 
 void Labels::clear()
 {
-	_labels.clear();
+    _labels.clear();
 }
 
 int Labels::add(int display)
 {
-	Label label(display);
-	_labels.push_back(label);
+    Label label(display);
+    _labels.push_back(label);
 
-	return display;
+    return display;
 }
 
-int Labels::add(const std::string &display)
+int Labels::add(const std::string& display)
 {
-	return add(_labels.size(), display);
+    return add(_labels.size(), display);
 }
 
-int Labels::add(int key, const std::string &display)
+int Labels::add(int key, const std::string& display)
 {
-	Label label(display, key);
-	_labels.push_back(label);
+    Label label(display, key);
+    _labels.push_back(label);
 
-	return key;
+    return key;
 }
 
-void Labels::syncInts(map<int, string> &values)
+void Labels::syncInts(map<int, string>& values)
 {
-	std::set<int> keys;
-	for (map<int, string>::const_iterator it = values.begin(); it != values.end(); ++it)
-		keys.insert(it->first);
+    std::set<int> keys;
+    for (map<int, string>::const_iterator it = values.begin(); it != values.end(); ++it)
+        keys.insert(it->first);
 
-	syncInts(keys);
+    syncInts(keys);
 
-	for (LabelVector::iterator it = _labels.begin(); it != _labels.end(); ++it)
-	{
-		Label &label = *it;
-		int value = label.value();
-		string &new_string_label = values[value];
-		string old_string_label = label.text();
-		if (new_string_label != old_string_label)
-			_setNewStringForLabel(label, new_string_label);
-	}
-
+    for (LabelVector::iterator it = _labels.begin(); it != _labels.end(); ++it) {
+        Label& label = *it;
+        int value = label.value();
+        string& new_string_label = values[value];
+        string old_string_label = label.text();
+        if (new_string_label != old_string_label)
+            _setNewStringForLabel(label, new_string_label);
+    }
 }
 
-void Labels::syncInts(const std::set<int> &values)
+void Labels::syncInts(const std::set<int>& values)
 {
-	std::set<int> valuesToAdd = values;
+    std::set<int> valuesToAdd = values;
 
-	for (LabelVector::const_iterator it = _labels.begin(); it != _labels.end(); /*++it*/)
-	{
-		const Label &label = *it;
-		int value = label.value();
-		if (std::find(values.begin(), values.end(), value) != values.end())
-		{
-			std::set<int>::iterator value_it = std::find(valuesToAdd.begin(), valuesToAdd.end(), value);
-			if (value_it != valuesToAdd.end())
-				valuesToAdd.erase(value_it);
-			++it;
-		}
-		else
-		{
-			std::cout << "Remove label " << label.text() << std::endl;
-			std::cout.flush();
-			_labels.erase(it);
-		}
-	}
+    for (LabelVector::const_iterator it = _labels.begin(); it != _labels.end(); /*++it*/) {
+        const Label& label = *it;
+        int value = label.value();
+        if (std::find(values.begin(), values.end(), value) != values.end()) {
+            std::set<int>::iterator value_it = std::find(valuesToAdd.begin(), valuesToAdd.end(), value);
+            if (value_it != valuesToAdd.end())
+                valuesToAdd.erase(value_it);
+            ++it;
+        } else {
+            std::cout << "Remove label " << label.text() << std::endl;
+            std::cout.flush();
+            _labels.erase(it);
+        }
+    }
 
-	for (std::set<int>::iterator it = valuesToAdd.begin(); it != valuesToAdd.end(); ++it)
-	{
-		int value = *it;
-		add(value);
-	}
+    for (std::set<int>::iterator it = valuesToAdd.begin(); it != valuesToAdd.end(); ++it) {
+        int value = *it;
+        add(value);
+    }
 }
 
-map<string, int> Labels::syncStrings(const vector<string> &new_values, const map<string, string> &new_labels)
+map<string, int> Labels::syncStrings(const vector<string>& new_values, const map<string, string>& new_labels)
 {
-	const map<int, string> &orgStringValues = getOrgStringValues();
-	vector<string> valuesToAdd = new_values;
-	map<string, int> result;
+    const map<int, string>& orgStringValues = getOrgStringValues();
+    vector<string> valuesToAdd = new_values;
+    map<string, int> result;
 
+    int maxLabelKey = 0;
+    for (Labels::const_iterator it = begin(); it != end(); /*++it*/) {
+        const Label& label = *it;
+        if (label.value() > maxLabelKey)
+            maxLabelKey = label.value();
 
-	int maxLabelKey = 0;
-	for (Labels::const_iterator it = begin(); it != end(); /*++it*/)
-	{
-		const Label &label = *it;
-		if (label.value() > maxLabelKey)
-			maxLabelKey = label.value();
+        string value = label.text();
 
-		string value = label.text();
+        map<int, string>::const_iterator orgStringValuesIt = orgStringValues.find(label.value());
+        if (orgStringValuesIt != orgStringValues.end())
+            value = orgStringValuesIt->second;
 
-		map<int, string>::const_iterator orgStringValuesIt = orgStringValues.find(label.value());
-		if (orgStringValuesIt != orgStringValues.end()) value = orgStringValuesIt->second;
+        if (std::find(new_values.begin(), new_values.end(), value) != new_values.end()) {
+            result[value] = label.value();
+            vector<string>::iterator value_it = std::find(valuesToAdd.begin(), valuesToAdd.end(), value);
+            if (value_it != valuesToAdd.end())
+                valuesToAdd.erase(value_it);
+            ++it;
+        } else {
+            _labels.erase(it);
+        }
+    }
 
-		if (std::find(new_values.begin(), new_values.end(), value) != new_values.end())
-		{
-			result[value] = label.value();
-			vector<string>::iterator value_it = std::find(valuesToAdd.begin(), valuesToAdd.end(), value);
-			if (value_it != valuesToAdd.end())
-				valuesToAdd.erase(value_it);
-			++it;
-		}
-		else
-		{
-			_labels.erase(it);
-		}
-	}
+    for (vector<string>::iterator it = valuesToAdd.begin(); it != valuesToAdd.end(); ++it) {
+        string value = *it;
+        maxLabelKey++;
+        add(maxLabelKey, value);
+        result[value] = maxLabelKey;
+    }
 
-	for (vector<string>::iterator it = valuesToAdd.begin(); it != valuesToAdd.end(); ++it)
-	{
-		string value = *it;
-		maxLabelKey++;
-		add(maxLabelKey,value);
-		result[value] = maxLabelKey;
-	}
+    for (LabelVector::iterator it = _labels.begin(); it != _labels.end(); ++it) {
+        Label& label = *it;
+        string string_label = label.text();
+        map<string, string>::const_iterator new_labels_it = new_labels.find(string_label);
+        if (new_labels_it != new_labels.end()) {
+            string new_string_label = new_labels_it->second;
+            if (string_label != new_string_label)
+                _setNewStringForLabel(label, new_string_label);
+        }
+    }
 
-	for (LabelVector::iterator it = _labels.begin(); it != _labels.end(); ++it)
-	{
-		Label &label = *it;
-		string string_label = label.text();
-		map<string, string>::const_iterator new_labels_it = new_labels.find(string_label);
-		if (new_labels_it != new_labels.end())
-		{
-			string new_string_label = new_labels_it->second;
-			if (string_label != new_string_label)
-				_setNewStringForLabel(label, new_string_label);
-		}
-	}
-
-	return result;
+    return result;
 }
 
 std::set<int> Labels::getIntValues()
 {
-	std::set<int> result;
-	for (LabelVector::const_iterator it = _labels.begin(); it != _labels.end(); ++it)
-	{
-		const Label &label = *it;
-		int value = label.value();
-		result.insert(value);
-	}
-	return result;
+    std::set<int> result;
+    for (LabelVector::const_iterator it = _labels.begin(); it != _labels.end(); ++it) {
+        const Label& label = *it;
+        int value = label.value();
+        result.insert(value);
+    }
+    return result;
 }
 
-map<int, string> &Labels::getOrgStringValues() const
+map<int, string>& Labels::getOrgStringValues() const
 {
-	return Labels::_orgStringValues[_id];
+    return Labels::_orgStringValues[_id];
 }
 
 void Labels::setOrgStringValues(int key, std::string value)
 {
-	map<int, string> &orgStringValues = getOrgStringValues();
-	orgStringValues[key] = value;
+    map<int, string>& orgStringValues = getOrgStringValues();
+    orgStringValues[key] = value;
 }
 
-const Label &Labels::getLabelObjectFromKey(int index) const
+const Label& Labels::getLabelObjectFromKey(int index) const
 
 {
-	BOOST_FOREACH(const Label &label, _labels)
-	{
-		if (label.value() == index)
-			return label;
-	}
+    BOOST_FOREACH (const Label& label, _labels) {
+        if (label.value() == index)
+            return label;
+    }
 
-	std::cout << "Cannot find entry " << index << std::endl;
-	BOOST_FOREACH(const Label &label, _labels)
-	{
-		std::cout << "Label Value: " << label.value() << ", Text: " << label.text() << std::endl;
-	}
-	std::cout.flush();
-	throw runtime_error("Cannot find this entry");
+    std::cout << "Cannot find entry " << index << std::endl;
+    BOOST_FOREACH (const Label& label, _labels) {
+        std::cout << "Label Value: " << label.value() << ", Text: " << label.text() << std::endl;
+    }
+    std::cout.flush();
+    throw runtime_error("Cannot find this entry");
 }
 
-bool Labels::setLabelFromRow(int row, const string &display)
+bool Labels::setLabelFromRow(int row, const string& display)
 {
-	if (row >= (int)_labels.size())
-	{
-		std::cout << "Set label with wrong row: " << row << ", size: " << _labels.size() << std::endl;
-		std::cout.flush();
-		return false;
-	}
-	Label &label = _labels.at(row);
-	if (label.text() == display)
-		return false;
+    if (row >= (int)_labels.size()) {
+        std::cout << "Set label with wrong row: " << row << ", size: " << _labels.size() << std::endl;
+        std::cout.flush();
+        return false;
+    }
+    Label& label = _labels.at(row);
+    if (label.text() == display)
+        return false;
 
-	_setNewStringForLabel(label, display);
-	return true;
+    _setNewStringForLabel(label, display);
+    return true;
 }
 
-void Labels::_setNewStringForLabel(Label &label, const string &display)
+void Labels::_setNewStringForLabel(Label& label, const string& display)
 {
-	int label_value = label.value();
-	string label_string = label.text();
-	map<int, string> &orgStringValues = getOrgStringValues();
-	if (orgStringValues.find(label_value) == orgStringValues.end())
-		orgStringValues[label_value] = label_string;
-	label.setLabel(display);
+    int label_value = label.value();
+    string label_string = label.text();
+    map<int, string>& orgStringValues = getOrgStringValues();
+    if (orgStringValues.find(label_value) == orgStringValues.end())
+        orgStringValues[label_value] = label_string;
+    label.setLabel(display);
 }
 
-string Labels::_getValueFromLabel(const Label &label) const
+string Labels::_getValueFromLabel(const Label& label) const
 {
-	if (label.hasIntValue())
-	{
-		std::ostringstream ss;
-		ss << label.value();
-		return ss.str();
-	}
-	else
-	{
-		map<int, string> &orgStringValues = getOrgStringValues();
-		map<int, string>::const_iterator it = orgStringValues.find(label.value());
-		if (it == orgStringValues.end())
-			return label.text();
-		else
-			return it->second;
-	}
+    if (label.hasIntValue()) {
+        std::ostringstream ss;
+        ss << label.value();
+        return ss.str();
+    } else {
+        map<int, string>& orgStringValues = getOrgStringValues();
+        map<int, string>::const_iterator it = orgStringValues.find(label.value());
+        if (it == orgStringValues.end())
+            return label.text();
+        else
+            return it->second;
+    }
 }
 
 string Labels::getValueFromKey(int key) const
 {
-	const Label &label = getLabelObjectFromKey(key);
-	return _getValueFromLabel(label);
+    const Label& label = getLabelObjectFromKey(key);
+    return _getValueFromLabel(label);
 }
 
 string Labels::getValueFromRow(int row)
 {
-	if (row >= (int)_labels.size())
-	{
-		std::cout << "Get value with wrong row: " << row << ", size: " << _labels.size() << std::endl;
-		std::cout.flush();
-		return "";
-	}
-	const Label &label = _labels.at(row);
-	return _getValueFromLabel(label);
+    if (row >= (int)_labels.size()) {
+        std::cout << "Get value with wrong row: " << row << ", size: " << _labels.size() << std::endl;
+        std::cout.flush();
+        return "";
+    }
+    const Label& label = _labels.at(row);
+    return _getValueFromLabel(label);
 }
 
 std::string Labels::getLabelFromRow(int row)
 {
-	if (row >= (int)_labels.size())
-	{
-		std::cout << "Get label with wrong row: " << row << ", size: " << _labels.size() << std::endl;
-		std::cout.flush();
-		return "";
-	}
-	Label &label = _labels.at(row);
-	return label.text();
+    if (row >= (int)_labels.size()) {
+        std::cout << "Get label with wrong row: " << row << ", size: " << _labels.size() << std::endl;
+        std::cout.flush();
+        return "";
+    }
+    Label& label = _labels.at(row);
+    return label.text();
 }
 
-void Labels::set(vector<Label> &labels)
+void Labels::set(vector<Label>& labels)
 {
-	clear();
-	BOOST_FOREACH(Label &label, labels)
-	{
-		_labels.push_back(label);
-	}
+    clear();
+    BOOST_FOREACH (Label& label, labels) {
+        _labels.push_back(label);
+    }
 }
 
 size_t Labels::size() const
 {
-	return _labels.size();
+    return _labels.size();
 }
 
-Labels &Labels::operator=(const Labels &labels)
+Labels& Labels::operator=(const Labels& labels)
 {
-	if (&labels != this)
-	{
-		this->_mem = labels._mem;
-		this->_labels = labels._labels;
-	}
+    if (&labels != this) {
+        this->_mem = labels._mem;
+        this->_labels = labels._labels;
+    }
 
-	return *this;
+    return *this;
 }
 
-void Labels::setSharedMemory(boost::interprocess::managed_shared_memory *mem)
+void Labels::setSharedMemory(boost::interprocess::managed_shared_memory* mem)
 {
-	_mem = mem;
+    _mem = mem;
 }
 
 Labels::const_iterator Labels::begin() const
 {
-	return _labels.begin();
+    return _labels.begin();
 }
 
 Labels::const_iterator Labels::end() const
 {
-	return _labels.end();
+    return _labels.end();
 }

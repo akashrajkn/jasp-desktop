@@ -22,69 +22,65 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
-AuthWidget::AuthWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::AuthWidget)
+AuthWidget::AuthWidget(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::AuthWidget)
 {
-	ui->setupUi(this);
-	ui->RememberMeCheckBox->setChecked(_settings.value("OSFRememberMe", false).toBool());
+    ui->setupUi(this);
+    ui->RememberMeCheckBox->setChecked(_settings.value("OSFRememberMe", false).toBool());
 
-	connect(ui->loginButton, SIGNAL(clicked(bool)), this, SLOT(loginSelected()));
-	connect(ui->RememberMeCheckBox, SIGNAL(clicked(bool)), this, SLOT(on_RememberMeCheckBox_clicked(bool)));
+    connect(ui->loginButton, SIGNAL(clicked(bool)), this, SLOT(loginSelected()));
+    connect(ui->RememberMeCheckBox, SIGNAL(clicked(bool)), this, SLOT(on_RememberMeCheckBox_clicked(bool)));
 
-	ui->email->installEventFilter(this);
-	ui->password->installEventFilter(this);
+    ui->email->installEventFilter(this);
+    ui->password->installEventFilter(this);
 }
 
 AuthWidget::~AuthWidget()
 {
-	delete ui;
+    delete ui;
 }
 
 void AuthWidget::setUsernameclearPassword()
 {
-	ui->password->setText("");
-	QString username = _settings.value("OSFUsername", "").toString();
-	ui->email->setText(username);
+    ui->password->setText("");
+    QString username = _settings.value("OSFUsername", "").toString();
+    ui->email->setText(username);
 }
 
-bool AuthWidget::eventFilter(QObject *object, QEvent *event)
+bool AuthWidget::eventFilter(QObject* object, QEvent* event)
 {
-	if (object == ui->password && event->type() == QEvent::KeyPress)
-	{
-		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+    if (object == ui->password && event->type() == QEvent::KeyPress) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
 
-		switch (keyEvent->key())
-		{
-		case Qt::Key_Enter:
-		case Qt::Key_Return:
-			ui->loginButton->click();
-		}
-	}
+        switch (keyEvent->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            ui->loginButton->click();
+        }
+    }
 
-	if (object == ui->email && event->type() == QEvent::Show)
-	{
-		ui->email->setFocus();
-	}
+    if (object == ui->email && event->type() == QEvent::Show) {
+        ui->email->setFocus();
+    }
 
-	return QWidget::eventFilter(object, event);
+    return QWidget::eventFilter(object, event);
 }
 
 void AuthWidget::loginSelected()
 {
-	if  ( ui->password->text()=="" || ui->email->text()=="" )
-	{
-		QMessageBox::warning(this, "Login", " User or password cannot be empty. ");
-		return;
-	}
+    if (ui->password->text() == "" || ui->email->text() == "") {
+        QMessageBox::warning(this, "Login", " User or password cannot be empty. ");
+        return;
+    }
 
-	emit loginRequested(ui->email->text(), ui->password->text());
+    emit loginRequested(ui->email->text(), ui->password->text());
 }
 
 void AuthWidget::on_RememberMeCheckBox_clicked(bool check)
 {
-	if (check)
-		_settings.setValue("OSFRememberMe", check);
-	else
-		_settings.remove("OSFRememberMe");
+    if (check)
+        _settings.setValue("OSFRememberMe", check);
+    else
+        _settings.remove("OSFRememberMe");
 }

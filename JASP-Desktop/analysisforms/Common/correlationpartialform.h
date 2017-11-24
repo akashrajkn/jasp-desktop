@@ -19,26 +19,25 @@
 #ifndef CORRELATIONPARTIALFORM_H
 #define CORRELATIONPARTIALFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class CorrelationPartialForm;
 }
 
-class CorrelationPartialForm : public AnalysisForm
-{
-	Q_OBJECT
+class CorrelationPartialForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit CorrelationPartialForm(QWidget *parent = 0);
-	~CorrelationPartialForm();
+    explicit CorrelationPartialForm(QWidget* parent = 0);
+    ~CorrelationPartialForm();
 
 private:
-	Ui::CorrelationPartialForm *ui;
+    Ui::CorrelationPartialForm* ui;
 
-	TableModelVariablesAssigned *_modelVariables;
-	TableModelVariablesAssigned *_modelControllingFor;
+    TableModelVariablesAssigned* _modelVariables;
+    TableModelVariablesAssigned* _modelControllingFor;
 };
 
 #endif // CORRELATIONPARTIALFORM_H

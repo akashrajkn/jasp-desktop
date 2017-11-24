@@ -18,159 +18,147 @@
 
 #include "maintableview.h"
 
-#include <QLabel>
+#include <QDebug>
 #include <QGridLayout>
 #include <QHeaderView>
-#include <QDebug>
+#include <QLabel>
 #include <QMessageBox>
 
 #include "datasettablemodel.h"
 
-MainTableView::MainTableView(QWidget *parent) :
-	QTableView(parent)
+MainTableView::MainTableView(QWidget* parent)
+    : QTableView(parent)
 {
-	_dataSetModel = NULL;
-	_variablesPage = NULL;
-	_dataLoaded = false;
+    _dataSetModel = NULL;
+    _variablesPage = NULL;
+    _dataLoaded = false;
 
-	_infoPopup = new InfoPopup(this);
-	_infoPopup->setVisible(false);
-	_infoPopupVisible = false;
+    _infoPopup = new InfoPopup(this);
+    _infoPopup->setVisible(false);
+    _infoPopupVisible = false;
 
-	QLabel *label = new QLabel(QString("This column only permits numeric values"), _infoPopup);
-	label->setWordWrap(true);
-	_infoPopup->layout()->addWidget(label);
+    QLabel* label = new QLabel(QString("This column only permits numeric values"), _infoPopup);
+    label->setWordWrap(true);
+    _infoPopup->layout()->addWidget(label);
 
-	_header = new MainTableHorizontalHeader();
-	connect(_header, SIGNAL(columnTypeChanged(int,Column::ColumnType)), this, SLOT(columnTypeChanged(int,Column::ColumnType)));
-	connect(_header, SIGNAL(columnNamePressed(int)), this, SLOT(showLabelView(int)));
-	setHorizontalHeader(_header);
+    _header = new MainTableHorizontalHeader();
+    connect(_header, SIGNAL(columnTypeChanged(int, Column::ColumnType)), this, SLOT(columnTypeChanged(int, Column::ColumnType)));
+    connect(_header, SIGNAL(columnNamePressed(int)), this, SLOT(showLabelView(int)));
+    setHorizontalHeader(_header);
 }
 
-void MainTableView::setModel(QAbstractItemModel *model)
+void MainTableView::setModel(QAbstractItemModel* model)
 {
-	_dataSetModel = dynamic_cast<DataSetTableModel *>(model);
+    _dataSetModel = dynamic_cast<DataSetTableModel*>(model);
 
-	if (_dataSetModel != NULL)
-		connect(_dataSetModel, SIGNAL(badDataEntered(QModelIndex)), this, SLOT(badDataEnteredHandler(QModelIndex)));
+    if (_dataSetModel != NULL)
+        connect(_dataSetModel, SIGNAL(badDataEntered(QModelIndex)), this, SLOT(badDataEnteredHandler(QModelIndex)));
 
-	QTableView::setModel(_dataSetModel);
+    QTableView::setModel(_dataSetModel);
 }
 
-void MainTableView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void MainTableView::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
-	hideInfoPopup();
+    hideInfoPopup();
 
-	QTableView::selectionChanged(selected, deselected);
+    QTableView::selectionChanged(selected, deselected);
 }
 
 void MainTableView::verticalScrollbarValueChanged(int value)
 {
-	if (_infoPopupVisible)
-	{
-		moveInfoPopup();
-	}
+    if (_infoPopupVisible) {
+        moveInfoPopup();
+    }
 }
 
 void MainTableView::badDataEnteredHandler(QModelIndex index)
 {
-	showInfoPopup(index);
+    showInfoPopup(index);
 }
 
 void MainTableView::columnTypeChanged(int columnIndex, Column::ColumnType newColumnType)
 {
-	bool changed = _dataSetModel->setColumnType(columnIndex, newColumnType);
-	_variablesPage->setCurrentColumn(columnIndex);
+    bool changed = _dataSetModel->setColumnType(columnIndex, newColumnType);
+    _variablesPage->setCurrentColumn(columnIndex);
 
-	if (!changed)
-	{
-		std::string msg = "You cannot change this column to type " + Column::getColumnTypeAsString(newColumnType);
-		QMessageBox::warning(this, "Column Type Change", QString::fromStdString(msg));
-	}
-
+    if (!changed) {
+        std::string msg = "You cannot change this column to type " + Column::getColumnTypeAsString(newColumnType);
+        QMessageBox::warning(this, "Column Type Change", QString::fromStdString(msg));
+    }
 }
 
-void MainTableView::showInfoPopup(QModelIndex &index)
+void MainTableView::showInfoPopup(QModelIndex& index)
 {
-	_infoPopupIndex = index;
-	_infoPopupVisible = true;
-	moveInfoPopup();
+    _infoPopupIndex = index;
+    _infoPopupVisible = true;
+    moveInfoPopup();
 }
 
 void MainTableView::moveInfoPopup()
 {
-	int headerWidth = this->verticalHeader()->width();
-	int headerHeight = this->horizontalHeader()->height();
+    int headerWidth = this->verticalHeader()->width();
+    int headerHeight = this->horizontalHeader()->height();
 
-	QRect rect = this->visualRect(_infoPopupIndex);
-	QRect visibleArea = this->rect();
+    QRect rect = this->visualRect(_infoPopupIndex);
+    QRect visibleArea = this->rect();
 
-	if (visibleArea.contains(rect))
-	{
-		_infoPopup->show();
+    if (visibleArea.contains(rect)) {
+        _infoPopup->show();
 
-		int top = headerHeight + rect.y() + rect.height() - _infoPopup->pointLength() / 2;
-		int left = headerWidth + rect.x() +  _infoPopup->pointLength() / 2;
+        int top = headerHeight + rect.y() + rect.height() - _infoPopup->pointLength() / 2;
+        int left = headerWidth + rect.x() + _infoPopup->pointLength() / 2;
 
-		int bottom = top + _infoPopup->height();
+        int bottom = top + _infoPopup->height();
 
-		int visibleBottom = this->viewport()->height();
+        int visibleBottom = this->viewport()->height();
 
-		if (bottom > visibleBottom)
-		{
-			_infoPopup->setDirection(InfoPopup::BottomLeft);
-			top = headerHeight + rect.y() - _infoPopup->height() + _infoPopup->pointLength() / 2 + 4; // don't know why +4
-		}
-		else
-		{
-			_infoPopup->setDirection(InfoPopup::TopLeft);
-		}
+        if (bottom > visibleBottom) {
+            _infoPopup->setDirection(InfoPopup::BottomLeft);
+            top = headerHeight + rect.y() - _infoPopup->height() + _infoPopup->pointLength() / 2 + 4; // don't know why +4
+        } else {
+            _infoPopup->setDirection(InfoPopup::TopLeft);
+        }
 
-		_infoPopup->move(left, top);
-	}
-	else
-	{
-		_infoPopup->hide();
-	}
+        _infoPopup->move(left, top);
+    } else {
+        _infoPopup->hide();
+    }
 }
 
 void MainTableView::hideInfoPopup()
 {
-	if (_infoPopupVisible)
-	{
-		_infoPopup->hide();
-		_infoPopupVisible = false;
-	}
+    if (_infoPopupVisible) {
+        _infoPopup->hide();
+        _infoPopupVisible = false;
+    }
 }
 
 void MainTableView::showLabelView(int columnIndex)
-{	
-	if (_dataSetModel->getColumnType(columnIndex) == Column::ColumnTypeScale)
-		return;
+{
+    if (_dataSetModel->getColumnType(columnIndex) == Column::ColumnTypeScale)
+        return;
 
-	_variablesPage->setCurrentColumn(columnIndex);
-	emit dataTableColumnSelected();
+    _variablesPage->setCurrentColumn(columnIndex);
+    emit dataTableColumnSelected();
 }
 
-void MainTableView::setVariablesView(VariablesWidget *variablesPage)
+void MainTableView::setVariablesView(VariablesWidget* variablesPage)
 {
-	_variablesPage = variablesPage;
+    _variablesPage = variablesPage;
 }
 
 void MainTableView::adjustAfterDataLoad(bool dataLoaded)
 {
-	if (dataLoaded)
-	{
-		horizontalHeader()->setResizeContentsPrecision(50);
-		horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	}
-	_dataLoaded = dataLoaded;
-	setToolTip(dataLoaded ? "Double-click to edit data" : "");
-
+    if (dataLoaded) {
+        horizontalHeader()->setResizeContentsPrecision(50);
+        horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+    }
+    _dataLoaded = dataLoaded;
+    setToolTip(dataLoaded ? "Double-click to edit data" : "");
 }
 
-void MainTableView::mouseDoubleClickEvent(QMouseEvent *event)
+void MainTableView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-	if (_dataLoaded)
-		emit dataTableDoubleClicked();
+    if (_dataLoaded)
+        emit dataTableDoubleClicked();
 }

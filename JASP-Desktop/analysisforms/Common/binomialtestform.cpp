@@ -19,35 +19,33 @@
 #include "binomialtestform.h"
 #include "ui_binomialtestform.h"
 
-BinomialTestForm::BinomialTestForm(QWidget *parent) :
-	AnalysisForm("BinomialTestForm", parent),
-	ui(new Ui::BinomialTestForm)
+BinomialTestForm::BinomialTestForm(QWidget* parent)
+    : AnalysisForm("BinomialTestForm", parent)
+    , ui(new Ui::BinomialTestForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableVariables->setModel(&_availableVariablesModel);
-	ui->listAvailableVariables->setDoubleClickTarget(ui->variables);
+    ui->listAvailableVariables->setModel(&_availableVariablesModel);
+    ui->listAvailableVariables->setDoubleClickTarget(ui->variables);
 
-	TableModelVariablesAssigned *model = new TableModelVariablesAssigned(this);
-	model->setSource(&_availableVariablesModel);
-	model->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->variables->setModel(model);
-	ui->variables->setDoubleClickTarget(ui->listAvailableVariables);
+    TableModelVariablesAssigned* model = new TableModelVariablesAssigned(this);
+    model->setSource(&_availableVariablesModel);
+    model->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->variables->setModel(model);
+    ui->variables->setDoubleClickTarget(ui->listAvailableVariables);
 
-	ui->assignButton->setSourceAndTarget(ui->listAvailableVariables, ui->variables);
+    ui->assignButton->setSourceAndTarget(ui->listAvailableVariables, ui->variables);
 
-	ui->testValue->setLabel("Test value");
+    ui->testValue->setLabel("Test value");
 
 #ifdef QT_NO_DEBUG
 
 #else
 
 #endif
-
-
 }
 
 BinomialTestForm::~BinomialTestForm()
 {
-	delete ui;
+    delete ui;
 }

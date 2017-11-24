@@ -21,27 +21,33 @@
 /*
  * Macros to build attriutes of a class.
  */
-#define _ATT_VALUE(type, name)		\
-private:							\
-	type _##name;					\
+#define _ATT_VALUE(type, name) \
+private:                       \
+    type _##name;
 
-#define READ_ATTR(type, name)		\
-	_ATT_VALUE(type, name)			\
-public:								\
-	const type & name() const		\
-		{ return _##name; }			\
+#define READ_ATTR(type, name) \
+    _ATT_VALUE(type, name)    \
+public:                       \
+    const type& name() const  \
+    {                         \
+        return _##name;       \
+    }
 
-#define WRITE_ATTR(type, name)		\
-	_ATT_VALUE(type, name)			\
-public:								\
-	void name(const type &value)	\
-		{ _##name = value; }		\
+#define WRITE_ATTR(type, name)   \
+    _ATT_VALUE(type, name)       \
+public:                          \
+    void name(const type& value) \
+    {                            \
+        _##name = value;         \
+    }
 
-#define RW_ATTR(type, name)			\
-	READ_ATTR(type, name)			\
-public:								\
-	void name(const type &value)	\
-		{ _##name = value; }		\
+#define RW_ATTR(type, name)      \
+    READ_ATTR(type, name)        \
+public:                          \
+    void name(const type& value) \
+    {                            \
+        _##name = value;         \
+    }
 
 /*
  * Defines a series of DEBUG_COUT macros,
@@ -52,17 +58,39 @@ public:								\
 
 #include <iostream>
 
-#define DEBUG_COUT1(z)	std::cout << z << std::endl; std::cout.flush()
-#define DEBUG_COUT2(y, z)	std::cout << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT3(x, y, z) std::cout << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT4(w, x, y, z) std::cout << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT5(v, w, x, y, z) std::cout << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT6(u, v, w, x, y, z) std::cout << u << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT7(t, u, v, w, x, y, z) std::cout << t << u << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT8(s, t, u, v, w, x, y, z) std::cout << s << t << u << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT9(r, s, t, u, v, w, x, y, z) std::cout << r << s << t << u << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT10(q, r, s, t, u, v, w, x, y, z) std::cout << q << r << s << t << u << v << w << x << y << z << std::endl; std::cout.flush()
-#define DEBUG_COUT11(p, q, r, s, t, u, v, w, x, y, z) std::cout << p << q << r << s << t << u << v << w << x << y << z << std::endl; std::cout.flush()
+#define DEBUG_COUT1(z)           \
+    std::cout << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT2(y, z)             \
+    std::cout << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT3(x, y, z)               \
+    std::cout << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT4(w, x, y, z)                 \
+    std::cout << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT5(v, w, x, y, z)                   \
+    std::cout << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT6(u, v, w, x, y, z)                     \
+    std::cout << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT7(t, u, v, w, x, y, z)                       \
+    std::cout << t << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT8(s, t, u, v, w, x, y, z)                         \
+    std::cout << s << t << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT9(r, s, t, u, v, w, x, y, z)                           \
+    std::cout << r << s << t << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT10(q, r, s, t, u, v, w, x, y, z)                            \
+    std::cout << q << r << s << t << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
+#define DEBUG_COUT11(p, q, r, s, t, u, v, w, x, y, z)                              \
+    std::cout << p << q << r << s << t << u << v << w << x << y << z << std::endl; \
+    std::cout.flush()
 
 #else
 

@@ -23,23 +23,21 @@
 
 #include "fileevent.h"
 
-class BackstagePage : public QWidget
-{
-	Q_OBJECT
+class BackstagePage : public QWidget {
+    Q_OBJECT
 public:
-	explicit BackstagePage(QWidget *parent = 0);
+    explicit BackstagePage(QWidget* parent = 0);
 
-	virtual void setMode(FileEvent::FileMode mode);
+    virtual void setMode(FileEvent::FileMode mode);
 
 signals:
-	void dataSetIORequest(FileEvent *event);
+    void dataSetIORequest(FileEvent* event);
 
-	void closeDataSetSelected();
-	void exportSelected(QString filename);
+    void closeDataSetSelected();
+    void exportSelected(QString filename);
 
 protected:
-	FileEvent::FileMode _mode;
-
+    FileEvent::FileMode _mode;
 };
 
 #endif // BACKSTAGEPAGE_H

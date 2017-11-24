@@ -21,131 +21,124 @@
 using namespace std;
 
 OptionTerms::OptionTerms()
-	: OptionI(true)
+    : OptionI(true)
 {
-	_onlyOneComponent = false;
-	_onlyOneTerm = false;
+    _onlyOneComponent = false;
+    _onlyOneTerm = false;
 }
 
 OptionTerms::OptionTerms(bool onlyOneComponent, bool onlyOneTerm)
-	: OptionI(true)
+    : OptionI(true)
 {
-	_onlyOneComponent = onlyOneComponent;
-	_onlyOneTerm = onlyOneTerm;
+    _onlyOneComponent = onlyOneComponent;
+    _onlyOneTerm = onlyOneTerm;
 }
 
-void OptionTerms::set(const Json::Value &value)
+void OptionTerms::set(const Json::Value& value)
 {
-	if ( ! value.isArray())
-		return;
+    if (!value.isArray())
+        return;
 
-	vector<vector<string> > terms;
+    vector<vector<string>> terms;
 
-	for (size_t i = 0; i < value.size(); i++)
-	{
-		const Json::Value &jVariable = value.get(i, Json::nullValue);
-		if ( ! jVariable.isArray())
-			return;
+    for (size_t i = 0; i < value.size(); i++) {
+        const Json::Value& jVariable = value.get(i, Json::nullValue);
+        if (!jVariable.isArray())
+            return;
 
-		vector<string> term;
+        vector<string> term;
 
-		for (size_t j = 0; j < jVariable.size(); j++)
-		{
-			Json::Value jComponent = jVariable.get(j, Json::nullValue);
-			if ( ! jComponent.isString())
-				return;
+        for (size_t j = 0; j < jVariable.size(); j++) {
+            Json::Value jComponent = jVariable.get(j, Json::nullValue);
+            if (!jComponent.isString())
+                return;
 
-			term.push_back(jComponent.asString());
-		}
+            term.push_back(jComponent.asString());
+        }
 
-		terms.push_back(term);
-	}
+        terms.push_back(term);
+    }
 
-	setValue(terms);
+    setValue(terms);
 }
 
 Json::Value OptionTerms::asJSON() const
 {
-	Json::Value top;
+    Json::Value top;
 
-	BOOST_FOREACH(const vector<string> &term, _value)
-	{
-		Json::Value row(Json::arrayValue);
+    BOOST_FOREACH (const vector<string>& term, _value) {
+        Json::Value row(Json::arrayValue);
 
-		BOOST_FOREACH(const string &component, term)
-		{
-			row.append(component);
-		}
+        BOOST_FOREACH (const string& component, term) {
+            row.append(component);
+        }
 
-		top.append(row);
-	}
+        top.append(row);
+    }
 
-	return top;
+    return top;
 }
 
-Option *OptionTerms::clone() const
+Option* OptionTerms::clone() const
 {
-	OptionTerms *c = new OptionTerms(_onlyOneComponent, _onlyOneTerm);
-	c->setValue(value());
-	return c;
+    OptionTerms* c = new OptionTerms(_onlyOneComponent, _onlyOneTerm);
+    c->setValue(value());
+    return c;
 }
 
-void OptionTerms::init(const Json::Value &data)
+void OptionTerms::init(const Json::Value& data)
 {
-	Json::Value def4ult = data.get("default", Json::nullValue);
-	if (def4ult.isNull() == false)
-		set(def4ult);
+    Json::Value def4ult = data.get("default", Json::nullValue);
+    if (def4ult.isNull() == false)
+        set(def4ult);
 }
 
-void OptionTerms::setValue(const vector<vector<string> > &value)
+void OptionTerms::setValue(const vector<vector<string>>& value)
 {
-	vector<vector<string> > v = value;
+    vector<vector<string>> v = value;
 
-	if (_onlyOneTerm && value.size() > 1)
-	{
-		v.erase(++v.begin(), v.end());
+    if (_onlyOneTerm && value.size() > 1) {
+        v.erase(++v.begin(), v.end());
 
-		if (_onlyOneComponent && _onlyOneTerm && v.front().size() > 1)
-		{
-			vector<string> &term = v.front();
-			term.erase(++term.begin(), term.end());
-		}
-	}
+        if (_onlyOneComponent && _onlyOneTerm && v.front().size() > 1) {
+            vector<string>& term = v.front();
+            term.erase(++term.begin(), term.end());
+        }
+    }
 
-	OptionI::setValue(value);
+    OptionI::setValue(value);
 }
 
-void OptionTerms::setValue(const vector<string> &value)
+void OptionTerms::setValue(const vector<string>& value)
 {
-	vector<vector<string> > terms;
+    vector<vector<string>> terms;
 
-	BOOST_FOREACH(string variable, value)
-	{
-		vector<string> components;
-		components.push_back(variable);
-		terms.push_back(components);
-	}
+    BOOST_FOREACH (string variable, value) {
+        vector<string> components;
+        components.push_back(variable);
+        terms.push_back(components);
+    }
 
-	setValue(terms);
+    setValue(terms);
 }
 
-void OptionTerms::setValue(const string &value)
+void OptionTerms::setValue(const string& value)
 {
-	vector<string> term;
-	vector<vector<string> > terms;
+    vector<string> term;
+    vector<vector<string>> terms;
 
-	term.push_back(value);
-	terms.push_back(term);
+    term.push_back(value);
+    terms.push_back(term);
 
-	setValue(terms);
+    setValue(terms);
 }
 
 bool OptionTerms::onlyOneTerm() const
 {
-	return _onlyOneTerm;
+    return _onlyOneTerm;
 }
 
 bool OptionTerms::onlyOneComponent() const
 {
-	return _onlyOneComponent;
+    return _onlyOneComponent;
 }

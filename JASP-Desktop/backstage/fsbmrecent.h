@@ -25,26 +25,24 @@
 
 #include "common.h"
 
-class FSBMRecent : public FSBModel
-{
+class FSBMRecent : public FSBModel {
 public:
-	FSBMRecent(QObject *parent = NULL);
+    FSBMRecent(QObject* parent = NULL);
 
-	void refresh() OVERRIDE;
+    void refresh() OVERRIDE;
 
-	void addRecent(const QString &path);
-	void filter(bool (*filterFunction)(QString));
+    void addRecent(const QString& path);
+    void filter(bool (*filterFunction)(QString));
 
 protected:
-	bool eventFilter(QObject *object, QEvent *event) OVERRIDE;
+    bool eventFilter(QObject* object, QEvent* event) OVERRIDE;
 
 private:
-	QStringList load();
-	void populate(const QStringList &paths);
-	bool isUrl(const QString &path) const;
+    QStringList load();
+    void populate(const QStringList& paths);
+    bool isUrl(const QString& path) const;
 
-	QSettings _settings;
-
+    QSettings _settings;
 };
 
 #endif // FSBROWSERMODELRECENT_H

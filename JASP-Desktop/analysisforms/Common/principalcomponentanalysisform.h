@@ -19,30 +19,26 @@
 #ifndef PRINCIPALCOMPONENTANALYSISFORM_H
 #define PRINCIPALCOMPONENTANALYSISFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class PrincipalComponentAnalysisForm;
 }
 
-class PrincipalComponentAnalysisForm : public AnalysisForm
-{
-	Q_OBJECT
+class PrincipalComponentAnalysisForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit PrincipalComponentAnalysisForm(QWidget *parent = 0);
-	~PrincipalComponentAnalysisForm();
+    explicit PrincipalComponentAnalysisForm(QWidget* parent = 0);
+    ~PrincipalComponentAnalysisForm();
 
 private:
-	Ui::PrincipalComponentAnalysisForm *ui;
+    Ui::PrincipalComponentAnalysisForm* ui;
 
 private slots:
-	void HandleSlider(int i);
-	void HandleLineEdit(QString s);
-
+    void HandleSlider(int i);
+    void HandleLineEdit(QString s);
 };
-
-
 
 #endif // PRINCIPALCOMPONENTANALYSISFORM_H

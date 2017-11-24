@@ -20,60 +20,63 @@
 // You should have received a copy of the GNU General Public License
 // along with RInside.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // borrowed from Renviron.c
-extern "C" int setenv(const char *env_var, const char *env_val, int dummy) {
-    char *buf, *value, *p, *q, *a, *b, quote='\0';
+extern "C" int setenv(const char* env_var, const char* env_val, int dummy)
+{
+    char *buf, *value, *p, *q, *a, *b, quote = '\0';
     int inquote = 0;
 
     //make non-const copies
-    a = (char *) malloc((strlen(env_var) + 1) * sizeof(char));
-    b = (char *) malloc((strlen(env_val) + 1) * sizeof(char));
+    a = (char*)malloc((strlen(env_var) + 1) * sizeof(char));
+    b = (char*)malloc((strlen(env_val) + 1) * sizeof(char));
     if (!a || !b) {
-	Rf_error("memory allocation failure in setenv");
+        Rf_error("memory allocation failure in setenv");
     }
     strcpy(a, env_var);
     strcpy(b, env_val);
 
-    buf = (char *) malloc((strlen(a) + strlen(b) + 2) * sizeof(char));
-    if (!buf) {	
-	Rf_error("memory allocation failure in setenv");
+    buf = (char*)malloc((strlen(a) + strlen(b) + 2) * sizeof(char));
+    if (!buf) {
+        Rf_error("memory allocation failure in setenv");
     }
-    strcpy(buf, a); strcat(buf, "=");
-    value = buf+strlen(buf);
+    strcpy(buf, a);
+    strcat(buf, "=");
+    value = buf + strlen(buf);
 
     /* now process the value */
-    for(p = b, q = value; *p; p++) {
-	/* remove quotes around sections, preserve \ inside quotes */
-	if(!inquote && (*p == '"' || *p == '\'')) {
-	    inquote = 1;
-	    quote = *p;
-	    continue;
-	}
+    for (p = b, q = value; *p; p++) {
+        /* remove quotes around sections, preserve \ inside quotes */
+        if (!inquote && (*p == '"' || *p == '\'')) {
+            inquote = 1;
+            quote = *p;
+            continue;
+        }
 
-	if(inquote && *p == quote && *(p-1) != '\\') {
-	    inquote = 0;
-	    continue;
-	}
+        if (inquote && *p == quote && *(p - 1) != '\\') {
+            inquote = 0;
+            continue;
+        }
 
-	if(!inquote && *p == '\\') {
-	    if(*(p+1) == '\n') p++;
-	    else if(*(p+1) == '\\') *q++ = *p;
-	    continue;
-	}
+        if (!inquote && *p == '\\') {
+            if (*(p + 1) == '\n')
+                p++;
+            else if (*(p + 1) == '\\')
+                *q++ = *p;
+            continue;
+        }
 
-	if(inquote && *p == '\\' && *(p+1) == quote)
-	    continue;
-	*q++ = *p;
+        if (inquote && *p == '\\' && *(p + 1) == quote)
+            continue;
+        *q++ = *p;
     }
     *q = '\0';
-    //if (putenv(buf)) 
-	//warningcall(R_NilValue, _("problem in setting variable '%s' in Renviron"), a);
+    //if (putenv(buf))
+    //warningcall(R_NilValue, _("problem in setting variable '%s' in Renviron"), a);
     return putenv(buf);
 
     /* no free here: storage remains in use */
 }
-

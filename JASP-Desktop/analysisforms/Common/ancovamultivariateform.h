@@ -21,37 +21,35 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 
 namespace Ui {
 class AncovaMultivariateForm;
 }
 
-class AncovaMultivariateForm : public AnalysisForm
-{
-	Q_OBJECT
+class AncovaMultivariateForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit AncovaMultivariateForm(QWidget *parent = 0);
-	~AncovaMultivariateForm();
+    explicit AncovaMultivariateForm(QWidget* parent = 0);
+    ~AncovaMultivariateForm();
 
 private slots:
-	void factorsChanged();
-	void dependentChanged();
+    void factorsChanged();
+    void dependentChanged();
 
 private:
-	Ui::AncovaMultivariateForm *ui;
+    Ui::AncovaMultivariateForm* ui;
 
-	TableModelVariablesAssigned *_dependentListModel;
-	TableModelVariablesAssigned *_fixedFactorsListModel;
-	TableModelVariablesAssigned *_covariatesListModel;
-	TableModelVariablesAssigned *_wlsWeightsListModel;
+    TableModelVariablesAssigned* _dependentListModel;
+    TableModelVariablesAssigned* _fixedFactorsListModel;
+    TableModelVariablesAssigned* _covariatesListModel;
+    TableModelVariablesAssigned* _wlsWeightsListModel;
 
-	TableModelAnovaModel *_anovaModel;
+    TableModelAnovaModel* _anovaModel;
 
-	TableModelVariablesAvailable *_factorsAvailableListModel;
-
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 };
 
 #endif // ANCOVAMULTIVARIATEFORM_H

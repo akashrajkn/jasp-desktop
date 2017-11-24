@@ -20,60 +20,54 @@
 
 */
 
-
 #include "convertedstringcontainer.h"
 
 #include "importerutils.h"
 
 using namespace std;
 
-set<ConvertedStringContainer *> *ConvertedStringContainer::_convertContainers = 0;
+set<ConvertedStringContainer*>* ConvertedStringContainer::_convertContainers = 0;
 
 ConvertedStringContainer::ConvertedStringContainer()
 {
-	_addOne(this);
+    _addOne(this);
 }
 
-ConvertedStringContainer::ConvertedStringContainer(const ConvertedStringContainer &that)
+ConvertedStringContainer::ConvertedStringContainer(const ConvertedStringContainer& that)
 {
-	_addOne(this);
+    _addOne(this);
 }
-
 
 ConvertedStringContainer::~ConvertedStringContainer()
 {
-	set<ConvertedStringContainer *>::iterator iter = _convertContainers->find(this);
-	if ( iter != _convertContainers->end())
-		_convertContainers->erase(iter);
+    set<ConvertedStringContainer*>::iterator iter = _convertContainers->find(this);
+    if (iter != _convertContainers->end())
+        _convertContainers->erase(iter);
 
-	if (_convertContainers->size() == 0)
-	{
-		delete _convertContainers;
-		_convertContainers = 0;
-	}
+    if (_convertContainers->size() == 0) {
+        delete _convertContainers;
+        _convertContainers = 0;
+    }
 }
 
 /**
  * @brief processAllStrings Calls processStrings(const SpssCPConvert) on all memeber of _records.
  * @param converter The convertor to pass on.
  */
-void ConvertedStringContainer::processAllStrings(const CodePageConvert &converter)
+void ConvertedStringContainer::processAllStrings(const CodePageConvert& converter)
 {
-	for(set<ConvertedStringContainer *>::iterator iter = _convertContainers->begin();
-		iter != _convertContainers->end();
-		++iter)
-	{
-		(*iter)->processStrings(converter);
-	}
-
+    for (set<ConvertedStringContainer*>::iterator iter = _convertContainers->begin();
+         iter != _convertContainers->end();
+         ++iter) {
+        (*iter)->processStrings(converter);
+    }
 }
 
-
-void ConvertedStringContainer::_addOne(ConvertedStringContainer *newone)
+void ConvertedStringContainer::_addOne(ConvertedStringContainer* newone)
 {
-	if (_convertContainers == 0)
-		_convertContainers = new set<ConvertedStringContainer *>();
+    if (_convertContainers == 0)
+        _convertContainers = new set<ConvertedStringContainer*>();
 
-	// Keep track of instances.
-	_convertContainers->insert(newone);
+    // Keep track of instances.
+    _convertContainers->insert(newone);
 }

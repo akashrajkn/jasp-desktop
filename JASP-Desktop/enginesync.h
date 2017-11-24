@@ -31,11 +31,11 @@
 #include <QTimer>
 #include <vector>
 
-#include "options/options.h"
-#include "analysis.h"
-#include "analyses.h"
-#include "ipcchannel.h"
 #include "activitylog.h"
+#include "analyses.h"
+#include "analysis.h"
+#include "ipcchannel.h"
+#include "options/options.h"
 
 /* EngineSync is responsible for launching the background
  * processes, scheduling analyses, and for sending and
@@ -44,58 +44,56 @@
  * which background process.
  */
 
-class EngineSync : public QObject
-{
-	Q_OBJECT
+class EngineSync : public QObject {
+    Q_OBJECT
 
 public:
-	EngineSync(Analyses *analyses, QObject *parent);
-	~EngineSync();
+    EngineSync(Analyses* analyses, QObject* parent);
+    ~EngineSync();
 
-	void start();
+    void start();
 
-	bool engineStarted();
-	void setLog(ActivityLog *log);
+    bool engineStarted();
+    void setLog(ActivityLog* log);
 
-	void setPPI(int ppi);
+    void setPPI(int ppi);
 
 signals:
 
-	void engineTerminated();
+    void engineTerminated();
 
 private:
+    Analyses* _analyses;
+    bool _engineStarted;
+    ActivityLog* _log;
 
-	Analyses *_analyses;
-	bool _engineStarted;
-	ActivityLog *_log;
+    int _ppi;
 
-	int _ppi;
+    std::vector<QProcess*> _slaveProcesses;
+    std::vector<IPCChannel*> _channels;
+    std::vector<Analysis*> _analysesInProgress;
 
-	std::vector<QProcess *> _slaveProcesses;
-	std::vector<IPCChannel *> _channels;
-	std::vector<Analysis *> _analysesInProgress;
+    IPCChannel* nextFreeProcess(Analysis* analysis);
+    void sendToProcess(int processNo, Analysis* analysis);
 
-	IPCChannel *nextFreeProcess(Analysis *analysis);
-	void sendToProcess(int processNo, Analysis *analysis);
+    void startSlaveProcess(int no);
 
-	void startSlaveProcess(int no);
-
-	std::string _memoryName;
-	std::string _engineInfo;
+    std::string _memoryName;
+    std::string _engineInfo;
 
 private slots:
 
-	void sendMessages();
-	void deleteOrphanedTempFiles();
-	void heartbeatTempFiles();
+    void sendMessages();
+    void deleteOrphanedTempFiles();
+    void heartbeatTempFiles();
 
-	void process();
+    void process();
 
-	void subProcessStandardOutput();
-	void subProcessStandardError();
-	void subProcessStarted();
-	void subProcessError(QProcess::ProcessError error);
-	void subprocessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void subProcessStandardOutput();
+    void subProcessStandardError();
+    void subProcessStarted();
+    void subProcessError(QProcess::ProcessError error);
+    void subprocessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // ENGINESYNC_H

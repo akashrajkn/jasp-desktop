@@ -19,121 +19,117 @@
 #include "anovabayesianform.h"
 #include "ui_anovabayesianform.h"
 
-AnovaBayesianForm::AnovaBayesianForm(QWidget *parent) :
-	AnalysisForm("AnovaBayesianForm", parent),
-	ui(new Ui::AnovaBayesianForm)
+AnovaBayesianForm::AnovaBayesianForm(QWidget* parent)
+    : AnalysisForm("AnovaBayesianForm", parent)
+    , ui(new Ui::AnovaBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableFields->setModel(&_availableVariablesModel);
+    ui->listAvailableFields->setModel(&_availableVariablesModel);
 
-	_dependentListModel = new TableModelVariablesAssigned(this);
-	_dependentListModel->setSource(&_availableVariablesModel);
-	_dependentListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	_dependentListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
-	ui->dependent->setModel(_dependentListModel);
+    _dependentListModel = new TableModelVariablesAssigned(this);
+    _dependentListModel->setSource(&_availableVariablesModel);
+    _dependentListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    _dependentListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+    ui->dependent->setModel(_dependentListModel);
 
-	_fixedFactorsListModel = new TableModelVariablesAssigned(this);
-	_fixedFactorsListModel->setSource(&_availableVariablesModel);
-	_fixedFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->fixedFactors->setModel(_fixedFactorsListModel);
+    _fixedFactorsListModel = new TableModelVariablesAssigned(this);
+    _fixedFactorsListModel->setSource(&_availableVariablesModel);
+    _fixedFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->fixedFactors->setModel(_fixedFactorsListModel);
 
-	_randomFactorsListModel = new TableModelVariablesAssigned(this);
-	_randomFactorsListModel->setSource(&_availableVariablesModel);
-	_randomFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->randomFactors->setModel(_randomFactorsListModel);
+    _randomFactorsListModel = new TableModelVariablesAssigned(this);
+    _randomFactorsListModel->setSource(&_availableVariablesModel);
+    _randomFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+    ui->randomFactors->setModel(_randomFactorsListModel);
 
-	ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
-	ui->buttonAssignFixed->setSourceAndTarget(ui->listAvailableFields, ui->fixedFactors);
-	ui->buttonAssignRandom->setSourceAndTarget(ui->listAvailableFields, ui->randomFactors);
+    ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
+    ui->buttonAssignFixed->setSourceAndTarget(ui->listAvailableFields, ui->fixedFactors);
+    ui->buttonAssignRandom->setSourceAndTarget(ui->listAvailableFields, ui->randomFactors);
 
-	_anovaModel = new TableModelAnovaModel(this);
-	_anovaModel->setPiecesCanBeAssigned(false);
-	ui->modelTerms->setModel(_anovaModel);
-	
-  _plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
-  _plotFactorsAvailableTableModel->setInfoProvider(this);
-	ui->plotVariables->setModel(_plotFactorsAvailableTableModel);
+    _anovaModel = new TableModelAnovaModel(this);
+    _anovaModel->setPiecesCanBeAssigned(false);
+    ui->modelTerms->setModel(_anovaModel);
 
-  _horizontalAxisTableModel = new TableModelVariablesAssigned(this);
-  _horizontalAxisTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotHorizontalAxis->setModel(_horizontalAxisTableModel);
+    _plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
+    _plotFactorsAvailableTableModel->setInfoProvider(this);
+    ui->plotVariables->setModel(_plotFactorsAvailableTableModel);
 
-  _seperateLinesTableModel = new TableModelVariablesAssigned(this);
-  _seperateLinesTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotSeparateLines->setModel(_seperateLinesTableModel);
+    _horizontalAxisTableModel = new TableModelVariablesAssigned(this);
+    _horizontalAxisTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotHorizontalAxis->setModel(_horizontalAxisTableModel);
 
-  _seperatePlotsTableModel = new TableModelVariablesAssigned(this);
-  _seperatePlotsTableModel->setSource(_plotFactorsAvailableTableModel);
-	ui->plotSeparatePlots->setModel(_seperatePlotsTableModel);
+    _seperateLinesTableModel = new TableModelVariablesAssigned(this);
+    _seperateLinesTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotSeparateLines->setModel(_seperateLinesTableModel);
 
-	ui->buttonAssignHorizontalAxis->setSourceAndTarget(ui->plotVariables, ui->plotHorizontalAxis);
-	ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
-	ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
-	
-	ui->modelTerms->hide();
-	ui->containerPostHocTests->hide();
-	ui->containerDescriptivesPlot->hide();
-	ui->advancedOptions->hide();
+    _seperatePlotsTableModel = new TableModelVariablesAssigned(this);
+    _seperatePlotsTableModel->setSource(_plotFactorsAvailableTableModel);
+    ui->plotSeparatePlots->setModel(_seperatePlotsTableModel);
 
-	ui->plotCredibleIntervalInterval->setLabel("Credible interval");
-	ui->priorFixedEffects->setLabel("r scale fixed effects");
-	ui->priorRandomEffects->setLabel("r scale random effects");
+    ui->buttonAssignHorizontalAxis->setSourceAndTarget(ui->plotVariables, ui->plotHorizontalAxis);
+    ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
+    ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
 
-	connect(_fixedFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_fixedFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
-	connect(_fixedFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
-	connect(_fixedFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    ui->modelTerms->hide();
+    ui->containerPostHocTests->hide();
+    ui->containerDescriptivesPlot->hide();
+    ui->advancedOptions->hide();
 
-	connect(_randomFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_randomFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
-	connect(_randomFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addRandomFactors(Terms)));
-	connect(_randomFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+    ui->plotCredibleIntervalInterval->setLabel("Credible interval");
+    ui->priorFixedEffects->setLabel("r scale fixed effects");
+    ui->priorRandomEffects->setLabel("r scale random effects");
 
+    connect(_fixedFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_fixedFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+    connect(_fixedFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
+    connect(_fixedFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+
+    connect(_randomFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+    connect(_randomFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+    connect(_randomFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addRandomFactors(Terms)));
+    connect(_randomFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
 }
 
 AnovaBayesianForm::~AnovaBayesianForm()
 {
-	delete ui;
+    delete ui;
 }
 
-void AnovaBayesianForm::bindTo(Options *options, DataSet *dataSet)
+void AnovaBayesianForm::bindTo(Options* options, DataSet* dataSet)
 {
-	AnalysisForm::bindTo(options, dataSet);
+    AnalysisForm::bindTo(options, dataSet);
 
-	factorsChanging();
+    factorsChanging();
 
-	_anovaModel->setVariables(_fixedFactorsListModel->assigned(), _randomFactorsListModel->assigned());
+    _anovaModel->setVariables(_fixedFactorsListModel->assigned(), _randomFactorsListModel->assigned());
 
-	factorsChanged();
+    factorsChanged();
 }
 
 void AnovaBayesianForm::factorsChanging()
 {
-	if (_options != NULL)
-		_options->blockSignals(true);
+    if (_options != NULL)
+        _options->blockSignals(true);
 }
 
 void AnovaBayesianForm::factorsChanged()
 {
-	Terms factorsAvailable;
+    Terms factorsAvailable;
 
-	factorsAvailable.add(_fixedFactorsListModel->assigned());
-	factorsAvailable.add(_randomFactorsListModel->assigned());
+    factorsAvailable.add(_fixedFactorsListModel->assigned());
+    factorsAvailable.add(_randomFactorsListModel->assigned());
 
-	_plotFactorsAvailableTableModel->setVariables(factorsAvailable);
+    _plotFactorsAvailableTableModel->setVariables(factorsAvailable);
 
-	Terms plotVariablesAssigned;
-	plotVariablesAssigned.add(_horizontalAxisTableModel->assigned());
-	plotVariablesAssigned.add(_seperateLinesTableModel->assigned());
-	plotVariablesAssigned.add(_seperatePlotsTableModel->assigned());
-	_plotFactorsAvailableTableModel->notifyAlreadyAssigned(plotVariablesAssigned);
-	
-	ui->postHocTestsVariables->setVariables(factorsAvailable);
-	
-	if (_options != NULL)
-		_options->blockSignals(false);
+    Terms plotVariablesAssigned;
+    plotVariablesAssigned.add(_horizontalAxisTableModel->assigned());
+    plotVariablesAssigned.add(_seperateLinesTableModel->assigned());
+    plotVariablesAssigned.add(_seperatePlotsTableModel->assigned());
+    _plotFactorsAvailableTableModel->notifyAlreadyAssigned(plotVariablesAssigned);
+
+    ui->postHocTestsVariables->setVariables(factorsAvailable);
+
+    if (_options != NULL)
+        _options->blockSignals(false);
 }
-
-
-

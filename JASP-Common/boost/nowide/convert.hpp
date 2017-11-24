@@ -8,8 +8,8 @@
 #ifndef BOOST_NOWIDE_CONVERT_H_INCLUDED
 #define BOOST_NOWIDE_CONVERT_H_INCLUDED
 
-#include <string>
 #include <boost/locale/encoding_utf.hpp>
+#include <string>
 
 namespace boost {
 namespace nowide {
@@ -22,26 +22,26 @@ namespace nowide {
     /// If there is not enough room in the buffer or the source sequence contains invalid UTF
     /// 0 is returned, and the contend of the buffer is undefined.
     ///
-    template<typename CharOut,typename CharIn>
-    CharOut *basic_convert(CharOut *buffer,size_t buffer_size,CharIn const *source_begin,CharIn const *source_end)
+    template <typename CharOut, typename CharIn>
+    CharOut* basic_convert(CharOut* buffer, size_t buffer_size, CharIn const* source_begin, CharIn const* source_end)
     {
-        CharOut *rv = buffer;
-        if(buffer_size == 0)
+        CharOut* rv = buffer;
+        if (buffer_size == 0)
             return 0;
-        buffer_size --;
-        while(source_begin!=source_end) {
+        buffer_size--;
+        while (source_begin != source_end) {
             using namespace boost::locale::utf;
-            code_point c = utf_traits<CharIn>::template decode<CharIn const *>(source_begin,source_end);
-            if(c==illegal || c==incomplete) {
+            code_point c = utf_traits<CharIn>::template decode<CharIn const*>(source_begin, source_end);
+            if (c == illegal || c == incomplete) {
                 rv = 0;
                 break;
             }
             size_t width = utf_traits<CharOut>::width(c);
-            if(buffer_size < width) {
-                rv=0;
+            if (buffer_size < width) {
+                rv = 0;
                 break;
             }
-            buffer = utf_traits<CharOut>::template encode<CharOut *>(c,buffer);
+            buffer = utf_traits<CharOut>::template encode<CharOut*>(c, buffer);
             buffer_size -= width;
         }
         *buffer++ = 0;
@@ -53,10 +53,10 @@ namespace nowide {
         //
         // wcslen defined only in C99... So we will not use it
         //
-        template<typename Char>
-        Char const *basic_strend(Char const *s)
+        template <typename Char>
+        Char const* basic_strend(Char const* s)
         {
-            while(*s)
+            while (*s)
                 s++;
             return s;
         }
@@ -66,55 +66,54 @@ namespace nowide {
     ///
     /// Convert NUL terminated UTF source string to NUL terminated \a output string of size at
     /// most output_size (including NUL)
-    /// 
-    /// In case of surcess output is returned, if the input sequence is illegal,
-    /// or there is not enough room NULL is returned 
     ///
-    inline char *narrow(char *output,size_t output_size,wchar_t const *source)
+    /// In case of surcess output is returned, if the input sequence is illegal,
+    /// or there is not enough room NULL is returned
+    ///
+    inline char* narrow(char* output, size_t output_size, wchar_t const* source)
     {
-        return basic_convert(output,output_size,source,details::basic_strend(source));
+        return basic_convert(output, output_size, source, details::basic_strend(source));
     }
     ///
     /// Convert UTF text in range [begin,end) to NUL terminated \a output string of size at
     /// most output_size (including NUL)
-    /// 
-    /// In case of surcess output is returned, if the input sequence is illegal,
-    /// or there is not enough room NULL is returned 
     ///
-    inline char *narrow(char *output,size_t output_size,wchar_t const *begin,wchar_t const *end)
+    /// In case of surcess output is returned, if the input sequence is illegal,
+    /// or there is not enough room NULL is returned
+    ///
+    inline char* narrow(char* output, size_t output_size, wchar_t const* begin, wchar_t const* end)
     {
-        return basic_convert(output,output_size,begin,end);
+        return basic_convert(output, output_size, begin, end);
     }
     ///
     /// Convert NUL terminated UTF source string to NUL terminated \a output string of size at
     /// most output_size (including NUL)
-    /// 
-    /// In case of surcess output is returned, if the input sequence is illegal,
-    /// or there is not enough room NULL is returned 
     ///
-    inline wchar_t *widen(wchar_t *output,size_t output_size,char const *source)
+    /// In case of surcess output is returned, if the input sequence is illegal,
+    /// or there is not enough room NULL is returned
+    ///
+    inline wchar_t* widen(wchar_t* output, size_t output_size, char const* source)
     {
-        return basic_convert(output,output_size,source,details::basic_strend(source));
+        return basic_convert(output, output_size, source, details::basic_strend(source));
     }
     ///
     /// Convert UTF text in range [begin,end) to NUL terminated \a output string of size at
     /// most output_size (including NUL)
-    /// 
-    /// In case of surcess output is returned, if the input sequence is illegal,
-    /// or there is not enough room NULL is returned 
     ///
-    inline wchar_t *widen(wchar_t *output,size_t output_size,char const *begin,char const *end)
+    /// In case of surcess output is returned, if the input sequence is illegal,
+    /// or there is not enough room NULL is returned
+    ///
+    inline wchar_t* widen(wchar_t* output, size_t output_size, char const* begin, char const* end)
     {
-        return basic_convert(output,output_size,begin,end);
+        return basic_convert(output, output_size, begin, end);
     }
-
 
     ///
     /// Convert between Wide - UTF-16/32 string and UTF-8 string.
     ///
     /// boost::locale::conv::conversion_error is thrown in a case of a error
     ///
-    inline std::string narrow(wchar_t const *s)
+    inline std::string narrow(wchar_t const* s)
     {
         return boost::locale::conv::utf_to_utf<char>(s);
     }
@@ -123,7 +122,7 @@ namespace nowide {
     ///
     /// boost::locale::conv::conversion_error is thrown in a case of a error
     ///
-    inline std::wstring widen(char const *s)
+    inline std::wstring widen(char const* s)
     {
         return boost::locale::conv::utf_to_utf<wchar_t>(s);
     }
@@ -132,7 +131,7 @@ namespace nowide {
     ///
     /// boost::locale::conv::conversion_error is thrown in a case of a error
     ///
-    inline std::string narrow(std::wstring const &s) 
+    inline std::string narrow(std::wstring const& s)
     {
         return boost::locale::conv::utf_to_utf<char>(s);
     }
@@ -141,7 +140,7 @@ namespace nowide {
     ///
     /// boost::locale::conv::conversion_error is thrown in a case of a error
     ///
-    inline std::wstring widen(std::string const &s) 
+    inline std::wstring widen(std::string const& s)
     {
         return boost::locale::conv::utf_to_utf<wchar_t>(s);
     }

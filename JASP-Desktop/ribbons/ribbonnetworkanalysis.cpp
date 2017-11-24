@@ -19,16 +19,16 @@
 #include "ribbonnetworkanalysis.h"
 #include "ui_ribbonnetworkanalysis.h"
 
-RibbonNetworkAnalysis::RibbonNetworkAnalysis(QWidget *parent) :
-	RibbonWidget(parent),
-	ui(new Ui::RibbonNetworkAnalysis)
+RibbonNetworkAnalysis::RibbonNetworkAnalysis(QWidget* parent)
+    : RibbonWidget(parent)
+    , ui(new Ui::RibbonNetworkAnalysis)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	addRibbonButton(ui->NetworkAnalysis);
+    addRibbonButton(ui->NetworkAnalysis);
 }
 
 RibbonNetworkAnalysis::~RibbonNetworkAnalysis()
 {
-	delete ui;
+    delete ui;
 }

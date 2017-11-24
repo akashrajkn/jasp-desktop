@@ -18,17 +18,17 @@
 
 #include "fsbmosf.h"
 
+#include <QFile>
 #include <QGridLayout>
-#include <QLabel>
-#include <QNetworkAccessManager>
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
-#include <QJsonArray>
-#include <QFile>
+#include <QLabel>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
 
 #include "fsentry.h"
 #include "onlinedatamanager.h"
@@ -36,364 +36,343 @@
 
 FSBMOSF::FSBMOSF()
 {
-	_dataManager = NULL;
-	_manager = NULL;
-	_isAuthenticated = false;
-	_rootPath = _path = "Projects";
+    _dataManager = NULL;
+    _manager = NULL;
+    _isAuthenticated = false;
+    _rootPath = _path = "Projects";
 }
 
 FSBMOSF::~FSBMOSF()
 {
-
 }
 
-void FSBMOSF::setOnlineDataManager(OnlineDataManager *odm)
+void FSBMOSF::setOnlineDataManager(OnlineDataManager* odm)
 {
-	_dataManager = odm;
+    _dataManager = odm;
 
-	_manager = odm->getNetworkAccessManager(OnlineDataManager::OSF);
-
-
+    _manager = odm->getNetworkAccessManager(OnlineDataManager::OSF);
 }
 
 void FSBMOSF::attemptToConnect()
 {
 
-	QString password = _dataManager->getPassword(OnlineDataManager::OSF);
-	QString username = _dataManager->getUsername(OnlineDataManager::OSF);
+    QString password = _dataManager->getPassword(OnlineDataManager::OSF);
+    QString username = _dataManager->getUsername(OnlineDataManager::OSF);
 
-	if ( username=="" || password =="" )
-		return;
+    if (username == "" || password == "")
+        return;
 
-	if ( _isAuthenticated == false && _dataManager != NULL )
-	{
-		emit hideAuthentication();
-		emit processingEntries();
-		bool authsuccess = _dataManager->authenticationSuccessful(OnlineDataManager::OSF);
-		setAuthenticated(authsuccess);
-		if (!authsuccess)
-			emit entriesChanged();
-	}
+    if (_isAuthenticated == false && _dataManager != NULL) {
+        emit hideAuthentication();
+        emit processingEntries();
+        bool authsuccess = _dataManager->authenticationSuccessful(OnlineDataManager::OSF);
+        setAuthenticated(authsuccess);
+        if (!authsuccess)
+            emit entriesChanged();
+    }
 }
-
 
 bool FSBMOSF::requiresAuthentication() const
 {
-	return true;
+    return true;
 }
 
-void FSBMOSF::authenticate(const QString &username, const QString &password)
+void FSBMOSF::authenticate(const QString& username, const QString& password)
 {
-	bool success = false;
+    bool success = false;
 
-	if (_dataManager && username!="")
-	{
-		_dataManager->saveUsername(OnlineDataManager::OSF, username);
+    if (_dataManager && username != "") {
+        _dataManager->saveUsername(OnlineDataManager::OSF, username);
 
-		_dataManager->setAuthentication(OnlineDataManager::OSF, username, password);
+        _dataManager->setAuthentication(OnlineDataManager::OSF, username, password);
 
-		success = _dataManager->authenticationSuccessful(OnlineDataManager::OSF);
+        success = _dataManager->authenticationSuccessful(OnlineDataManager::OSF);
 
-		if (success)
-			_dataManager->savePassword(OnlineDataManager::OSF, password);
-		else
-			_dataManager->removePassword(OnlineDataManager::OSF);
-	}
+        if (success)
+            _dataManager->savePassword(OnlineDataManager::OSF, password);
+        else
+            _dataManager->removePassword(OnlineDataManager::OSF);
+    }
 
+    _settings.sync();
 
-	_settings.sync();
-
-	setAuthenticated(success);
+    setAuthenticated(success);
 }
 
 void FSBMOSF::setAuthenticated(bool value)
 {
-	if (value)
-	{
-		_isAuthenticated = true;
-		emit authenticationSuccess();
-		refresh();
-	}
-	else
-	{
-		_isAuthenticated = false;
-		emit authenticationFail("Username and/or password are not correct. Please try again.");
-	}
+    if (value) {
+        _isAuthenticated = true;
+        emit authenticationSuccess();
+        refresh();
+    } else {
+        _isAuthenticated = false;
+        emit authenticationFail("Username and/or password are not correct. Please try again.");
+    }
 }
 
 bool FSBMOSF::isAuthenticated() const
 {
-	return _isAuthenticated;
+    return _isAuthenticated;
 }
 
 void FSBMOSF::clearAuthentication()
 {
-	_isAuthenticated = false;
-	_dataManager->clearAuthentication(OnlineDataManager::OSF);
-	_entries.clear();
-	_pathUrls.clear();
-	setPath(_rootPath);
-	emit entriesChanged();
-	emit authenticationClear();
+    _isAuthenticated = false;
+    _dataManager->clearAuthentication(OnlineDataManager::OSF);
+    _entries.clear();
+    _pathUrls.clear();
+    setPath(_rootPath);
+    emit entriesChanged();
+    emit authenticationClear();
 }
 
 void FSBMOSF::refresh()
 {
-	if (_manager == NULL || _isAuthenticated == false)
-		return;
+    if (_manager == NULL || _isAuthenticated == false)
+        return;
 
-	emit processingEntries();
+    emit processingEntries();
 
-	_entries.clear();
+    _entries.clear();
 
-	if (_path == "Projects")
-		loadProjects();
-	else {
-		OnlineNodeData nodeData = _pathUrls[_path];
-		if (nodeData.isFolder)
-			loadFilesAndFolders(QUrl(nodeData.contentsPath), nodeData.level + 1);
-		if (nodeData.isComponent)
-			loadFilesAndFolders(QUrl(nodeData.childrenPath), nodeData.level + 1);
-	}
+    if (_path == "Projects")
+        loadProjects();
+    else {
+        OnlineNodeData nodeData = _pathUrls[_path];
+        if (nodeData.isFolder)
+            loadFilesAndFolders(QUrl(nodeData.contentsPath), nodeData.level + 1);
+        if (nodeData.isComponent)
+            loadFilesAndFolders(QUrl(nodeData.childrenPath), nodeData.level + 1);
+    }
 }
 
 FSBMOSF::OnlineNodeData FSBMOSF::currentNodeData()
 {
-	return _pathUrls[_path];
+    return _pathUrls[_path];
 }
 
-void FSBMOSF::loadProjects() {
-	QUrl url("https://api.osf.io/v2/users/me/nodes/");
-	parseProjects(url);
+void FSBMOSF::loadProjects()
+{
+    QUrl url("https://api.osf.io/v2/users/me/nodes/");
+    parseProjects(url);
 }
 
-void FSBMOSF::parseProjects(QUrl url, bool recursive) {
+void FSBMOSF::parseProjects(QUrl url, bool recursive)
+{
 
-	_isProjectPaginationCall = recursive;
-	QNetworkRequest request(url);
-	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/vnd.api+json");
-	request.setRawHeader("Accept", "application/vnd.api+json");
+    _isProjectPaginationCall = recursive;
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/vnd.api+json");
+    request.setRawHeader("Accept", "application/vnd.api+json");
 
-	QNetworkReply* reply = _manager->get(request);
+    QNetworkReply* reply = _manager->get(request);
 
-	connect(reply, SIGNAL(finished()), this, SLOT(gotProjects()));
+    connect(reply, SIGNAL(finished()), this, SLOT(gotProjects()));
 }
 
 void FSBMOSF::gotProjects()
 {
-	QNetworkReply *reply = (QNetworkReply*)this->sender();
+    QNetworkReply* reply = (QNetworkReply*)this->sender();
 
-	if (reply->error() == QNetworkReply::NoError)
-	{
-		QByteArray data = reply->readAll();
-		QString dataString = (QString) data;
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        QString dataString = (QString)data;
 
-		QJsonParseError error;
-		QJsonDocument doc = QJsonDocument::fromJson(dataString.toUtf8(), &error);
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(dataString.toUtf8(), &error);
 
-		QJsonObject json = doc.object();
-		QJsonArray dataArray = json.value("data").toArray();
+        QJsonObject json = doc.object();
+        QJsonArray dataArray = json.value("data").toArray();
 
-		if ( dataArray.size() > 0 && !_isProjectPaginationCall)
-			_entries.clear();
+        if (dataArray.size() > 0 && !_isProjectPaginationCall)
+            _entries.clear();
 
-		foreach (const QJsonValue & value, dataArray) {
-			QJsonObject nodeObject = value.toObject();
+        foreach (const QJsonValue& value, dataArray) {
+            QJsonObject nodeObject = value.toObject();
 
-			QJsonObject attrObj = nodeObject.value("attributes").toObject();
+            QJsonObject attrObj = nodeObject.value("attributes").toObject();
 
-			QString category = attrObj.value("category").toString();
-			if (category != "project")
-				continue;
+            QString category = attrObj.value("category").toString();
+            if (category != "project")
+                continue;
 
-			OnlineNodeData nodeData;
+            OnlineNodeData nodeData;
 
-			nodeData.name = attrObj.value("title").toString();
-			nodeData.isFolder = true;
-			nodeData.isComponent = true;
+            nodeData.name = attrObj.value("title").toString();
+            nodeData.isFolder = true;
+            nodeData.isComponent = true;
 
-			nodeData.contentsPath = getRelationshipUrl(nodeObject, "files");
-			nodeData.childrenPath = getRelationshipUrl(nodeObject, "children");
+            nodeData.contentsPath = getRelationshipUrl(nodeObject, "files");
+            nodeData.childrenPath = getRelationshipUrl(nodeObject, "children");
 
-			QJsonObject topLinksObj = nodeObject.value("links").toObject();
+            QJsonObject topLinksObj = nodeObject.value("links").toObject();
 
-			nodeData.nodePath = topLinksObj.value("self").toString();
-			nodeData.level = 1;
-			nodeData.canCreateFolders = false;
-			nodeData.canCreateFiles = false;
+            nodeData.nodePath = topLinksObj.value("self").toString();
+            nodeData.level = 1;
+            nodeData.canCreateFolders = false;
+            nodeData.canCreateFiles = false;
 
-			QString path = _path + "/" + nodeData.name;
-			_entries.append(createEntry(path, FSEntry::Folder));
+            QString path = _path + "/" + nodeData.name;
+            _entries.append(createEntry(path, FSEntry::Folder));
 
-			_pathUrls[path] = nodeData;
+            _pathUrls[path] = nodeData;
+        }
 
-		}
+        QJsonObject links = json.value("links").toObject();
 
-		QJsonObject links = json.value("links").toObject();
+        QJsonValue nextProjects = links.value("next");
+        if (nextProjects.isNull() == false)
+            parseProjects(QUrl(nextProjects.toString()), true);
+        else
+            emit entriesChanged();
+    }
 
-		QJsonValue nextProjects = links.value("next");
-		if (nextProjects.isNull() == false)
-			parseProjects(QUrl(nextProjects.toString()), true);
-		else
-			emit entriesChanged();
-	}
-
-
-
-	reply->deleteLater();
+    reply->deleteLater();
 }
 
 void FSBMOSF::loadFilesAndFolders(QUrl url, int level)
 {
-	parseFilesAndFolders(url, level);
+    parseFilesAndFolders(url, level);
 }
 
 void FSBMOSF::parseFilesAndFolders(QUrl url, int level, bool recursive)
 {
-	_level = level;
-	_isPaginationCall = recursive;
+    _level = level;
+    _isPaginationCall = recursive;
 
-	QNetworkRequest request(url);
-	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/vnd.api+json");
-	request.setRawHeader("Accept", "application/vnd.api+json");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/vnd.api+json");
+    request.setRawHeader("Accept", "application/vnd.api+json");
 
-	QNetworkReply* reply = _manager->get(request);
+    QNetworkReply* reply = _manager->get(request);
 
-	connect(reply, SIGNAL(finished()), this, SLOT(gotFilesAndFolders()));
+    connect(reply, SIGNAL(finished()), this, SLOT(gotFilesAndFolders()));
 }
 
 void FSBMOSF::gotFilesAndFolders()
 {
-	QNetworkReply *reply = (QNetworkReply*)this->sender();
+    QNetworkReply* reply = (QNetworkReply*)this->sender();
 
-	bool finished = false;
+    bool finished = false;
 
-	if (reply->error() == QNetworkReply::NoError)
-	{
-		QByteArray data = reply->readAll();
-		QString dataString = (QString) data;
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        QString dataString = (QString)data;
 
-		QJsonParseError error;
-		QJsonDocument doc = QJsonDocument::fromJson(dataString.toUtf8(), &error);
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(dataString.toUtf8(), &error);
 
-		QJsonObject json = doc.object();
-		QJsonArray dataArray = json.value("data").toArray();
+        QJsonObject json = doc.object();
+        QJsonArray dataArray = json.value("data").toArray();
 
-		if ( dataArray.size() > 0 && !_isPaginationCall)
-			_entries.clear();
+        if (dataArray.size() > 0 && !_isPaginationCall)
+            _entries.clear();
 
-		foreach (const QJsonValue & value, dataArray) {
-			QJsonObject nodeObject = value.toObject();
+        foreach (const QJsonValue& value, dataArray) {
+            QJsonObject nodeObject = value.toObject();
 
-			OnlineNodeData nodeData;
+            OnlineNodeData nodeData;
 
-			nodeData.isComponent = nodeObject.value("type").toString() == "nodes";
+            nodeData.isComponent = nodeObject.value("type").toString() == "nodes";
 
-			FSEntry::EntryType entryType = FSEntry::Other;
-			QJsonObject attrObj = nodeObject.value("attributes").toObject();
+            FSEntry::EntryType entryType = FSEntry::Other;
+            QJsonObject attrObj = nodeObject.value("attributes").toObject();
 
-			if (nodeData.isComponent == false)
-			{
-				QString kind = attrObj.value("kind").toString();
-				if (kind != "folder" && kind != "file")
-					continue;
+            if (nodeData.isComponent == false) {
+                QString kind = attrObj.value("kind").toString();
+                if (kind != "folder" && kind != "file")
+                    continue;
 
-				nodeData.name = attrObj.value("name").toString();
+                nodeData.name = attrObj.value("name").toString();
 
-				if (kind == "folder")
-					entryType = FSEntry::Folder;
-				else if (nodeData.name.endsWith(".jasp", Qt::CaseInsensitive))
-					entryType = FSEntry::JASP;
-				else if (nodeData.name.endsWith(".csv", Qt::CaseInsensitive) || nodeData.name.endsWith(".txt", Qt::CaseInsensitive))
-					entryType = FSEntry::CSV;
-				else if (nodeData.name.endsWith(".html", Qt::CaseInsensitive) || nodeData.name.endsWith(".pdf", Qt::CaseInsensitive))
-					entryType = FSEntry::Other;
-				else if (nodeData.name.endsWith(".spss", Qt::CaseInsensitive))
-					entryType = FSEntry::SPSS;
-				else
-					continue;
-			}
-			else
-			{
-				entryType = FSEntry::Folder;
-				nodeData.name = attrObj.value("title").toString();
-			}
+                if (kind == "folder")
+                    entryType = FSEntry::Folder;
+                else if (nodeData.name.endsWith(".jasp", Qt::CaseInsensitive))
+                    entryType = FSEntry::JASP;
+                else if (nodeData.name.endsWith(".csv", Qt::CaseInsensitive) || nodeData.name.endsWith(".txt", Qt::CaseInsensitive))
+                    entryType = FSEntry::CSV;
+                else if (nodeData.name.endsWith(".html", Qt::CaseInsensitive) || nodeData.name.endsWith(".pdf", Qt::CaseInsensitive))
+                    entryType = FSEntry::Other;
+                else if (nodeData.name.endsWith(".spss", Qt::CaseInsensitive))
+                    entryType = FSEntry::SPSS;
+                else
+                    continue;
+            } else {
+                entryType = FSEntry::Folder;
+                nodeData.name = attrObj.value("title").toString();
+            }
 
-			if (entryType == FSEntry::Folder) {
+            if (entryType == FSEntry::Folder) {
 
-				nodeData.contentsPath = getRelationshipUrl(nodeObject, "files");
-				nodeData.childrenPath = getRelationshipUrl(nodeObject, "children");
+                nodeData.contentsPath = getRelationshipUrl(nodeObject, "files");
+                nodeData.childrenPath = getRelationshipUrl(nodeObject, "children");
 
-				QJsonObject topLinksObj = nodeObject.value("links").toObject();
+                QJsonObject topLinksObj = nodeObject.value("links").toObject();
 
-				if (nodeData.isComponent)
-					nodeData.nodePath = topLinksObj.value("self").toString();
-				else
-					nodeData.nodePath = topLinksObj.value("info").toString();
+                if (nodeData.isComponent)
+                    nodeData.nodePath = topLinksObj.value("self").toString();
+                else
+                    nodeData.nodePath = topLinksObj.value("info").toString();
 
-				nodeData.uploadPath = topLinksObj.value("upload").toString();
-				nodeData.isFolder = true;
+                nodeData.uploadPath = topLinksObj.value("upload").toString();
+                nodeData.isFolder = true;
 
-				nodeData.canCreateFolders = topLinksObj.contains("new_folder");
-				nodeData.canCreateFiles = topLinksObj.contains("upload");
+                nodeData.canCreateFolders = topLinksObj.contains("new_folder");
+                nodeData.canCreateFiles = topLinksObj.contains("upload");
 
-				if (nodeData.nodePath == "")
-					nodeData.nodePath = reply->url().toString() + "#folder://" + nodeData.name;
-			}
-			else
-			{
-				QJsonObject linksObj = nodeObject.value("links").toObject();
-				nodeData.isFolder = false;
+                if (nodeData.nodePath == "")
+                    nodeData.nodePath = reply->url().toString() + "#folder://" + nodeData.name;
+            } else {
+                QJsonObject linksObj = nodeObject.value("links").toObject();
+                nodeData.isFolder = false;
 
-				nodeData.uploadPath = linksObj.value("upload").toString();
-				nodeData.downloadPath = linksObj.value("download").toString();
-				nodeData.nodePath = linksObj.value("info").toString();
+                nodeData.uploadPath = linksObj.value("upload").toString();
+                nodeData.downloadPath = linksObj.value("download").toString();
+                nodeData.nodePath = linksObj.value("info").toString();
 
-				nodeData.canCreateFolders = false;
-				nodeData.canCreateFiles = false;
-			}
+                nodeData.canCreateFolders = false;
+                nodeData.canCreateFiles = false;
+            }
 
+            QString path = _path + "/" + nodeData.name;
 
-			QString path = _path + "/" + nodeData.name;
+            nodeData.level = _level;
 
-			nodeData.level = _level;
+            _entries.append(createEntry(path, entryType));
+            _pathUrls[path] = nodeData;
+        }
 
-			_entries.append(createEntry(path, entryType));
-			_pathUrls[path] = nodeData;
+        QJsonObject contentLevelLinks = json.value("links").toObject();
 
-		}
+        QJsonValue nextContentList = contentLevelLinks.value("next");
+        if (nextContentList.isNull() == false)
+            parseFilesAndFolders(QUrl(nextContentList.toString()), _level + 1, true);
+        else
+            finished = true;
+    }
 
-		QJsonObject contentLevelLinks = json.value("links").toObject();
+    if (finished)
+        emit entriesChanged();
 
-		QJsonValue nextContentList = contentLevelLinks.value("next");
-		if (nextContentList.isNull() == false)
-			parseFilesAndFolders(QUrl(nextContentList.toString()), _level + 1, true);
-		else
-			finished = true;
-
-	}
-
-	if (finished)
-		emit entriesChanged();
-
-	reply->deleteLater();
+    reply->deleteLater();
 }
 
 QString FSBMOSF::getRelationshipUrl(QJsonObject nodeObject, QString name)
 {
-	QJsonObject relationshipsObj = nodeObject.value("relationships").toObject();
+    QJsonObject relationshipsObj = nodeObject.value("relationships").toObject();
 
-	if (relationshipsObj.contains(name) == false)
-		return "";
+    if (relationshipsObj.contains(name) == false)
+        return "";
 
-	QJsonObject filesObj = relationshipsObj.value(name).toObject();
-	QJsonObject linksObj = filesObj.value("links").toObject();
-	QJsonObject relatedObj = linksObj.value("related").toObject();
+    QJsonObject filesObj = relationshipsObj.value(name).toObject();
+    QJsonObject linksObj = filesObj.value("links").toObject();
+    QJsonObject relatedObj = linksObj.value("related").toObject();
 
-	return relatedObj.value("href").toString();
+    return relatedObj.value("href").toString();
 }
 
 FSBMOSF::OnlineNodeData FSBMOSF::getNodeData(QString key)
 {
-	return _pathUrls[key];
+    return _pathUrls[key];
 }

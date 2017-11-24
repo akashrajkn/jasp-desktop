@@ -18,37 +18,34 @@
 
 #include "ribbonwidget.h"
 
+#include "widgets/ribbonbutton.h"
 #include <QDebug>
 #include <QMenu>
-#include "widgets/ribbonbutton.h"
 
-RibbonWidget::RibbonWidget(QWidget *parent) :
-	QWidget(parent)
+RibbonWidget::RibbonWidget(QWidget* parent)
+    : QWidget(parent)
 {
 }
 
-void RibbonWidget::addRibbonButton(RibbonButton *button)
+void RibbonWidget::addRibbonButton(RibbonButton* button)
 {
-	_buttons.append(button);
+    _buttons.append(button);
 }
 
 void RibbonWidget::itemSelected()
 {
-	QObject *source = this->sender();
-	QString name = source->objectName();
+    QObject* source = this->sender();
+    QString name = source->objectName();
 
-	emit itemSelected(name);
+    emit itemSelected(name);
 }
 
 void RibbonWidget::setDataSetLoaded(bool loaded)
 {
-	foreach (RibbonButton *button, _buttons)
-	{
-		if (loaded)
-			button->setEnabled(true);
-		else if (button->isDataSetNeeded())
-			button->setEnabled(false);
-	}
+    foreach (RibbonButton* button, _buttons) {
+        if (loaded)
+            button->setEnabled(true);
+        else if (button->isDataSetNeeded())
+            button->setEnabled(false);
+    }
 }
-
-

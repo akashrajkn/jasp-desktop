@@ -22,21 +22,20 @@
 
 #include "libzip/archive.h"
 
-class JASPExporter: public Exporter
-{
+class JASPExporter : public Exporter {
 public:
-	static const Version jaspArchiveVersion;
-	static const Version dataArchiveVersion;
+    static const Version jaspArchiveVersion;
+    static const Version dataArchiveVersion;
 
-	JASPExporter();
-	void saveDataSet(const std::string &path, DataSetPackage* package, boost::function<void (const std::string &, int)> progressCallback) OVERRIDE;
+    JASPExporter();
+    void saveDataSet(const std::string& path, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback) OVERRIDE;
 
 private:
-	static void saveDataArchive(archive *a, DataSetPackage *package, boost::function<void (const std::string &, int)> progressCallback);
-	static void saveJASPArchive(archive *a, DataSetPackage *package, boost::function<void (const std::string &, int)> progressCallback);
+    static void saveDataArchive(archive* a, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback);
+    static void saveJASPArchive(archive* a, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback);
 
-	static void createJARContents(archive *a);
-	static std::string getColumnTypeName(Column::ColumnType columnType);
+    static void createJARContents(archive* a);
+    static std::string getColumnTypeName(Column::ColumnType columnType);
 };
 
 #endif // JASPEXPORTER_H

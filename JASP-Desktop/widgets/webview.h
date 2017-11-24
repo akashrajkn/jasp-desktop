@@ -23,23 +23,22 @@
 
 #include "common.h"
 
-class WebView : public QWebView
-{
+class WebView : public QWebView {
 
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit WebView(QWidget *parent = 0);
+    explicit WebView(QWidget* parent = 0);
 
 signals:
-	void scrollValueChanged();
+    void scrollValueChanged();
 
 protected:
-	virtual void paintEvent(QPaintEvent *event) OVERRIDE;
+    virtual void paintEvent(QPaintEvent* event) OVERRIDE;
 
 private:
-	int _lastVerticalValue;
-	int _lastHorizontalValue;
+    int _lastVerticalValue;
+    int _lastHorizontalValue;
 };
 
 #endif // WEBVIEW_H

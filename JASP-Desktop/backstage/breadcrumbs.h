@@ -21,52 +21,50 @@
 
 #include <QWidget>
 
-#include <QHBoxLayout>
-#include <QToolButton>
 #include <QButtonGroup>
+#include <QHBoxLayout>
 #include <QMenu>
+#include <QToolButton>
 
 #include "fsbmodel.h"
 
 #include "common.h"
 
-class BreadCrumbs : public QWidget
-{
-	Q_OBJECT
+class BreadCrumbs : public QWidget {
+    Q_OBJECT
 public:
-	explicit BreadCrumbs(QWidget *parent = 0);
+    explicit BreadCrumbs(QWidget* parent = 0);
 
-	void setRootPath(const QString &path);
-	const QString &path() const;
+    void setRootPath(const QString& path);
+    const QString& path() const;
 
-	void setModel(FSBModel *model);
+    void setModel(FSBModel* model);
 
 private slots:
-	void setPath(QString path);
-	void buttonClicked();
-	void dotDotDotClicked();
+    void setPath(QString path);
+    void buttonClicked();
+    void dotDotDotClicked();
 
 protected:
-	void resizeEvent(QResizeEvent *event) OVERRIDE;
+    void resizeEvent(QResizeEvent* event) OVERRIDE;
 
 private:
+    void populate();
+    void refresh(const QSize& size);
 
-	void populate();
-	void refresh(const QSize &size);
+    FSBModel* _model;
 
-	FSBModel *_model;
+    int _dotDotIndex;
 
-	int _dotDotIndex;
+    QHBoxLayout* _layout;
+    QToolButton* _dotDotDotButton;
+    QButtonGroup* _buttons;
 
-	QHBoxLayout *_layout;
-	QToolButton *_dotDotDotButton;
-	QButtonGroup *_buttons;
+    QString _rootPath;
+    QString _path;
 
-	QString _rootPath;
-	QString _path;
-
-	QStringList _rootPieces;
-	QStringList _pathPieces;
+    QStringList _rootPieces;
+    QStringList _pathPieces;
 };
 
 #endif // BREADCRUMBS_H

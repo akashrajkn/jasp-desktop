@@ -22,19 +22,18 @@
 #include "ribbonwidget.h"
 
 namespace Ui {
-	class RibbonReinforcementLearning;
+class RibbonReinforcementLearning;
 }
 
-class RibbonReinforcementLearning : public RibbonWidget
-{
-	Q_OBJECT
+class RibbonReinforcementLearning : public RibbonWidget {
+    Q_OBJECT
 
 public:
-	explicit RibbonReinforcementLearning(QWidget *parent = 0);
-	~RibbonReinforcementLearning();
+    explicit RibbonReinforcementLearning(QWidget* parent = 0);
+    ~RibbonReinforcementLearning();
 
 private:
-	Ui::RibbonReinforcementLearning *ui;
+    Ui::RibbonReinforcementLearning* ui;
 };
 
 #endif // RIBBONREINFORCEMENTLEARNING_H

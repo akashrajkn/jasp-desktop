@@ -25,26 +25,23 @@
 
 #include "common.h"
 
-class LRNAMReply : public QNetworkReply
-{
-	Q_OBJECT
+class LRNAMReply : public QNetworkReply {
+    Q_OBJECT
 
 public:
-	LRNAMReply(const QString &path, QObject *parent = 0);
+    LRNAMReply(const QString& path, QObject* parent = 0);
 
-	virtual void abort() OVERRIDE;
-	virtual qint64 bytesAvailable() const OVERRIDE;
-	virtual bool isSequential() const OVERRIDE;
-	virtual qint64 readData(char * data, qint64 maxSize) OVERRIDE;
+    virtual void abort() OVERRIDE;
+    virtual qint64 bytesAvailable() const OVERRIDE;
+    virtual bool isSequential() const OVERRIDE;
+    virtual qint64 readData(char* data, qint64 maxSize) OVERRIDE;
 
 private:
-
-	QFile _file;
+    QFile _file;
 
 private slots:
-	void emitFinished();
-	void emitError();
-
+    void emitFinished();
+    void emitError();
 };
 
 #endif // LRNAMREPLY_H

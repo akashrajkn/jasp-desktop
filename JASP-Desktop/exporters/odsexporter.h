@@ -26,24 +26,20 @@
 
 #include <QDomDocument>
 
-class ODSExporter : public Exporter
-{
+class ODSExporter : public Exporter {
 public:
-	ODSExporter();
+    ODSExporter();
 
-
-	/**
+    /**
 	 * @brief saveDataSet Saves the passed data set as an ODS file.
 	 * @param path The path for the file.
 	 * @param package The Data to save,
 	 * @param progressCallback Called Back for progress.
 	 */
-	void saveDataSet(const std::string &path, DataSetPackage* package, boost::function<void (const std::string &, int)> progressCallback);
+    void saveDataSet(const std::string& path, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback);
 
 private:
-
-	std::auto_ptr<QDomDocument> _currentDocument;
-
+    std::auto_ptr<QDomDocument> _currentDocument;
 };
 
 #endif // ODSEXPORTER_H

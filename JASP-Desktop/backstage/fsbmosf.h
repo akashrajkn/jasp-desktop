@@ -19,86 +19,83 @@
 #ifndef FSBMOSF_H
 #define FSBMOSF_H
 
-#include <QPushButton>
-#include <QNetworkAccessManager>
 #include <QMap>
+#include <QNetworkAccessManager>
+#include <QPushButton>
 #include <QSettings>
 
-#include "fsbmodel.h"
 #include "common.h"
+#include "fsbmodel.h"
 #include "onlinedatamanager.h"
 
-class FSBMOSF : public FSBModel
-{
-	Q_OBJECT
+class FSBMOSF : public FSBModel {
+    Q_OBJECT
 
 public:
-	FSBMOSF();
-	~FSBMOSF();
-	void refresh() OVERRIDE;
+    FSBMOSF();
+    ~FSBMOSF();
+    void refresh() OVERRIDE;
 
-	typedef struct {
-		QString name;
-		bool isFolder;
-		bool isComponent;
-		bool isProvider;
-		QString contentsPath;
-		QString childrenPath;
-		QString uploadPath;
-		QString downloadPath;
-		QString nodePath;
-		bool canCreateFolders;
-		bool canCreateFiles;
-		int level = 0;
-	} OnlineNodeData;
+    typedef struct {
+        QString name;
+        bool isFolder;
+        bool isComponent;
+        bool isProvider;
+        QString contentsPath;
+        QString childrenPath;
+        QString uploadPath;
+        QString downloadPath;
+        QString nodePath;
+        bool canCreateFolders;
+        bool canCreateFiles;
+        int level = 0;
+    } OnlineNodeData;
 
-	OnlineNodeData getNodeData(QString key);
-	void setOnlineDataManager(OnlineDataManager *odm);
-	void attemptToConnect();
+    OnlineNodeData getNodeData(QString key);
+    void setOnlineDataManager(OnlineDataManager* odm);
+    void attemptToConnect();
 
-	bool requiresAuthentication() const OVERRIDE;
-	void authenticate(const QString &username, const QString &password) OVERRIDE;
-	bool isAuthenticated() const OVERRIDE;
-	void clearAuthentication() OVERRIDE;
+    bool requiresAuthentication() const OVERRIDE;
+    void authenticate(const QString& username, const QString& password) OVERRIDE;
+    bool isAuthenticated() const OVERRIDE;
+    void clearAuthentication() OVERRIDE;
 
-	OnlineNodeData currentNodeData();
+    OnlineNodeData currentNodeData();
 
 signals:
-	void userDataChanged();
-	void hideAuthentication();
+    void userDataChanged();
+    void hideAuthentication();
 
 private slots:
-	void gotProjects();
-	void gotFilesAndFolders();
+    void gotProjects();
+    void gotFilesAndFolders();
 
 private:
+    QSettings _settings;
 
-	QSettings _settings;
+    void setAuthenticated(bool value);
 
-	void setAuthenticated(bool value);
+    QString getRelationshipUrl(QJsonObject nodeObject, QString name);
 
-	QString getRelationshipUrl(QJsonObject nodeObject, QString name);
+    QMap<QString, OnlineNodeData> _pathUrls;
 
-	QMap<QString, OnlineNodeData> _pathUrls;
+    OnlineDataManager* _dataManager = NULL;
+    QNetworkAccessManager* _manager = NULL;
 
-	OnlineDataManager *_dataManager = NULL;
-	QNetworkAccessManager *_manager = NULL;
+    QString _userId;
+    QString _filesPath;
+    QString _fullname;
 
-	QString _userId;
-	QString _filesPath;
-	QString _fullname;
+    bool _isAuthenticated;
+    bool _isPaginationCall = false;
+    bool _isProjectPaginationCall = false;
 
-	bool _isAuthenticated;
-	bool _isPaginationCall = false;
-	bool _isProjectPaginationCall = false;
+    void loadProjects();
+    void loadFilesAndFolders(QUrl url, int level);
+    void parseFilesAndFolders(QUrl url, int level, bool recursive = false);
+    void parseProjects(QUrl url, bool recursive = false);
 
-	void loadProjects();
-	void loadFilesAndFolders(QUrl url, int level);
-	void parseFilesAndFolders(QUrl url, int level, bool recursive = false);
-	void parseProjects(QUrl url, bool recursive = false);
-
-	int _level = 0;
-
+    int _level = 0;
 };
 
 #endif // FSBMOSF_H

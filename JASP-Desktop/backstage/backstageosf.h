@@ -21,78 +21,74 @@
 
 #include "backstagepage.h"
 
+#include "breadcrumbs.h"
 #include "fsbmosf.h"
 #include "fsbrowser.h"
-#include "breadcrumbs.h"
 
-#include <QLabel>
 #include <QCursor>
-#include <QSettings>
+#include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 
-class BackstageOSF : public BackstagePage
-{
-	Q_OBJECT
+class BackstageOSF : public BackstagePage {
+    Q_OBJECT
 public:
-	explicit BackstageOSF(QWidget *parent = 0);
+    explicit BackstageOSF(QWidget* parent = 0);
 
-	void setOnlineDataManager(OnlineDataManager *odm);
-	void attemptToConnect();
-	void setCurrentFileName(QString currentFileName);
+    void setOnlineDataManager(OnlineDataManager* odm);
+    void attemptToConnect();
+    void setCurrentFileName(QString currentFileName);
 
-	void setMode(FileEvent::FileMode mode) OVERRIDE;
+    void setMode(FileEvent::FileMode mode) OVERRIDE;
 
 signals:
-	void dataSetOpened(QString path);
-	void newFolderRequested(QString folderName);
+    void dataSetOpened(QString path);
+    void newFolderRequested(QString folderName);
 
 private slots:
-	void notifyDataSetSelected(QString path);
-	void notifyDataSetOpened(QString path);
-	void saveClicked();
+    void notifyDataSetSelected(QString path);
+    void notifyDataSetOpened(QString path);
+    void saveClicked();
 
-	void openSaveFile(const QString &nodePath, const QString &filename);
-	void userDetailsReceived();
-	void openSaveCompleted(FileEvent* event);
-	void updateUserDetails();
+    void openSaveFile(const QString& nodePath, const QString& filename);
+    void userDetailsReceived();
+    void openSaveCompleted(FileEvent* event);
+    void updateUserDetails();
 
-	void newFolderCreated();
+    void newFolderCreated();
 
-	void newFolderClicked();
-	void authenticatedHandler();
-	void logoutClicked();
+    void newFolderClicked();
+    void authenticatedHandler();
+    void logoutClicked();
 
 private:
+    bool checkEntryName(QString name, QString entryTitle, bool allowFullStop);
 
-	bool checkEntryName(QString name, QString entryTitle, bool allowFullStop);
+    OnlineDataManager* _odm;
 
-	OnlineDataManager *_odm;
+    BreadCrumbs* _breadCrumbs;
+    FSBMOSF* _model;
+    FSBrowser* _fsBrowser;
+    QToolButton* _logoutButton;
+    QWidget* _fileNameContainer;
+    QLineEdit* _fileNameTextBox;
+    QPushButton* _saveButton;
+    QToolButton* _newFolderButton;
+    QString _currentFileName;
 
-	BreadCrumbs *_breadCrumbs;
-	FSBMOSF *_model;
-	FSBrowser *_fsBrowser;
-	QToolButton *_logoutButton;
-	QWidget *_fileNameContainer;
-	QLineEdit *_fileNameTextBox;
-	QPushButton *_saveButton;
-	QToolButton *_newFolderButton;
-	QString _currentFileName;
+    QSettings _settings;
 
-	QSettings _settings;
-
-	class HyperlinkLabel : public QLabel
-	{
-	public:
-		HyperlinkLabel(QWidget *parent)
-			: QLabel(parent)
-		{
-			setOpenExternalLinks(true);
-			setCursor(Qt::PointingHandCursor);
-			setTextFormat(Qt::RichText);
-			setStyleSheet("color : blue ; text-decoration: underline ;");
-		}
-	};
-
+    class HyperlinkLabel : public QLabel {
+    public:
+        HyperlinkLabel(QWidget* parent)
+            : QLabel(parent)
+        {
+            setOpenExternalLinks(true);
+            setCursor(Qt::PointingHandCursor);
+            setTextFormat(Qt::RichText);
+            setStyleSheet("color : blue ; text-decoration: underline ;");
+        }
+    };
 };
 
 #endif // BACKSTAGEOSF_H

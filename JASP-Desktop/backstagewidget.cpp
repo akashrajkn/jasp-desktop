@@ -18,198 +18,189 @@
 
 #include "backstagewidget.h"
 
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QFileInfo>
 
-BackStageWidget::BackStageWidget(QWidget *parent) : QWidget(parent)
+BackStageWidget::BackStageWidget(QWidget* parent)
+    : QWidget(parent)
 {
-	_tabBar = new VerticalTabBar(this);
-	_tabPages = new QStackedWidget(this);
+    _tabBar = new VerticalTabBar(this);
+    _tabPages = new QStackedWidget(this);
 
-	_openAndSaveWidget = new OpenSaveWidget();
+    _openAndSaveWidget = new OpenSaveWidget();
 
-	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setSpacing(0);
-	layout->setContentsMargins(0, 0, 0, 0);
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-	layout->addWidget(_tabBar);
-	layout->addWidget(_tabPages);
+    layout->addWidget(_tabBar);
+    layout->addWidget(_tabPages);
 
-	QString styleSheet;
+    QString styleSheet;
 
-	QFile firstStyleSheetFile(":/backstage/firsttabsstylesheet.qss");
-	firstStyleSheetFile.open(QFile::ReadOnly);
-	styleSheet = QString::fromUtf8(firstStyleSheetFile.readAll());
+    QFile firstStyleSheetFile(":/backstage/firsttabsstylesheet.qss");
+    firstStyleSheetFile.open(QFile::ReadOnly);
+    styleSheet = QString::fromUtf8(firstStyleSheetFile.readAll());
 
-	_tabBar->setMinimumWidth(150);
-	_tabBar->setStyleSheet(styleSheet);
+    _tabBar->setMinimumWidth(150);
+    _tabBar->setStyleSheet(styleSheet);
 
+    QFile secondStyleSheetFile(":/backstage/secondtabsstylesheet.qss");
+    secondStyleSheetFile.open(QFile::ReadOnly);
+    styleSheet = QString::fromUtf8(secondStyleSheetFile.readAll());
 
-	QFile secondStyleSheetFile(":/backstage/secondtabsstylesheet.qss");
-	secondStyleSheetFile.open(QFile::ReadOnly);
-	styleSheet = QString::fromUtf8(secondStyleSheetFile.readAll());
+    _openAndSaveWidget->tabWidget()->tabBar()->setMinimumWidth(200);
+    _openAndSaveWidget->tabWidget()->tabBar()->setStyleSheet(styleSheet);
 
-	_openAndSaveWidget->tabWidget()->tabBar()->setMinimumWidth(200);
-	_openAndSaveWidget->tabWidget()->tabBar()->setStyleSheet(styleSheet);
+    _tabPages->addWidget(_openAndSaveWidget);
 
-	_tabPages->addWidget(_openAndSaveWidget);
+    _tabBar->addTab("Open");
+    _tabBar->addTab("Save");
+    _tabBar->addTab("Save As");
+    _tabBar->addTab("Export Results");
+    _tabBar->addTab("Export Data");
+    _tabBar->addTab("Sync Data");
+    _tabBar->addTab("Close");
 
-	_tabBar->addTab("Open");
-	_tabBar->addTab("Save");
-	_tabBar->addTab("Save As");
-	_tabBar->addTab("Export Results");
-	_tabBar->addTab("Export Data");
-	_tabBar->addTab("Sync Data");
-	_tabBar->addTab("Close");
+    _tabBar->setTabEnabled(FileOperation::Save, false);
+    _tabBar->setTabEnabled(FileOperation::SaveAs, false);
+    _tabBar->setTabEnabled(FileOperation::ExportResults, false);
+    _tabBar->setTabEnabled(FileOperation::ExportData, false);
+    _tabBar->setTabEnabled(FileOperation::SyncData, false);
+    _tabBar->setTabEnabled(FileOperation::Close, false);
 
-	_tabBar->setTabEnabled(FileOperation::Save, false);
-	_tabBar->setTabEnabled(FileOperation::SaveAs, false);
-	_tabBar->setTabEnabled(FileOperation::ExportResults, false);
-	_tabBar->setTabEnabled(FileOperation::ExportData, false);
-	_tabBar->setTabEnabled(FileOperation::SyncData, false);
-	_tabBar->setTabEnabled(FileOperation::Close, false);
-
-	connect(_openAndSaveWidget, SIGNAL(dataSetIORequest(FileEvent*)), this, SLOT(dataSetIORequestHandler(FileEvent*)));
-	connect(_tabBar, SIGNAL(currentChanging(int,bool&)), this, SLOT(tabPageChanging(int,bool&)));
+    connect(_openAndSaveWidget, SIGNAL(dataSetIORequest(FileEvent*)), this, SLOT(dataSetIORequestHandler(FileEvent*)));
+    connect(_tabBar, SIGNAL(currentChanging(int, bool&)), this, SLOT(tabPageChanging(int, bool&)));
 }
 
-void BackStageWidget::analysisAdded(Analysis *analysis) {
-	_tabBar->setTabEnabled(FileOperation::SaveAs, true);
-	_tabBar->setTabEnabled(FileOperation::ExportResults, true);
+void BackStageWidget::analysisAdded(Analysis* analysis)
+{
+    _tabBar->setTabEnabled(FileOperation::SaveAs, true);
+    _tabBar->setTabEnabled(FileOperation::ExportResults, true);
 }
 
-void BackStageWidget::setOnlineDataManager(OnlineDataManager *odm)
+void BackStageWidget::setOnlineDataManager(OnlineDataManager* odm)
 {
-	_openAndSaveWidget->setOnlineDataManager(odm);
+    _openAndSaveWidget->setOnlineDataManager(odm);
 }
 
-void BackStageWidget::setLog(ActivityLog *log)
+void BackStageWidget::setLog(ActivityLog* log)
 {
-
 }
 
-FileEvent *BackStageWidget::open()
+FileEvent* BackStageWidget::open()
 {
-	return _openAndSaveWidget->open();
+    return _openAndSaveWidget->open();
 }
 
-FileEvent *BackStageWidget::open(const QString &filepath)
+FileEvent* BackStageWidget::open(const QString& filepath)
 {
-	return _openAndSaveWidget->open(filepath);
+    return _openAndSaveWidget->open(filepath);
 }
 
-FileEvent *BackStageWidget::save()
+FileEvent* BackStageWidget::save()
 {
-	return _openAndSaveWidget->save();
+    return _openAndSaveWidget->save();
 }
 
 void BackStageWidget::sync()
 {
-	_openAndSaveWidget->sync();
+    _openAndSaveWidget->sync();
 }
 
-FileEvent *BackStageWidget::close()
+FileEvent* BackStageWidget::close()
 {
-	return _openAndSaveWidget->close();
+    return _openAndSaveWidget->close();
 }
 
-void BackStageWidget::dataSetIORequestHandler(FileEvent *event)
+void BackStageWidget::dataSetIORequestHandler(FileEvent* event)
 {
-	connect(event, SIGNAL(completed(FileEvent*)), this, SLOT(dataSetIORequestCompleted(FileEvent*)));
-	emit dataSetIORequest(event);
+    connect(event, SIGNAL(completed(FileEvent*)), this, SLOT(dataSetIORequestCompleted(FileEvent*)));
+    emit dataSetIORequest(event);
 }
 
-void BackStageWidget::dataSetIORequestCompleted(FileEvent *event)
+void BackStageWidget::dataSetIORequestCompleted(FileEvent* event)
 {
-	if (event->successful())
-	{
-		if (event->operation() == FileEvent::FileOpen)
-		{
-			_tabBar->setTabEnabled(FileOperation::Save, event->type() == Utils::FileType::jasp); //Save
-			_tabBar->setTabEnabled(FileOperation::SaveAs, true); //Save As
-			_tabBar->setTabEnabled(FileOperation::ExportResults, true); //Export Results
-			_tabBar->setTabEnabled(FileOperation::ExportData, true); //Export Data
-			_tabBar->setTabEnabled(FileOperation::SyncData, true); //Close
-			_tabBar->setTabEnabled(FileOperation::Close, true); //Close
-		}
-		else if (event->operation() == FileEvent::FileSave)
-		{
-			_tabBar->setTabEnabled(FileOperation::Save, true);
-		}
-		else if (event->operation() == FileEvent::FileClose)
-		{
-			_tabBar->setTabEnabled(FileOperation::Save, false);
-			_tabBar->setTabEnabled(FileOperation::SaveAs, false);
-			_tabBar->setTabEnabled(FileOperation::ExportResults, false);
-			_tabBar->setTabEnabled(FileOperation::ExportData, false);
-			_tabBar->setTabEnabled(FileOperation::SyncData, false);
-			_tabBar->setTabEnabled(FileOperation::Close, false);
-		}
-	}
+    if (event->successful()) {
+        if (event->operation() == FileEvent::FileOpen) {
+            _tabBar->setTabEnabled(FileOperation::Save, event->type() == Utils::FileType::jasp); //Save
+            _tabBar->setTabEnabled(FileOperation::SaveAs, true); //Save As
+            _tabBar->setTabEnabled(FileOperation::ExportResults, true); //Export Results
+            _tabBar->setTabEnabled(FileOperation::ExportData, true); //Export Data
+            _tabBar->setTabEnabled(FileOperation::SyncData, true); //Close
+            _tabBar->setTabEnabled(FileOperation::Close, true); //Close
+        } else if (event->operation() == FileEvent::FileSave) {
+            _tabBar->setTabEnabled(FileOperation::Save, true);
+        } else if (event->operation() == FileEvent::FileClose) {
+            _tabBar->setTabEnabled(FileOperation::Save, false);
+            _tabBar->setTabEnabled(FileOperation::SaveAs, false);
+            _tabBar->setTabEnabled(FileOperation::ExportResults, false);
+            _tabBar->setTabEnabled(FileOperation::ExportData, false);
+            _tabBar->setTabEnabled(FileOperation::SyncData, false);
+            _tabBar->setTabEnabled(FileOperation::Close, false);
+        }
+    }
 }
 
-void BackStageWidget::tabPageChanging(int index, bool &cancel)
+void BackStageWidget::tabPageChanging(int index, bool& cancel)
 {
-	switch (index)
-	{
-	case FileOperation::Open:  // Open
-		_openAndSaveWidget->setSaveMode(FileEvent::FileOpen);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		break;
+    switch (index) {
+    case FileOperation::Open: // Open
+        _openAndSaveWidget->setSaveMode(FileEvent::FileOpen);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        break;
 
-	case FileOperation::Save:  // Save
-		if (_openAndSaveWidget->getCurrentFileType() == Utils::FileType::jasp)
-			_openAndSaveWidget->save();
-		else
-		{
-			_tabBar->setCurrentIndex(FileOperation::SaveAs);
-			_openAndSaveWidget->setSaveMode(FileEvent::FileSave);
-			_tabPages->setCurrentWidget(_openAndSaveWidget);
-		}
-		cancel = true;
-		break;
+    case FileOperation::Save: // Save
+        if (_openAndSaveWidget->getCurrentFileType() == Utils::FileType::jasp)
+            _openAndSaveWidget->save();
+        else {
+            _tabBar->setCurrentIndex(FileOperation::SaveAs);
+            _openAndSaveWidget->setSaveMode(FileEvent::FileSave);
+            _tabPages->setCurrentWidget(_openAndSaveWidget);
+        }
+        cancel = true;
+        break;
 
-	case FileOperation::SaveAs:  // Save As
-		_openAndSaveWidget->setSaveMode(FileEvent::FileSave);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		break;
+    case FileOperation::SaveAs: // Save As
+        _openAndSaveWidget->setSaveMode(FileEvent::FileSave);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        break;
 
-	case FileOperation::ExportResults:  // Export Results
-		_openAndSaveWidget->setSaveMode(FileEvent::FileExportResults);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		break;
+    case FileOperation::ExportResults: // Export Results
+        _openAndSaveWidget->setSaveMode(FileEvent::FileExportResults);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        break;
 
-	case FileOperation::ExportData:  // Export Data
-		_openAndSaveWidget->setSaveMode(FileEvent::FileExportData);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		break;
+    case FileOperation::ExportData: // Export Data
+        _openAndSaveWidget->setSaveMode(FileEvent::FileExportData);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        break;
 
-	case FileOperation::SyncData:  // Sync Data
-		_openAndSaveWidget->setSaveMode(FileEvent::FileSyncData);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		_openAndSaveWidget->changeTabIfCurrentFileEmpty();
-		break;
+    case FileOperation::SyncData: // Sync Data
+        _openAndSaveWidget->setSaveMode(FileEvent::FileSyncData);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        _openAndSaveWidget->changeTabIfCurrentFileEmpty();
+        break;
 
-	case FileOperation::Close: // Close
-		_openAndSaveWidget->close();
-		_tabBar->setCurrentIndex(FileOperation::Open);
-		_openAndSaveWidget->setSaveMode(FileEvent::FileOpen);
-		_tabPages->setCurrentWidget(_openAndSaveWidget);
-		cancel = true;
-		break;
-	}
+    case FileOperation::Close: // Close
+        _openAndSaveWidget->close();
+        _tabBar->setCurrentIndex(FileOperation::Open);
+        _openAndSaveWidget->setSaveMode(FileEvent::FileOpen);
+        _tabPages->setCurrentWidget(_openAndSaveWidget);
+        cancel = true;
+        break;
+    }
 }
 
-void BackStageWidget::setSyncFile(FileEvent *event)
+void BackStageWidget::setSyncFile(FileEvent* event)
 {
-	if (event->successful())
-	{
-		_openAndSaveWidget->setCurrentDataFile(event->path());
-	}
+    if (event->successful()) {
+        _openAndSaveWidget->setCurrentDataFile(event->path());
+    }
 }
 
 void BackStageWidget::dataAutoSynchronizationChanged(bool on)
 {
-	_openAndSaveWidget->setDataFileWatcher(on);
+    _openAndSaveWidget->setDataFileWatcher(on);
 }

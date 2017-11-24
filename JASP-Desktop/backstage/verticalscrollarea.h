@@ -25,14 +25,13 @@
 
 #include "common.h"
 
-class VerticalScrollArea : public QScrollArea
-{
-	Q_OBJECT
+class VerticalScrollArea : public QScrollArea {
+    Q_OBJECT
 public:
-	explicit VerticalScrollArea(QWidget *parent = 0);
+    explicit VerticalScrollArea(QWidget* parent = 0);
 
 protected:
-	bool eventFilter(QObject *object, QEvent *event) OVERRIDE;
+    bool eventFilter(QObject* object, QEvent* event) OVERRIDE;
 };
 
 #endif // VERTICALSCROLLAREA_H

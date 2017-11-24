@@ -24,8 +24,8 @@
 #include "bound.h"
 #include "common.h"
 #include "options/optionterms.h"
-#include "widgets/tablemodelvariablesavailable.h"
 #include "widgets/tablemodelvariablesassigned.h"
+#include "widgets/tablemodelvariablesavailable.h"
 
 #include <QAbstractItemModel>
 
@@ -33,24 +33,23 @@ namespace Ui {
 class BoundAssignWidget;
 }
 
-class BoundAssignWidget : public QWidget, public Bound
-{
-	Q_OBJECT
+class BoundAssignWidget : public QWidget, public Bound {
+    Q_OBJECT
 
 public:
-	explicit BoundAssignWidget(QWidget *parent = 0);
-	~BoundAssignWidget();
+    explicit BoundAssignWidget(QWidget* parent = 0);
+    ~BoundAssignWidget();
 
-	virtual void bindTo(Option *option) OVERRIDE;
+    virtual void bindTo(Option* option) OVERRIDE;
 
-	void setVariables(const Terms &variables);
-	void setLabels(const QString &left, const QString &right);
+    void setVariables(const Terms& variables);
+    void setLabels(const QString& left, const QString& right);
 
 private:
-	Ui::BoundAssignWidget *ui;
+    Ui::BoundAssignWidget* ui;
 
-	TableModelVariablesAvailable *_availableModel;
-	TableModelVariablesAssigned *_assignedModel;
+    TableModelVariablesAvailable* _availableModel;
+    TableModelVariablesAssigned* _assignedModel;
 };
 
 #endif // BOUNDASSIGNWIDGET_H

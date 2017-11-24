@@ -30,27 +30,25 @@
  * is saved in the _orgStringValues static property of the Labels class.
  *********/
 
-class Label
-{
+class Label {
 public:
-	Label(const std::string &label, int value);
-	Label(int value);
-	Label();
+    Label(const std::string& label, int value);
+    Label(int value);
+    Label();
 
-	std::string text() const;
-	bool hasIntValue() const;
-	int value() const;
-    void setLabel(const std::string &label);
-	Label& operator=(const Label &label);
+    std::string text() const;
+    bool hasIntValue() const;
+    int value() const;
+    void setLabel(const std::string& label);
+    Label& operator=(const Label& label);
 
 private:
+    bool _hasIntValue;
+    int _intValue;
+    char _stringValue[128];
+    int _stringLength;
 
-	bool _hasIntValue;
-	int _intValue;
-	char _stringValue[128];
-	int  _stringLength;
-
-    void _setLabel(const std::string &label);
+    void _setLabel(const std::string& label);
 };
 
 #endif // LABEL_H

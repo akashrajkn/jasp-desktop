@@ -27,17 +27,15 @@ namespace Ui {
 class DescriptivesForm;
 }
 
-class DescriptivesForm : public AnalysisForm
-{
-	Q_OBJECT
+class DescriptivesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit DescriptivesForm(QWidget *parent = 0);
-	~DescriptivesForm();
+    explicit DescriptivesForm(QWidget* parent = 0);
+    ~DescriptivesForm();
 
 private:
-	Ui::DescriptivesForm *ui;
-
+    Ui::DescriptivesForm* ui;
 };
 
 #endif // DESCRIPTIVESFORM_H

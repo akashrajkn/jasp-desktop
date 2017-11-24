@@ -20,38 +20,37 @@
 #define CLASSICALMETAANALYSISFORM_H
 
 #include "../analysisform.h"
+#include "widgets/tablemodelanovamodel.h"
 #include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariableslevels.h"
-#include "widgets/tablemodelanovamodel.h"
 
 namespace Ui {
 class ClassicalMetaAnalysisForm;
 }
 
-class ClassicalMetaAnalysisForm : public AnalysisForm
-{
-	Q_OBJECT
+class ClassicalMetaAnalysisForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-    explicit ClassicalMetaAnalysisForm(QWidget *parent = 0);
+    explicit ClassicalMetaAnalysisForm(QWidget* parent = 0);
     ~ClassicalMetaAnalysisForm();
 
-	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
+    void factorsChanging();
+    void factorsChanged();
 
 private:
-    Ui::ClassicalMetaAnalysisForm *ui;
+    Ui::ClassicalMetaAnalysisForm* ui;
 
-	TableModelVariablesAssigned *_dependentModel;
-    TableModelVariablesAssigned *_covariatesModel;
-    TableModelVariablesAssigned *_factorsModel;
-	TableModelVariablesAssigned *_wlsWeightsModel;
-    TableModelVariablesAssigned *_studyLabelModel;
+    TableModelVariablesAssigned* _dependentModel;
+    TableModelVariablesAssigned* _covariatesModel;
+    TableModelVariablesAssigned* _factorsModel;
+    TableModelVariablesAssigned* _wlsWeightsModel;
+    TableModelVariablesAssigned* _studyLabelModel;
 
-	TableModelAnovaModel *_modelModel;
+    TableModelAnovaModel* _modelModel;
 };
 
 #endif // CLASSICALMETAANALYSISFORM_H

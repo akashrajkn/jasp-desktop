@@ -20,47 +20,45 @@
 #define AVAILABLEFIELDS_H
 
 #include <QAbstractListModel>
-#include <QStringList>
 #include <QIcon>
+#include <QStringList>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "dataset.h"
 #include "options/optionvariables.h"
 
-class AvailableFields : public QAbstractListModel
-{
+class AvailableFields : public QAbstractListModel {
 public:
-	AvailableFields(QObject *parent);
+    AvailableFields(QObject* parent);
 
-	void setDataSet(DataSet *dataSet);
-	void filter(std::vector<std::string> show);
+    void setDataSet(DataSet* dataSet);
+    void filter(std::vector<std::string> show);
 
-	void provideFor(OptionVariables *option);
-	QStringList getFields(QModelIndexList indices);
+    void provideFor(OptionVariables* option);
+    QStringList getFields(QModelIndexList indices);
 
-	boost::signals2::signal<void ()> availableFieldsChanged();
+    boost::signals2::signal<void()> availableFieldsChanged();
 
-	int rowCount(const QModelIndex &) const OVERRIDE;
-	QVariant data(const QModelIndex &index, int role) const OVERRIDE;
+    int rowCount(const QModelIndex&) const OVERRIDE;
+    QVariant data(const QModelIndex& index, int role) const OVERRIDE;
 
-	QStringList available();
+    QStringList available();
 
 private:
-	DataSet *_dataSet;
-	std::vector<OptionVariables *> _provideFor;
-	void updateAvailableFields();
-	QStringList _availableFields;
+    DataSet* _dataSet;
+    std::vector<OptionVariables*> _provideFor;
+    void updateAvailableFields();
+    QStringList _availableFields;
 
-	std::vector<std::string> _filter;
-	bool _shouldFilter;
+    std::vector<std::string> _filter;
+    bool _shouldFilter;
 
-	QIcon _nominalTextIcon;
-	QIcon _nominalIcon;
-	QIcon _ordinalIcon;
-	QIcon _scaleIcon;
-
+    QIcon _nominalTextIcon;
+    QIcon _nominalIcon;
+    QIcon _ordinalIcon;
+    QIcon _scaleIcon;
 };
 
 #endif // AVAILABLEFIELDS_H

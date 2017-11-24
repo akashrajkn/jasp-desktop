@@ -18,21 +18,21 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include <QDebug>
 #include <QDialog>
 #include <QGridLayout>
 #include <QLayout>
-#include <QDebug>
 
 #include "application.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	QCoreApplication::setOrganizationName("JASP");
-	QCoreApplication::setOrganizationDomain("jasp-stats.org");
-	QCoreApplication::setApplicationName("JASP");
+    QCoreApplication::setOrganizationName("JASP");
+    QCoreApplication::setOrganizationDomain("jasp-stats.org");
+    QCoreApplication::setApplicationName("JASP");
 
-	QLocale::setDefault(QLocale(QLocale::English)); // make decimal points == .
+    QLocale::setDefault(QLocale(QLocale::English)); // make decimal points == .
 
-	Application a(argc, argv);
-	return a.exec();
+    Application a(argc, argv);
+    return a.exec();
 }

@@ -22,16 +22,14 @@
 
 const std::string CURRENT_R_VERSION = "3.3";
 
-class AppInfo
-{
+class AppInfo {
 public:
-	static const Version version;
-	static const std::string name;
-	static const std::string builddate;
+    static const Version version;
+    static const std::string name;
+    static const std::string builddate;
 
-	static std::string getShortDesc();
-	static std::string getBuildYear();
+    static std::string getShortDesc();
+    static std::string getBuildYear();
 };
 
 #endif // APPINFO_H
-

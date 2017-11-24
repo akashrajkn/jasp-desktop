@@ -19,19 +19,17 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include <QPushButton>
 #include "common.h"
+#include <QPushButton>
 
-class Button : public QPushButton
-{
-	Q_OBJECT
+class Button : public QPushButton {
+    Q_OBJECT
 
 public:
-	explicit Button(QWidget *parent = 0);
+    explicit Button(QWidget* parent = 0);
 
 protected:
-	bool event(QEvent *e) OVERRIDE;
-
+    bool event(QEvent* e) OVERRIDE;
 };
 
 #endif // BUTTON_H

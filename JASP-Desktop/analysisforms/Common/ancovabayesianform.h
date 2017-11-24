@@ -21,44 +21,43 @@
 
 #include "../analysisform.h"
 
-#include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelanovamodel.h"
+#include "widgets/tablemodelvariablesassigned.h"
 
 namespace Ui {
 class AncovaBayesianForm;
 }
 
-class AncovaBayesianForm : public AnalysisForm
-{
-	Q_OBJECT
+class AncovaBayesianForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit AncovaBayesianForm(QWidget *parent = 0);
-	~AncovaBayesianForm();
+    explicit AncovaBayesianForm(QWidget* parent = 0);
+    ~AncovaBayesianForm();
 
-	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private:
-	Ui::AncovaBayesianForm *ui;
+    Ui::AncovaBayesianForm* ui;
 
-	TableModelVariablesAssigned *_dependentListModel;
-	TableModelVariablesAssigned *_fixedFactorsListModel;
-	TableModelVariablesAssigned *_randomFactorsListModel;
-	TableModelVariablesAssigned *_covariatesListModel;
-	TableModelVariablesAssigned *_wlsWeightsListModel;
+    TableModelVariablesAssigned* _dependentListModel;
+    TableModelVariablesAssigned* _fixedFactorsListModel;
+    TableModelVariablesAssigned* _randomFactorsListModel;
+    TableModelVariablesAssigned* _covariatesListModel;
+    TableModelVariablesAssigned* _wlsWeightsListModel;
 
-	TableModelAnovaModel *_anovaModel;
+    TableModelAnovaModel* _anovaModel;
 
-	TableModelVariablesAvailable *_factorsAvailableListModel;
+    TableModelVariablesAvailable* _factorsAvailableListModel;
 
-	TableModelVariablesAvailable *_plotFactorsAvailableTableModel;
-  TableModelVariablesAssigned *_horizontalAxisTableModel;
-  TableModelVariablesAssigned *_seperateLinesTableModel;
-  TableModelVariablesAssigned *_seperatePlotsTableModel;
+    TableModelVariablesAvailable* _plotFactorsAvailableTableModel;
+    TableModelVariablesAssigned* _horizontalAxisTableModel;
+    TableModelVariablesAssigned* _seperateLinesTableModel;
+    TableModelVariablesAssigned* _seperatePlotsTableModel;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
+    void factorsChanging();
+    void factorsChanged();
 };
 
 #endif // ANCOVABAYESIANFORM_H

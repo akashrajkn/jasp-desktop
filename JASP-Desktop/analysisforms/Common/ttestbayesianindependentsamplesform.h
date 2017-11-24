@@ -19,23 +19,22 @@
 #ifndef TTESTBAYESIANINDEPENDENTSAMPLESFORM_H
 #define TTESTBAYESIANINDEPENDENTSAMPLESFORM_H
 
-#include <QWidget>
 #include "../analysisform.h"
+#include <QWidget>
 
 namespace Ui {
 class TTestBayesianIndependentSamplesForm;
 }
 
-class TTestBayesianIndependentSamplesForm : public AnalysisForm
-{
-	Q_OBJECT
+class TTestBayesianIndependentSamplesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit TTestBayesianIndependentSamplesForm(QWidget *parent = 0);
-	~TTestBayesianIndependentSamplesForm();
+    explicit TTestBayesianIndependentSamplesForm(QWidget* parent = 0);
+    ~TTestBayesianIndependentSamplesForm();
 
 private:
-	Ui::TTestBayesianIndependentSamplesForm *ui;
+    Ui::TTestBayesianIndependentSamplesForm* ui;
 };
 
 #endif // TTESTBAYESIANINDEPENDENTSAMPLESFORM_H

@@ -25,16 +25,15 @@ namespace Ui {
 class SummaryStatsTTestBayesianIndependentSamplesForm;
 }
 
-class SummaryStatsTTestBayesianIndependentSamplesForm : public AnalysisForm
-{
-	Q_OBJECT
+class SummaryStatsTTestBayesianIndependentSamplesForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit SummaryStatsTTestBayesianIndependentSamplesForm(QWidget *parent = 0);
-	~SummaryStatsTTestBayesianIndependentSamplesForm();
+    explicit SummaryStatsTTestBayesianIndependentSamplesForm(QWidget* parent = 0);
+    ~SummaryStatsTTestBayesianIndependentSamplesForm();
 
 private:
-	Ui::SummaryStatsTTestBayesianIndependentSamplesForm *ui;
+    Ui::SummaryStatsTTestBayesianIndependentSamplesForm* ui;
 };
 
 #endif // SUMMARYSTATSTTESTBAYESIANINDEPENDENTSAMPLESFORM_H

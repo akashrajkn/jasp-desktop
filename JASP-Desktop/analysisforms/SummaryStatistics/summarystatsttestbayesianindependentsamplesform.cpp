@@ -19,11 +19,11 @@
 #include "summarystatsttestbayesianindependentsamplesform.h"
 #include "ui_summarystatsttestbayesianindependentsamplesform.h"
 
-SummaryStatsTTestBayesianIndependentSamplesForm::SummaryStatsTTestBayesianIndependentSamplesForm(QWidget *parent) :
-	AnalysisForm("SummaryStatsTTestBayesianIndependentSamplesForm", parent),
-	ui(new Ui::SummaryStatsTTestBayesianIndependentSamplesForm)
+SummaryStatsTTestBayesianIndependentSamplesForm::SummaryStatsTTestBayesianIndependentSamplesForm(QWidget* parent)
+    : AnalysisForm("SummaryStatsTTestBayesianIndependentSamplesForm", parent)
+    , ui(new Ui::SummaryStatsTTestBayesianIndependentSamplesForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
     // collapse more advanced options widget by default
     ui->subjectivePriors->hide();
@@ -31,5 +31,5 @@ SummaryStatsTTestBayesianIndependentSamplesForm::SummaryStatsTTestBayesianIndepe
 
 SummaryStatsTTestBayesianIndependentSamplesForm::~SummaryStatsTTestBayesianIndependentSamplesForm()
 {
-	delete ui;
+    delete ui;
 }

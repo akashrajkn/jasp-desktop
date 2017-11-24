@@ -20,9 +20,9 @@
 #define REGRESSIONLOGLINEARFORM_H
 
 #include "../analysisform.h"
+#include "widgets/tablemodelanovamodel.h"
 #include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariableslevels.h"
-#include "widgets/tablemodelanovamodel.h"
 
 #include "common.h"
 
@@ -30,22 +30,21 @@ namespace Ui {
 class RegressionLogLinearForm;
 }
 
-class RegressionLogLinearForm : public AnalysisForm
-{
-	Q_OBJECT
+class RegressionLogLinearForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit RegressionLogLinearForm(QWidget *parent = 0);
-	~RegressionLogLinearForm();
-	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    explicit RegressionLogLinearForm(QWidget* parent = 0);
+    ~RegressionLogLinearForm();
+    void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private:
-	Ui::RegressionLogLinearForm *ui;
+    Ui::RegressionLogLinearForm* ui;
 
-	TableModelVariablesAssigned *_countsModel;
-	TableModelVariablesAssigned  *_factorsModel;
+    TableModelVariablesAssigned* _countsModel;
+    TableModelVariablesAssigned* _factorsModel;
 
-	TableModelAnovaModel *_model;
+    TableModelAnovaModel* _model;
 };
 
 #endif // REGRESSIONLOGLINEARFORM_H

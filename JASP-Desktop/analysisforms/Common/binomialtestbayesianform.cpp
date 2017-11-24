@@ -19,29 +19,29 @@
 #include "binomialtestbayesianform.h"
 #include "ui_binomialtestbayesianform.h"
 
-BinomialTestBayesianForm::BinomialTestBayesianForm(QWidget *parent) :
-	AnalysisForm("BayesianBinomialTestForm", parent),
-	ui(new Ui::BinomialTestBayesianForm)
+BinomialTestBayesianForm::BinomialTestBayesianForm(QWidget* parent)
+    : AnalysisForm("BayesianBinomialTestForm", parent)
+    , ui(new Ui::BinomialTestBayesianForm)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	ui->listAvailableVariables->setModel(&_availableVariablesModel);
-	ui->listAvailableVariables->setDoubleClickTarget(ui->variables);
+    ui->listAvailableVariables->setModel(&_availableVariablesModel);
+    ui->listAvailableVariables->setDoubleClickTarget(ui->variables);
 
-	TableModelVariablesAssigned *model = new TableModelVariablesAssigned(this);
-	model->setSource(&_availableVariablesModel);
+    TableModelVariablesAssigned* model = new TableModelVariablesAssigned(this);
+    model->setSource(&_availableVariablesModel);
 
-	ui->variables->setModel(model);
-	ui->variables->setDoubleClickTarget(ui->listAvailableVariables);
+    ui->variables->setModel(model);
+    ui->variables->setDoubleClickTarget(ui->listAvailableVariables);
 
-	ui->assignButton->setSourceAndTarget(ui->listAvailableVariables, ui->variables);
-	
-	ui->testValue->setLabel("Test value");
-	ui->priorA->setLabel("a");
-	ui->priorB->setLabel("b");
+    ui->assignButton->setSourceAndTarget(ui->listAvailableVariables, ui->variables);
+
+    ui->testValue->setLabel("Test value");
+    ui->priorA->setLabel("a");
+    ui->priorB->setLabel("b");
 }
 
 BinomialTestBayesianForm::~BinomialTestBayesianForm()
 {
-	delete ui;
+    delete ui;
 }

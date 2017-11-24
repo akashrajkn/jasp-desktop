@@ -19,58 +19,54 @@
 #ifndef ANALYSISFORM_H
 #define ANALYSISFORM_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QPushButton>
 #include <QMap>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "dataset.h"
 #include "options/options.h"
 #include "options/optionvariables.h"
 
 #include "availablefields.h"
-#include "widgets/availablefieldslistview.h"
 #include "widgets/assignbutton.h"
+#include "widgets/availablefieldslistview.h"
 #include "widgets/boundlistview.h"
 
 #include "widgets/tablemodelvariablesavailable.h"
 
 #include "variableinfo.h"
 
-class AnalysisForm : public QWidget, protected VariableInfoProvider
-{
-	Q_OBJECT
+class AnalysisForm : public QWidget, protected VariableInfoProvider {
+    Q_OBJECT
 
 public:
-	explicit AnalysisForm(QString name, QWidget *parent = 0);
-	virtual void bindTo(Options *options, DataSet *dataSet);
-	virtual void unbind();
+    explicit AnalysisForm(QString name, QWidget* parent = 0);
+    virtual void bindTo(Options* options, DataSet* dataSet);
+    virtual void unbind();
 
-	bool hasIllegalValue() const;
-	const QString &illegalValueMessage() const;
+    bool hasIllegalValue() const;
+    const QString& illegalValueMessage() const;
 
 signals:
-	void illegalChanged();
+    void illegalChanged();
 
 protected:
+    virtual QVariant requestInfo(const Term& term, VariableInfo::InfoType info) const OVERRIDE;
 
-	virtual QVariant requestInfo(const Term &term, VariableInfo::InfoType info) const OVERRIDE;
+    DataSet* _dataSet;
+    Options* _options;
 
-	DataSet *_dataSet;
-	Options *_options;
+    TableModelVariablesAvailable _availableVariablesModel;
 
-	TableModelVariablesAvailable _availableVariablesModel;
+    OptionVariables* _mainVariables;
 
-	OptionVariables *_mainVariables;
+    void updateIllegalStatus();
 
-	void updateIllegalStatus();
-
-	std::list<Bound *> _bounds;
-	void illegalValueHandler(Bound *source);
-	bool _hasIllegalValue;
-	QString _illegalMessage;
-	
-	
+    std::list<Bound*> _bounds;
+    void illegalValueHandler(Bound* source);
+    bool _hasIllegalValue;
+    QString _illegalMessage;
 };
 
 #endif // ANALYSISFORM_H

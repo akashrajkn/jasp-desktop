@@ -29,45 +29,42 @@
 
 #include "bound.h"
 
-class BoundTextBox : public QLineEdit, public Bound
-{
-	Q_OBJECT
+class BoundTextBox : public QLineEdit, public Bound {
+    Q_OBJECT
 public:
-	explicit BoundTextBox(QWidget *parent = 0);
+    explicit BoundTextBox(QWidget* parent = 0);
 
-	virtual void bindTo(Option *option) OVERRIDE;
+    virtual void bindTo(Option* option) OVERRIDE;
 
-	void setLabel(const QString &label);
+    void setLabel(const QString& label);
     void finalise();
 signals:
-	
+
 protected:
-	void keyPressEvent(QKeyEvent *event) OVERRIDE;
-	void focusOutEvent(QFocusEvent *event) OVERRIDE;
+    void keyPressEvent(QKeyEvent* event) OVERRIDE;
+    void focusOutEvent(QFocusEvent* event) OVERRIDE;
 
 private:
-	OptionInteger *_integer;
-	OptionIntegerArray *_integerArray;
-	OptionNumber *_number;
-	OptionString *_string;
+    OptionInteger* _integer;
+    OptionIntegerArray* _integerArray;
+    OptionNumber* _number;
+    OptionString* _string;
 
-	QString _label;
+    QString _label;
 
 private slots:
-	void textEditedHandler(QString text);
+    void textEditedHandler(QString text);
 
 private:
-	class QIntArrayValidator : public QValidator
-	{
-	public:
-		QIntArrayValidator();
-		QValidator::State validate(QString & input, int&pos) const OVERRIDE;
-		virtual void fixup(QString &input) const OVERRIDE;
+    class QIntArrayValidator : public QValidator {
+    public:
+        QIntArrayValidator();
+        QValidator::State validate(QString& input, int& pos) const OVERRIDE;
+        virtual void fixup(QString& input) const OVERRIDE;
 
-		static std::vector<int> parse(QString &input);
-		static QString stringify(std::vector<int> &input);
-
-	};
+        static std::vector<int> parse(QString& input);
+        static QString stringify(std::vector<int>& input);
+    };
 };
 
 #endif // BOUNDTEXTBOX_H

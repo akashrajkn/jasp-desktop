@@ -24,22 +24,20 @@
 
 #include "common.h"
 
-class ToolButton : public QPushButton
-{
+class ToolButton : public QPushButton {
     Q_OBJECT
 public:
-	explicit ToolButton(QWidget *parent = 0);
+    explicit ToolButton(QWidget* parent = 0);
 
 signals:
-    
+
 public slots:
 
 protected:
-    virtual void paintEvent(QPaintEvent *event) OVERRIDE;
+    virtual void paintEvent(QPaintEvent* event) OVERRIDE;
 
 private:
     bool _firstPaint;
-    
 };
 
 #endif // TOOLBUTTON_H

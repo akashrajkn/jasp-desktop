@@ -19,82 +19,79 @@
 #ifndef ANOVAMODELWIDGET_H
 #define ANOVAMODELWIDGET_H
 
-#include <QWidget>
-#include <QStringListModel>
 #include <QItemDelegate>
 #include <QPainter>
+#include <QStringListModel>
 #include <QToolTip>
+#include <QWidget>
 
 #include "bound.h"
 
-#include "options/optionvariables.h"
 #include "availablefields.h"
+#include "options/optionvariables.h"
 
-#include "tablemodelvariablesavailable.h"
 #include "tablemodelanovamodel.h"
+#include "tablemodelvariablesavailable.h"
 
-
-class AnovaHoverDelegate : public QItemDelegate
-{
+class AnovaHoverDelegate : public QItemDelegate {
 public:
-	AnovaHoverDelegate(QObject *parent=0) : QItemDelegate(parent){}
-	void paint ( QPainter *painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
-	{
-		if(option.state & QStyle::State_MouseOver)
-		{
-			painter->fillRect(option.rect, Qt::lightGray);
-			QString str = index.data().toString();
-			QToolTip::showText(QCursor::pos(), str);
-		}
-		QItemDelegate::paint(painter, option, index);
-	}
+    AnovaHoverDelegate(QObject* parent = 0)
+        : QItemDelegate(parent)
+    {
+    }
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+    {
+        if (option.state & QStyle::State_MouseOver) {
+            painter->fillRect(option.rect, Qt::lightGray);
+            QString str = index.data().toString();
+            QToolTip::showText(QCursor::pos(), str);
+        }
+        QItemDelegate::paint(painter, option, index);
+    }
 };
 
 namespace Ui {
 class AnovaModelWidget;
 }
 
-class AnovaModelWidget : public QWidget, public Bound
-{
-	Q_OBJECT
-	
+class AnovaModelWidget : public QWidget, public Bound {
+    Q_OBJECT
+
 public:
-	explicit AnovaModelWidget(QWidget *parent = 0);
-	~AnovaModelWidget();
+    explicit AnovaModelWidget(QWidget* parent = 0);
+    ~AnovaModelWidget();
 
-	virtual void bindTo(Option *option) OVERRIDE;
-	virtual void setModel(TableModelAnovaModel *model);
+    virtual void bindTo(Option* option) OVERRIDE;
+    virtual void setModel(TableModelAnovaModel* model);
 
-	void setFactorsLabel(const QString &label);
-	
+    void setFactorsLabel(const QString& label);
+
 private slots:
 
-	void variablesAvailableChanged();
-	void sourceSelectionChanged();
+    void variablesAvailableChanged();
+    void sourceSelectionChanged();
 
-	void assignInteraction();
-	void assignMainEffects();
-	void assign2ways();
-	void assign3ways();
-	void assign4ways();
-	void assign5ways();
+    void assignInteraction();
+    void assignMainEffects();
+    void assign2ways();
+    void assign3ways();
+    void assign4ways();
+    void assign5ways();
 
 private:
+    QAction* _assignInteraction;
+    QAction* _assignMainEffects;
+    QAction* _assign2ways;
+    QAction* _assign3ways;
+    QAction* _assign4ways;
+    QAction* _assign5ways;
 
-	QAction *_assignInteraction;
-	QAction *_assignMainEffects;
-	QAction *_assign2ways;
-	QAction *_assign3ways;
-	QAction *_assign4ways;
-	QAction *_assign5ways;
+    Ui::AnovaModelWidget* ui;
 
-	Ui::AnovaModelWidget *ui;
+    OptionsTable* _boundTo;
 
-	OptionsTable *_boundTo;
-
-	TableModelVariablesAvailable *_tableModelVariablesAvailable;
-	TableModelAnovaModel *_tableModelAnovaModel;
-
+    TableModelVariablesAvailable* _tableModelVariablesAvailable;
+    TableModelAnovaModel* _tableModelAnovaModel;
 };
 
 #endif // ANOVAMODELWIDGET_H

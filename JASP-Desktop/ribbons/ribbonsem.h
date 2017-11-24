@@ -25,16 +25,15 @@ namespace Ui {
 class RibbonSEM;
 }
 
-class RibbonSEM : public RibbonWidget
-{
-	Q_OBJECT
+class RibbonSEM : public RibbonWidget {
+    Q_OBJECT
 
 public:
-	explicit RibbonSEM(QWidget *parent = 0);
-	~RibbonSEM();
+    explicit RibbonSEM(QWidget* parent = 0);
+    ~RibbonSEM();
 
 private:
-	Ui::RibbonSEM *ui;
+    Ui::RibbonSEM* ui;
 };
 
 #endif // RIBBONSEM_H

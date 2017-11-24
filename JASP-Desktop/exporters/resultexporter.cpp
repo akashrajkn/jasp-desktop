@@ -17,66 +17,61 @@
 
 #include "resultexporter.h"
 #include "utils.h"
-#include <boost/nowide/fstream.hpp>
 #include <QFile>
-#include <QTextDocument>
 #include <QPrinter>
+#include <QTextDocument>
 #include <QWebView>
+#include <boost/nowide/fstream.hpp>
 
 ResultExporter::ResultExporter()
 {
-	_defaultFileType = Utils::html;
+    _defaultFileType = Utils::html;
     _allowedFileTypes.push_back(Utils::html);
 #ifdef QT_DEBUG
     _allowedFileTypes.push_back(Utils::pdf);
 #endif
 }
 
-void ResultExporter::saveDataSet(const std::string &path, DataSetPackage* package, boost::function<void (const std::string &, int)> progressCallback)
+void ResultExporter::saveDataSet(const std::string& path, DataSetPackage* package, boost::function<void(const std::string&, int)> progressCallback)
 {
 
-	int maxSleepTime = 5000;
-	int sleepTime = 100;
-	int delay = 0;
+    int maxSleepTime = 5000;
+    int sleepTime = 100;
+    int delay = 0;
 
-	while (package->isReady() == false)
-	{
-		if (delay > maxSleepTime)
-			break;
+    while (package->isReady() == false) {
+        if (delay > maxSleepTime)
+            break;
 
-		Utils::sleep(sleepTime);
-		delay += sleepTime;
-	}
+        Utils::sleep(sleepTime);
+        delay += sleepTime;
+    }
 
+    if (_currentFileType == Utils::pdf) {
+        QString htmlContent = QString::fromStdString(package->analysesHTML);
 
-	if (_currentFileType == Utils::pdf)
-	{
-		QString htmlContent = QString::fromStdString(package->analysesHTML);
+        //Next code could be a hack to show plots in pdf
+        //QUrl url = QUrl::fromLocalFile(QDir::current().absoluteFilePath("htmloutput.html"));
+        //QUrl url = QUrl::fromLocalFile(_transferFile);
+        //QWebView wdocument;
+        //wdocument.setHtml(htmlContent, url); // str1 is the html file stored as QString.
 
-		//Next code could be a hack to show plots in pdf
-		//QUrl url = QUrl::fromLocalFile(QDir::current().absoluteFilePath("htmloutput.html"));
-		//QUrl url = QUrl::fromLocalFile(_transferFile);
-		//QWebView wdocument;
-		//wdocument.setHtml(htmlContent, url); // str1 is the html file stored as QString.
+        QTextDocument* document = new QTextDocument();
+        document->setHtml(htmlContent);
+        QPrinter printer(QPrinter::PrinterResolution);
+        printer.setPaperSize(QPrinter::A4);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(QString::fromStdString(path));
+        document->print(&printer);
+        delete document;
 
-		QTextDocument *document = new QTextDocument();
-		document->setHtml(htmlContent);
-		QPrinter printer(QPrinter::PrinterResolution);
-		printer.setPaperSize(QPrinter::A4);
-		printer.setOutputFormat(QPrinter::PdfFormat);
-		printer.setOutputFileName(QString::fromStdString(path));
-		document->print(&printer);
-		delete document;
+    } else {
+        boost::nowide::ofstream outfile(path.c_str(), std::ios::out);
 
-	}
-	else
-	{
-		boost::nowide::ofstream outfile(path.c_str(), std::ios::out);
+        outfile << package->analysesHTML;
+        outfile.flush();
+        outfile.close();
+    }
 
-		outfile << package->analysesHTML;
-		outfile.flush();
-		outfile.close();
-	}
-
-	progressCallback("Export Html Set", 100);
+    progressCallback("Export Html Set", 100);
 }

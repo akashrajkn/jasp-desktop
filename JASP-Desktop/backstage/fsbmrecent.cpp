@@ -18,119 +18,112 @@
 
 #include "fsbmrecent.h"
 
-#include <QStringList>
-#include <QFileInfo>
-#include <QEvent>
 #include <QDebug>
+#include <QEvent>
+#include <QFileInfo>
+#include <QStringList>
 
-FSBMRecent::FSBMRecent(QObject *parent)
-	: FSBModel(parent)
+FSBMRecent::FSBMRecent(QObject* parent)
+    : FSBModel(parent)
 {
-	parent->installEventFilter(this);
+    parent->installEventFilter(this);
 }
 
 void FSBMRecent::refresh()
 {
-	populate(load());
+    populate(load());
 }
 
-bool FSBMRecent::eventFilter(QObject *object, QEvent *event)
+bool FSBMRecent::eventFilter(QObject* object, QEvent* event)
 {
-	if (event->type() == QEvent::Show || event->type() == QEvent::WindowActivate)
-		refresh();
+    if (event->type() == QEvent::Show || event->type() == QEvent::WindowActivate)
+        refresh();
 
-	return QObject::eventFilter(object, event);
+    return QObject::eventFilter(object, event);
 }
 
-
-void FSBMRecent::addRecent(const QString &path)
+void FSBMRecent::addRecent(const QString& path)
 {
-	QStringList recents = load();
-	recents.removeAll(path);
+    QStringList recents = load();
+    recents.removeAll(path);
 
-	recents.prepend(path);
-	while (recents.size() > 5)
-		recents.removeLast();
+    recents.prepend(path);
+    while (recents.size() > 5)
+        recents.removeLast();
 
-	_settings.setValue("recentItems", recents);
-	_settings.sync();
+    _settings.setValue("recentItems", recents);
+    _settings.sync();
 
-	populate(recents);
+    populate(recents);
 }
 
 void FSBMRecent::filter(bool (*filterFunction)(QString))
 {
-	QStringList recents = load();
+    QStringList recents = load();
 
-	for (int i = 0; i < recents.length(); i++)
-	{
-		if (filterFunction(recents.at(i)) == false)
-		{
-			recents.removeAt(i);
-			i -= 1;
-		}
-	}
+    for (int i = 0; i < recents.length(); i++) {
+        if (filterFunction(recents.at(i)) == false) {
+            recents.removeAt(i);
+            i -= 1;
+        }
+    }
 
-	_settings.setValue("recentItems", recents);
-	_settings.sync();
+    _settings.setValue("recentItems", recents);
+    _settings.sync();
 
-	populate(recents);
+    populate(recents);
 }
 
-void FSBMRecent::populate(const QStringList &paths)
+void FSBMRecent::populate(const QStringList& paths)
 {
-	_entries.clear();
+    _entries.clear();
 
-	for (int i = 0; i < 5 && i < paths.length(); i++)
-	{
-		QString path = paths.at(i);
+    for (int i = 0; i < 5 && i < paths.length(); i++) {
+        QString path = paths.at(i);
 
-		FSEntry::EntryType entryType = FSEntry::Other;
-		if (path.endsWith(".jasp", Qt::CaseInsensitive))
-			entryType = FSEntry::JASP;
+        FSEntry::EntryType entryType = FSEntry::Other;
+        if (path.endsWith(".jasp", Qt::CaseInsensitive))
+            entryType = FSEntry::JASP;
 
-		FSEntry entry = createEntry(path, entryType);
+        FSEntry entry = createEntry(path, entryType);
 
-		_entries.append(entry);
-	}
+        _entries.append(entry);
+    }
 
-	emit entriesChanged();
+    emit entriesChanged();
 }
 
-bool FSBMRecent::isUrl(const QString &path) const {
-	return path.startsWith("http");
+bool FSBMRecent::isUrl(const QString& path) const
+{
+    return path.startsWith("http");
 }
 
 QStringList FSBMRecent::load()
 {
-	_settings.sync();
+    _settings.sync();
 
-	QVariant v = _settings.value("recentItems");
-	if (v.type() != QVariant::StringList && v.type() != QVariant::String)
-	{
-		// oddly, under linux, loading a setting value of type StringList which has
-		// only a single string in it, gives you just a string. we QVariant::String is acceptable too
+    QVariant v = _settings.value("recentItems");
+    if (v.type() != QVariant::StringList && v.type() != QVariant::String) {
+        // oddly, under linux, loading a setting value of type StringList which has
+        // only a single string in it, gives you just a string. we QVariant::String is acceptable too
 
-		qDebug() << "BackStageForm::loadRecents();  setting 'recentItems' is not a QStringList";
-		return QStringList();
-	}
+        qDebug() << "BackStageForm::loadRecents();  setting 'recentItems' is not a QStringList";
+        return QStringList();
+    }
 
-	QStringList recents = v.toStringList();
+    QStringList recents = v.toStringList();
 
-	for (int i = 0; i < recents.size(); i++)
-	{
-		QString path = recents[i];
+    for (int i = 0; i < recents.size(); i++) {
+        QString path = recents[i];
 
-		if (isUrl(path))
-			continue;
+        if (isUrl(path))
+            continue;
 
-		if ( ! QFileInfo::exists(recents[i]))
-		{
-			recents.removeAt(i);
-			i -= 1;
-		}
-	}
+        if (!QFileInfo::exists(recents[i])) {
+            recents.removeAt(i);
+            i -= 1;
+        }
+    }
 
-	return recents;
+    return recents;
 }
-

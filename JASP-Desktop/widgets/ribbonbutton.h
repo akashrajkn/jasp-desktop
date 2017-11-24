@@ -19,38 +19,36 @@
 #ifndef RIBBONBUTTON_H
 #define RIBBONBUTTON_H
 
-#include <QToolButton>
-#include <QString>
 #include <QMouseEvent>
+#include <QString>
+#include <QToolButton>
 
 #include "common.h"
 
-class RibbonButton : public QToolButton
-{
+class RibbonButton : public QToolButton {
     Q_OBJECT
 public:
-	explicit RibbonButton(QWidget *parent = 0);
-	void setDataSetNotNeeded();
-	bool isDataSetNeeded() const;
+    explicit RibbonButton(QWidget* parent = 0);
+    void setDataSetNotNeeded();
+    bool isDataSetNeeded() const;
 
 public slots:
-	void notifyMouseOut();
-	void notifyMouseOver();
+    void notifyMouseOut();
+    void notifyMouseOver();
 
 protected:
-	virtual void enterEvent(QEvent *event) OVERRIDE;
-	virtual void mousePressEvent(QMouseEvent *event) OVERRIDE;
+    virtual void enterEvent(QEvent* event) OVERRIDE;
+    virtual void mousePressEvent(QMouseEvent* event) OVERRIDE;
 
 private:
+    bool _dataSetNeeded;
 
-	bool _dataSetNeeded;
+    bool _mouseOver;
 
-	bool _mouseOver;
+    QString _mouseOutSS;
+    QString _mouseOverSS;
 
-	QString _mouseOutSS;
-	QString _mouseOverSS;
-
-	bool _connectedToMenu;
+    bool _connectedToMenu;
 };
 
 #endif // RIBBONBUTTON_H

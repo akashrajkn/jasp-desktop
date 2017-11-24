@@ -21,22 +21,20 @@
 #include "optionterms.h"
 #include "optionvariablei.h"
 
-class OptionVariables : public OptionTerms, public OptionVariableI
-{
+class OptionVariables : public OptionTerms, public OptionVariableI {
 public:
-	OptionVariables();
+    OptionVariables();
 
-	virtual Json::Value asJSON()const OVERRIDE;
-	virtual void set(const Json::Value& value) OVERRIDE;
-	virtual Option* clone() const OVERRIDE;
+    virtual Json::Value asJSON() const OVERRIDE;
+    virtual void set(const Json::Value& value) OVERRIDE;
+    virtual Option* clone() const OVERRIDE;
 
-	virtual std::vector<std::string> variables() const OVERRIDE;
-	virtual void replaceName(std::string oldName, std::string newName) OVERRIDE;
-	virtual void removeName(std::string name) OVERRIDE;
+    virtual std::vector<std::string> variables() const OVERRIDE;
+    virtual void replaceName(std::string oldName, std::string newName) OVERRIDE;
+    virtual void removeName(std::string name) OVERRIDE;
 
 protected:
-	OptionVariables(bool onlyOneTerm);
-
+    OptionVariables(bool onlyOneTerm);
 };
 
 #endif // OPTIONVARIABLES_H

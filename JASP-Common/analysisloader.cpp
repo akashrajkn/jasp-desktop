@@ -17,45 +17,44 @@
 
 #include "analysisloader.h"
 
-#include <string>
 #include <boost/nowide/fstream.hpp>
+#include <string>
 
+#include "appinfo.h"
 #include "dirs.h"
 #include "version.h"
-#include "appinfo.h"
 
 using namespace std;
 using namespace boost;
 
-Analysis *AnalysisLoader::load(int id, string moduleName, string analysisName, const Version &version, Json::Value *data)
+Analysis* AnalysisLoader::load(int id, string moduleName, string analysisName, const Version& version, Json::Value* data)
 {
-	Options *options = new Options();
+    Options* options = new Options();
 
-	string path = Dirs::libraryDir() + "/" + analysisName + ".json";
+    string path = Dirs::libraryDir() + "/" + analysisName + ".json";
 
-	nowide::ifstream file(path.c_str(), fstream::in);
-	if (file.is_open())
-	{
-		Json::Value analysisDesc;
-		Json::Reader parser;
-		parser.parse(file, analysisDesc);
+    nowide::ifstream file(path.c_str(), fstream::in);
+    if (file.is_open()) {
+        Json::Value analysisDesc;
+        Json::Reader parser;
+        parser.parse(file, analysisDesc);
 
-		Json::Value optionsJson = analysisDesc.get("options", Json::nullValue);
-		if (optionsJson != Json::nullValue)
-			options->init(optionsJson);
-		else
-			perror("malformed analysis definition");
+        Json::Value optionsJson = analysisDesc.get("options", Json::nullValue);
+        if (optionsJson != Json::nullValue)
+            options->init(optionsJson);
+        else
+            perror("malformed analysis definition");
 
-		bool autorun = analysisDesc.get("autorun", false).asBool();
-		bool usedata = analysisDesc.get("usedata", true).asBool();
+        bool autorun = analysisDesc.get("autorun", false).asBool();
+        bool usedata = analysisDesc.get("usedata", true).asBool();
 
-		if (data != NULL)
-			options->set(*data);
+        if (data != NULL)
+            options->set(*data);
 
-		file.close();
+        file.close();
 
-		return new Analysis(id, moduleName, analysisName, options, version, autorun, usedata);
-	}
+        return new Analysis(id, moduleName, analysisName, options, version, autorun, usedata);
+    }
 
-	throw runtime_error(analysisName + " does not exist in your JASP version.");
+    throw runtime_error(analysisName + " does not exist in your JASP version.");
 }

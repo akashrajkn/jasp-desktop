@@ -26,33 +26,32 @@
 
 #include "common.h"
 
-class TableView : public QTableView, public DropTarget
-{
-	Q_OBJECT
+class TableView : public QTableView, public DropTarget {
+    Q_OBJECT
 public:
-	explicit TableView(QWidget *parent = 0);
+    explicit TableView(QWidget* parent = 0);
 
-	virtual void setModel(QAbstractItemModel *model) OVERRIDE;
+    virtual void setModel(QAbstractItemModel* model) OVERRIDE;
 
-	void setDoubleClickTarget(DropTarget *target);
-	virtual void notifyDragWasDropped() OVERRIDE;
-	virtual QSize sizeHint() const OVERRIDE;
+    void setDoubleClickTarget(DropTarget* target);
+    virtual void notifyDragWasDropped() OVERRIDE;
+    virtual QSize sizeHint() const OVERRIDE;
 
 protected:
-	void focusInEvent(QFocusEvent *event) OVERRIDE;
-	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) OVERRIDE;
-	void resizeEvent(QResizeEvent *event) OVERRIDE;
+    void focusInEvent(QFocusEvent* event) OVERRIDE;
+    void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) OVERRIDE;
+    void resizeEvent(QResizeEvent* event) OVERRIDE;
 
-	virtual void dropEvent(QDropEvent *event) OVERRIDE;
+    virtual void dropEvent(QDropEvent* event) OVERRIDE;
 
-	void virtual mousePressEvent(QMouseEvent *event) OVERRIDE;
+    void virtual mousePressEvent(QMouseEvent* event) OVERRIDE;
 
 private slots:
-	void doubleClickedHandler(const QModelIndex index);
+    void doubleClickedHandler(const QModelIndex index);
 
 private:
-	DropTarget *_defaultDropTarget;
-	TableModel *_tableModel;
+    DropTarget* _defaultDropTarget;
+    TableModel* _tableModel;
 };
 
 #endif // TABLEVIEWWIDGET_H

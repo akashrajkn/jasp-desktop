@@ -19,8 +19,8 @@
 #define ENGINE_H
 
 #include "../JASP-Common/dataset.h"
-#include "../JASP-Common/lib_json/json.h"
 #include "../JASP-Common/ipcchannel.h"
+#include "../JASP-Common/lib_json/json.h"
 #include "../JASP-Common/processinfo.h"
 
 /* The Engine represents the background processes.
@@ -35,50 +35,59 @@
  * aborted, and the new one is set running.
  */
 
-class Engine
-{
+class Engine {
 public:
-	explicit Engine();
-	
-public:
+    explicit Engine();
 
-	void run();
-	void setSlaveNo(int no);
-	
+public:
+    void run();
+    void setSlaveNo(int no);
+
 private:
+    bool receiveMessages(int timeout = 0);
+    void runAnalysis();
+    void saveImage();
+    void sendResults();
+    std::string callback(const std::string& results, int progress);
 
-	bool receiveMessages(int timeout = 0);
-	void runAnalysis();
-	void saveImage();
-	void sendResults();
-	std::string callback(const std::string &results, int progress);
+    DataSet* provideDataSet();
+    void provideTempFileName(const std::string& extension, std::string& root, std::string& relativePath);
+    void provideStateFileName(std::string& root, std::string& relativePath);
 
-	DataSet *provideDataSet();
-	void provideTempFileName(const std::string &extension, std::string &root, std::string &relativePath);
-	void provideStateFileName(std::string &root, std::string &relativePath);
+    typedef enum { empty,
+        toInit,
+        initing,
+        inited,
+        toRun,
+        running,
+        changed,
+        complete,
+        error,
+        exception,
+        aborted,
+        stopped,
+        saveImg } Status;
 
-	typedef enum { empty, toInit, initing, inited, toRun, running, changed, complete, error, exception, aborted, stopped, saveImg } Status;
+    Status _status;
 
-	Status _status;
+    int _analysisId;
+    int _analysisRevision;
+    int _progress;
+    std::string _analysisName;
+    std::string _analysisOptions;
+    std::string _analysisResultsString;
+    Json::Value _imageOptions;
+    int _ppi;
 
-	int _analysisId;
-	int _analysisRevision;
-	int _progress;
-	std::string _analysisName;
-	std::string _analysisOptions;
-	std::string _analysisResultsString;
-	Json::Value _imageOptions;
-	int _ppi;
+    bool _currentAnalysisKnowsAboutChange;
 
-	bool _currentAnalysisKnowsAboutChange;
+    Json::Value _analysisResults;
 
-	Json::Value _analysisResults;
+    IPCChannel* _channel;
+    DataSet* _dataSet;
+    std::string _engineInfo;
 
-	IPCChannel *_channel;
-	DataSet *_dataSet;
-	std::string _engineInfo;
-
-	int _slaveNo;
+    int _slaveNo;
 };
 
 #endif // ENGINE_H

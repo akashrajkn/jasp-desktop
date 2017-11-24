@@ -19,42 +19,41 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
 
-#include <QDialog>
 #include <QAbstractButton>
-#include <QWebView>
+#include <QDialog>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QUrl>
+#include <QWebView>
 
 namespace Ui {
 class AboutDialog;
 }
 
-class AboutDialog : public QDialog
-{
-	Q_OBJECT
+class AboutDialog : public QDialog {
+    Q_OBJECT
 
 public:
-	explicit AboutDialog(QWidget *parent = 0);
-	~AboutDialog();
-	
+    explicit AboutDialog(QWidget* parent = 0);
+    ~AboutDialog();
+
 signals:
-	void closeWindow();
+    void closeWindow();
 
 private slots:
-	void on_buttonBox_clicked(QAbstractButton *button);
-	void aboutPageLoaded(bool success);
-	void downloadFinished();
-	void linkClickedSlot(QUrl url);
-	void closeWindowHandler();
+    void on_buttonBox_clicked(QAbstractButton* button);
+    void aboutPageLoaded(bool success);
+    void downloadFinished();
+    void linkClickedSlot(QUrl url);
+    void closeWindowHandler();
 
 private:
-	void checkForJaspUpdate();
-	Ui::AboutDialog *ui;
-	QNetworkAccessManager *m_network_manager;	// make the HTTP GET request
-	QNetworkReply *m_network_reply;
-	QByteArray *m_pBuffer;
+    void checkForJaspUpdate();
+    Ui::AboutDialog* ui;
+    QNetworkAccessManager* m_network_manager; // make the HTTP GET request
+    QNetworkReply* m_network_reply;
+    QByteArray* m_pBuffer;
 };
 
 #endif // ABOUTDIALOG_H

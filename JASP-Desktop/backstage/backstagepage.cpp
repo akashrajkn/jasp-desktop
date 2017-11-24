@@ -18,13 +18,13 @@
 
 #include "backstagepage.h"
 
-BackstagePage::BackstagePage(QWidget *parent) : QWidget(parent)
+BackstagePage::BackstagePage(QWidget* parent)
+    : QWidget(parent)
 {
-	_mode = FileEvent::FileOpen;
+    _mode = FileEvent::FileOpen;
 }
 
 void BackstagePage::setMode(FileEvent::FileMode mode)
 {
-	_mode = mode;
+    _mode = mode;
 }
-

@@ -19,20 +19,19 @@
 #define DATASETLOADER_H
 
 #include "dataset.h"
-#include <boost/function.hpp>
 #include "datasetpackage.h"
 #include "importers/importer.h"
+#include <boost/function.hpp>
 
-class DataSetLoader
-{
+class DataSetLoader {
 public:
-	static void loadPackage(DataSetPackage *packageData, const std::string &locator, const std::string &extension, boost::function<void (const std::string &stage, int progress)> progress = NULL);
-	static void syncPackage(DataSetPackage *packageData, const std::string &locator, const std::string &extension, boost::function<void (const std::string &, int)> progress = NULL);
-	static void freeDataSet(DataSet *dataSet);
+    static void loadPackage(DataSetPackage* packageData, const std::string& locator, const std::string& extension, boost::function<void(const std::string& stage, int progress)> progress = NULL);
+    static void syncPackage(DataSetPackage* packageData, const std::string& locator, const std::string& extension, boost::function<void(const std::string&, int)> progress = NULL);
+    static void freeDataSet(DataSet* dataSet);
 
 private:
-	static std::string getExtension(const std::string &locator, const std::string &extension);
-	static Importer* getImporter(DataSetPackage *packageData, const std::string &locator, const std::string &extension);
+    static std::string getExtension(const std::string& locator, const std::string& extension);
+    static Importer* getImporter(DataSetPackage* packageData, const std::string& locator, const std::string& extension);
 };
 
 #endif // DATASETLOADER_H

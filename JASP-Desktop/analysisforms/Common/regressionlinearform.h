@@ -20,9 +20,9 @@
 #define REGRESSIONLINEARFORM_H
 
 #include "../analysisform.h"
+#include "widgets/tablemodelanovamodel.h"
 #include "widgets/tablemodelvariablesassigned.h"
 #include "widgets/tablemodelvariableslevels.h"
-#include "widgets/tablemodelanovamodel.h"
 
 #include "common.h"
 
@@ -30,28 +30,27 @@ namespace Ui {
 class RegressionLinearForm;
 }
 
-class RegressionLinearForm : public AnalysisForm
-{
-	Q_OBJECT
+class RegressionLinearForm : public AnalysisForm {
+    Q_OBJECT
 
 public:
-	explicit RegressionLinearForm(QWidget *parent = 0);
-	~RegressionLinearForm();
-	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+    explicit RegressionLinearForm(QWidget* parent = 0);
+    ~RegressionLinearForm();
+    void bindTo(Options* options, DataSet* dataSet) OVERRIDE;
 
 private slots:
-	void factorsChanging();
-	void factorsChanged();
+    void factorsChanging();
+    void factorsChanged();
 
 private:
-	Ui::RegressionLinearForm *ui;
+    Ui::RegressionLinearForm* ui;
 
-	TableModelVariablesAssigned *_dependentModel;
-	TableModelVariablesAssigned  *_covariatesModel;
-	TableModelVariablesAssigned  *_factorsModel;
-	TableModelVariablesAssigned *_wlsWeightsModel;
+    TableModelVariablesAssigned* _dependentModel;
+    TableModelVariablesAssigned* _covariatesModel;
+    TableModelVariablesAssigned* _factorsModel;
+    TableModelVariablesAssigned* _wlsWeightsModel;
 
-	TableModelAnovaModel *_modelModel;
+    TableModelAnovaModel* _modelModel;
 };
 
 #endif // REGRESSIONLINEARFORM_H
