@@ -33,14 +33,17 @@ TableModelAnovaDesign::TableModelAnovaDesign(QObject *parent)
 	: TableModel(parent)
 {
 	_boundTo = NULL;
+	qDebug() << "constructor";
 }
 
 void TableModelAnovaDesign::bindTo(Option *option)
 {
+	qDebug() << "bindTo";
 	_boundTo = dynamic_cast<OptionsTable *>(option);
 
 	if (_boundTo != NULL)
 	{
+		qDebug() << "bindTo, _boundTo not NULL";
 		emit designChanging();
 		_groups = _boundTo->value();
 		refresh();
@@ -50,12 +53,14 @@ void TableModelAnovaDesign::bindTo(Option *option)
 
 void TableModelAnovaDesign::unbind()
 {
+		qDebug() << "unbind";
 	_boundTo = NULL;
 	_groups.clear();
 }
 
 int TableModelAnovaDesign::rowCount(const QModelIndex &parent) const
 {
+	qDebug() << "rowCount";
 	Q_UNUSED(parent);
 
 	if (_boundTo == NULL)
@@ -66,6 +71,7 @@ int TableModelAnovaDesign::rowCount(const QModelIndex &parent) const
 
 int TableModelAnovaDesign::columnCount(const QModelIndex &parent) const
 {
+	qDebug() << "columnCount";
 	Q_UNUSED(parent);
 
 	return 2;
@@ -73,6 +79,9 @@ int TableModelAnovaDesign::columnCount(const QModelIndex &parent) const
 
 QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 {
+
+	qDebug() << "data";
+
 	if (_boundTo == NULL)
 		return QVariant();
 
@@ -80,12 +89,15 @@ QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 
 	if (index.column() == 0)
 	{
+			qDebug() << "data column 0";
 		if (role == Qt::DisplayRole)
 		{
+				qDebug() << "data DisplayRole";
 			return row.text;
 		}
 		else if (role == Qt::EditRole)
 		{
+				qDebug() << "data EditRole";
 			if (row.isHypothetical)
 				return "";
 			else
@@ -93,6 +105,7 @@ QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 		}
 		else if (role == Qt::ForegroundRole)
 		{
+				qDebug() << "data ForegroundRole";
 			if (row.isHypothetical)
 				return QBrush(QColor(0xCC, 0xCC, 0xCC));
 			else
@@ -100,6 +113,7 @@ QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 		}
 		else if (role == Qt::TextAlignmentRole)
 		{
+				qDebug() << "data TextAlignmentRole";
 			if (row.isHeading())
 				return Qt::AlignCenter;
 			else
@@ -107,6 +121,7 @@ QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 		}
 		else if (role == Qt::SizeHintRole)
 		{
+				qDebug() << "data SizeHintRole";
 			if (row.isHeading())
 				return QSize(-1, 24);
 		}
@@ -132,6 +147,7 @@ QVariant TableModelAnovaDesign::data(const QModelIndex &index, int role) const
 
 QVariant TableModelAnovaDesign::headerData(int section, Qt::Orientation orientation, int role) const
 {
+		qDebug() << "headerData";
 	if (orientation == Qt::Horizontal)
 	{
 		if (role == Qt::SizeHintRole)
@@ -148,6 +164,7 @@ QVariant TableModelAnovaDesign::headerData(int section, Qt::Orientation orientat
 
 void TableModelAnovaDesign::refresh()
 {
+		qDebug() << "refresh";
 	_rows.clear();
 
 	if (_boundTo == NULL)
@@ -187,6 +204,7 @@ void TableModelAnovaDesign::refresh()
 
 Qt::ItemFlags TableModelAnovaDesign::flags(const QModelIndex &index) const
 {
+		qDebug() << "flags";
 	if (index.isValid() == false)
 	{
 		return Qt::ItemIsEnabled;
@@ -212,6 +230,7 @@ Qt::ItemFlags TableModelAnovaDesign::flags(const QModelIndex &index) const
 
 bool TableModelAnovaDesign::setData(const QModelIndex &index, const QVariant &value, int)
 {
+		qDebug() << "setData";
 	string v = fq(value.toString());
 
 	if (v == "")
@@ -224,6 +243,7 @@ bool TableModelAnovaDesign::setData(const QModelIndex &index, const QVariant &va
 
 bool TableModelAnovaDesign::removeRows(int row, int, const QModelIndex &)
 {
+		qDebug() << "removeRows";
 	// count is ignored, because it will never be more than 1
 
 	if (row >= 3 && _rows.at(row).isHypothetical == false)
@@ -234,6 +254,7 @@ bool TableModelAnovaDesign::removeRows(int row, int, const QModelIndex &)
 
 QList<Factor> TableModelAnovaDesign::design()
 {
+		qDebug() << "design";
 	QList<Factor> factors;
 
 	for (uint i = 0; i < _groups.size(); i++)
@@ -255,6 +276,7 @@ QList<Factor> TableModelAnovaDesign::design()
 
 void TableModelAnovaDesign::changeRow(int rowNo, string value)
 {
+		qDebug() << "changeRow";
 	Row &row = _rows[rowNo];
 
 	if (row.isHypothetical == false && row.text == tq(value))
@@ -410,6 +432,7 @@ void TableModelAnovaDesign::changeRow(int rowNo, string value)
 
 void TableModelAnovaDesign::deleteRow(int rowNo)
 {
+		qDebug() << "deleteRow";
 	const Row &row = _rows.at(rowNo);
 
 	if (row.isHypothetical)
@@ -481,4 +504,3 @@ void TableModelAnovaDesign::deleteRow(int rowNo)
 
 	emit designChanged();
 }
-

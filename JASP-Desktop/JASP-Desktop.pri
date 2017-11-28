@@ -114,6 +114,7 @@ SOURCES += \
     $$PWD/widgets/boundpairstable.cpp \
     $$PWD/widgets/boundsingleitemview.cpp \
     $$PWD/widgets/boundtableview.cpp \
+    $$PWD/widgets/boundtablewidget.cpp \
     $$PWD/widgets/boundtextbox.cpp \
     $$PWD/widgets/boundtextedit.cpp \
     $$PWD/widgets/button.cpp \
@@ -123,6 +124,7 @@ SOURCES += \
     $$PWD/widgets/itemmodelselectitem.cpp \
     $$PWD/widgets/itemmodelselectvariable.cpp \
     $$PWD/widgets/listview.cpp \
+    $$PWD/widgets/multinomialmodelwidget.cpp \
     $$PWD/widgets/progresswidget.cpp \
     $$PWD/widgets/ribbonbutton.cpp \
     $$PWD/widgets/stealthbutton.cpp \
@@ -133,6 +135,7 @@ SOURCES += \
     $$PWD/widgets/tablemodelanovamodelnuisancefactors.cpp \
     $$PWD/widgets/tablemodelanovawithinsubjectcells.cpp \
     $$PWD/widgets/tablemodelcontrasts.cpp \
+    $$PWD/widgets/tablemodelmultinomialmodel.cpp \
     $$PWD/widgets/tablemodelpairsassigned.cpp \
     $$PWD/widgets/tablemodelvariables.cpp \
     $$PWD/widgets/tablemodelvariablesassigned.cpp \
@@ -269,6 +272,7 @@ HEADERS  += \
     $$PWD/widgets/boundpairstable.h \
     $$PWD/widgets/boundsingleitemview.h \
     $$PWD/widgets/boundtableview.h \
+    $$PWD/widgets/boundtablewidget.h \
     $$PWD/widgets/boundtextbox.h \
     $$PWD/widgets/boundtextedit.h \
     $$PWD/widgets/button.h \
@@ -281,6 +285,7 @@ HEADERS  += \
     $$PWD/widgets/itemmodelselectitem.h \
     $$PWD/widgets/itemmodelselectvariable.h \
     $$PWD/widgets/listview.h \
+    $$PWD/widgets/multinomialmodelwidget.h \
     $$PWD/widgets/progresswidget.h \
     $$PWD/widgets/ribbonbutton.h \
     $$PWD/widgets/stealthbutton.h \
@@ -292,6 +297,7 @@ HEADERS  += \
     $$PWD/widgets/tablemodelanovamodelnuisancefactors.h \
     $$PWD/widgets/tablemodelanovawithinsubjectcells.h \
     $$PWD/widgets/tablemodelcontrasts.h \
+    $$PWD/widgets/tablemodelmultinomialmodel.h \
     $$PWD/widgets/tablemodelpairsassigned.h \
     $$PWD/widgets/tablemodelvariables.h \
     $$PWD/widgets/tablemodelvariablesassigned.h \
@@ -315,6 +321,7 @@ FORMS += \
     $$PWD/variableswidget.ui \
     $$PWD/widgets/anovamodelwidget.ui \
     $$PWD/widgets/boundassignwidget.ui \
+    $$PWD/widgets/multinomialmodelwidget.ui \
     $$PWD/widgets/progresswidget.ui \
     $$PWD/widgets/subjectivepriorswidget.ui
 

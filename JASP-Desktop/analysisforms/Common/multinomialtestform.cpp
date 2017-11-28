@@ -16,6 +16,8 @@
 // <http://www.gnu.org/licenses/>.
 //
 
+#include <QDebug>
+
 #include "multinomialtestform.h"
 #include "ui_multinomialtestform.h"
 
@@ -28,7 +30,7 @@ MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
 	ui->listAvailableVariables->setModel(&_availableVariablesModel);
 	ui->listAvailableVariables->setDoubleClickTarget(ui->factor);
 
-	TableModelVariablesAssigned *factorModel = new TableModelVariablesAssigned(this);
+	factorModel = new TableModelVariablesAssigned(this);
 	factorModel->setSource(&_availableVariablesModel);
 	factorModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
 	factorModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal | Column::ColumnTypeNominalText);
@@ -56,19 +58,149 @@ MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
 	ui->exProbVar->setDoubleClickTarget(ui->listAvailableVariables);
 	ui->assignExProbVar->setSourceAndTarget(ui->listAvailableVariables, ui->exProbVar);
 
-	ui->tableView->setVisible(false);
+	// TableModelMultinomialModel *multinomialTable = new TableModelMultinomialModel(this);
+	// qDebug() << "setModel";
+	//
+	// ui->tableView->setModel(multinomialTable);
 
+	connect(factorModel, SIGNAL(assignmentsChanged()), this, SLOT(addFixedFactors()));
+	connect(ui->tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(cellChangedHandler()));
 
-#ifdef QT_NO_DEBUG
+	// Define Multinomial Table
+	// ui->tableWidget->setRowCount(2);
+	// verticalLabels << "Male" << "Female";
+	// ui->tableWidget->setVerticalHeaderLabels(verticalLabels);
 
-#else
+	// Initialize Table with one hypothesis
+	// addColumnToTable();
 
-#endif
+	// ui->tableWidget->setColumnCount(1);
+	// horizontalLabels << "H1";
+	// ui->tableWidget->setHorizontalHeaderLabels(horizontalLabels);
 
-
+	// QTableWidgetItem *newItem = new QTableWidgetItem(tr("Male").arg((0+1)*(0+1)));
+	// ui->tableWidget->setItem(0, 0, newItem);
+	//
+	// QTableWidgetItem *newItem2 = new QTableWidgetItem(tr("Female").arg((1+1)*(0+1)));
+	// ui->tableWidget->setItem(1, 0, newItem2);
 }
 
 MultinomialTestForm::~MultinomialTestForm()
 {
 	delete ui;
+}
+
+void MultinomialTestForm::bindTo(Options *options, DataSet *dataSet)
+{
+	AnalysisForm::bindTo(options, dataSet);
+
+	_dataSet = dataSet;
+	// FIXME: If a jasp file is opened which already has factors assigned,
+	// the below statement is required to construct the multinomial table
+	addFixedFactors();
+
+	// ui->hypothesisTable->set_dataSet(dataSet);
+
+	// factorsChanging();
+	Option *factor = options->get("tableWidget");
+
+	// factor->rowTemplate()->get("name")
+	qDebug() << "here";
+
+	if (factor != NULL) {
+		qDebug() << "woah";
+	}
+
+	// factorsChanged();
+}
+
+void MultinomialTestForm::cellChangedHandler()
+{
+	ui->tableWidget->callNotifyChanged();
+}
+
+void MultinomialTestForm::addFixedFactors() {
+
+	// qDebug() << "-----------------------------------------";
+	// qDebug() << QString::fromStdString(factorModel->assigned().asString());
+	// qDebug() << "-----------------------------------------";
+
+	// Clear table contents before updating it with values
+	ui->tableWidget->clearContents();
+	ui->tableWidget->setRowCount(0);
+	ui->tableWidget->setColumnCount(0);
+
+	// Get the column from dataSet
+	if (_dataSet != NULL && factorModel->assigned().size() > 0) {
+		Labels labels = _dataSet->column(factorModel->assigned().asString()).labels();
+		verticalLabels = QStringList();
+		int rowCount = 0;
+
+		// labels for the current column
+		for (LabelVector::const_iterator it = labels.begin(); it != labels.end(); ++it, rowCount++)
+		{
+			const Label &label = *it;
+			verticalLabels << QString::fromStdString(label.text());
+		}
+
+		ui->tableWidget->setRowCount(rowCount);
+		ui->tableWidget->setVerticalHeaderLabels(verticalLabels);
+		addColumnToTable();
+	}
+
+	ui->tableWidget->callNotifyChanged();
+}
+
+void MultinomialTestForm::addColumnToTable() {
+	int columnCount = ui->tableWidget->columnCount() + 1;
+
+	horizontalLabels << "H" + QString::number(columnCount);
+	ui->tableWidget->setColumnCount(columnCount);
+	ui->tableWidget->setHorizontalHeaderLabels(horizontalLabels);
+	ui->deleteColumn->setEnabled(true);
+
+	// If there are 5 hypotheses, then disable addColumn button
+	if (ui->tableWidget->columnCount() == 5) {
+		ui->addColumn->setEnabled(false);
+	}
+
+	ui->tableWidget->callNotifyChanged();
+}
+
+void MultinomialTestForm::deleteColumnFromTable() {
+	int currentColumn = ui->tableWidget->currentColumn();
+
+	if (currentColumn == -1) {
+		return;
+	}
+	int columnCount = ui->tableWidget->columnCount();
+
+	ui->tableWidget->removeColumn(currentColumn);
+	ui->addColumn->setEnabled(true);
+
+	horizontalLabels = QStringList();
+	columnCount = ui->tableWidget->columnCount();
+
+	// Assign the new hypothesis labels
+	for (int i = 0; i < columnCount; ++i) {
+		horizontalLabels << "H" + QString::number(i + 1);
+	}
+
+	ui->tableWidget->setHorizontalHeaderLabels(horizontalLabels);
+
+	if (columnCount == 1) {
+		ui->deleteColumn->setEnabled(false);
+	}
+
+	ui->tableWidget->callNotifyChanged();
+}
+
+void MultinomialTestForm::on_addColumn_clicked(bool checked)
+{
+	addColumnToTable();
+}
+
+void MultinomialTestForm::on_deleteColumn_clicked(bool checked)
+{
+	deleteColumnFromTable();
 }

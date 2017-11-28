@@ -3,6 +3,34 @@
 	"autorun": true,
 	"version": "1.00",
 	"options": [
+		{
+			"name": "tableWidget",
+			"type": "Table",
+			"template": [
+				{
+					"name": "name",
+					"type": "String",
+					"default": "H1"
+				},
+				{
+					"name": "factors",
+					"type": "Variables",
+					"default": []
+				},
+				{
+					"name": "factor_values",
+					"type": "Variables",
+					"default": []
+				}
+			],
+			"default": [
+				{
+					"name": "H1",
+					"factors": ["One", "Two"],
+					"factor_values": ["1", "2"]
+				}
+			]
+		},
     {
       "name": "factor",
       "type": "Variable"

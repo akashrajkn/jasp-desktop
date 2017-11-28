@@ -13,13 +13,17 @@
 //
 // You should have received a copy of the GNU Affero General Public
 // License along with this program.  If not, see
-// <http://www.gnu.org/licenses/>.
+// <http://www.gnu.org/licenses/>._groups
 //
 
 #ifndef MULTINOMIALTESTFORM_H
 #define MULTINOMIALTESTFORM_H
 
+#include <QTableWidgetItem>
+#include <QStringList>
+
 #include "../analysisform.h"
+#include "options/option.h"
 
 namespace Ui {
 class MultinomialTestForm;
@@ -32,9 +36,23 @@ class MultinomialTestForm : public AnalysisForm
 public:
 	explicit MultinomialTestForm(QWidget *parent = 0);
 	~MultinomialTestForm();
+	void addColumnToTable();
+	void deleteColumnFromTable();
+
+	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+
+private slots:
+	void on_addColumn_clicked(bool checked);
+	void on_deleteColumn_clicked(bool checked);
+	void addFixedFactors();
+	void cellChangedHandler();
 
 private:
 	Ui::MultinomialTestForm *ui;
+	QStringList verticalLabels;
+	QStringList horizontalLabels;
+	TableModelVariablesAssigned *factorModel;
+	DataSet *_dataSet;
 };
 
 #endif // MULTINOMIALTESTFORM_H
