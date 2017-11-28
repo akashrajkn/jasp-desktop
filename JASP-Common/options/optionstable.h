@@ -37,6 +37,8 @@ public:
 	virtual Option* clone() const OVERRIDE;
 	virtual void setValue(const std::vector<Options *> &value) OVERRIDE;
 
+	void callNotifyChanged();
+
 	Options *rowTemplate() const;
 
 private:
