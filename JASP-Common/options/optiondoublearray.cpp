@@ -15,45 +15,47 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "optionintegerarray.h"
+#include "optiondoublearray.h"
 
 #include <boost/foreach.hpp>
+#include <QDebug>
 
 using namespace std;
 
-OptionIntegerArray::OptionIntegerArray()
+OptionDoubleArray::OptionDoubleArray()
 {
 }
 
-void OptionIntegerArray::init(const Json::Value &data)
+void OptionDoubleArray::init(const Json::Value &data)
 {
 	this->set(data.get("default", Json::nullValue));
 }
 
-Json::Value OptionIntegerArray::asJSON() const
+Json::Value OptionDoubleArray::asJSON() const
 {
 	Json::Value array = Json::arrayValue;
 
-	BOOST_FOREACH(int value, _value)
+	BOOST_FOREACH(double value, _value)
 		array.append(value);
 
 	return array;
 }
 
-void OptionIntegerArray::set(const Json::Value &value)
+void OptionDoubleArray::set(const Json::Value &value)
 {	
-	vector<int> ints;
-
+	vector<double> dbls;
+	
+	
 	for (Json::ValueIterator itr = value.begin(); itr != value.end(); itr++)
-		ints.push_back((*itr).asInt());
-
-	_value = ints;
+		dbls.push_back((*itr).asDouble());
+	
+	_value = dbls;
 
 }
 
-Option *OptionIntegerArray::clone() const
+Option *OptionDoubleArray::clone() const
 {
-	OptionIntegerArray *c = new OptionIntegerArray();
+	OptionDoubleArray *c = new OptionDoubleArray();
 	c->setValue(value());
 	return c;
 }

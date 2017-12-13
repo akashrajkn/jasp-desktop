@@ -55,6 +55,7 @@ SOURCES += \
 	options/optionboolean.cpp \
 	options/optioninteger.cpp \
 	options/optionintegerarray.cpp \
+	options/optiondoublearray.cpp \
 	options/optionlist.cpp \
 	options/optionnumber.cpp \
 	options/options.cpp \
@@ -69,7 +70,7 @@ SOURCES += \
 	sharedmemory.cpp \
 	tempfiles.cpp \
 	utils.cpp \
-	version.cpp
+	version.cpp \
 
 HEADERS += \
 	analysis.h \
@@ -117,6 +118,7 @@ HEADERS += \
 	options/optioni.h \
 	options/optioninteger.h \
 	options/optionintegerarray.h \
+	options/optiondoublearray.h \
 	options/optionlist.h \
 	options/optionnumber.h \
 	options/options.h \
@@ -132,5 +134,5 @@ HEADERS += \
 	tempfiles.h \
 	utils.h \
 	version.h \
-    options/optionvariablei.h
+	options/optionvariablei.h 
 

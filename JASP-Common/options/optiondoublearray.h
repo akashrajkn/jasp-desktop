@@ -15,16 +15,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef OPTIONINTEGERARRAY_H
-#define OPTIONINTEGERARRAY_H
+#ifndef OPTIONDOUBLEARRAY_H
+#define OPTIONDOUBLEARRAY_H
 
 #include "optioni.h"
 #include "common.h"
 
-class OptionIntegerArray : public OptionI<std::vector<int> >
+class OptionDoubleArray : public OptionI<std::vector<double> >
 {
 public:
-	OptionIntegerArray();
+	OptionDoubleArray();
 
 	virtual void init(const Json::Value &data) OVERRIDE;
 	virtual Json::Value asJSON() const OVERRIDE;
@@ -32,4 +32,4 @@ public:
 	virtual Option* clone() const OVERRIDE;
 };
 
-#endif // OPTIONINTEGERARRAY_H
+#endif // OPTIONDOUBLEARRAY_H
