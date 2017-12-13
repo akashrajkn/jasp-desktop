@@ -116,7 +116,8 @@ void MultinomialTestForm::bindTo(Options *options, DataSet *dataSet)
 
 void MultinomialTestForm::cellChangedHandler()
 {
-	ui->tableWidget->callNotifyChanged();
+	// FIXME: Use refresh instead of this.
+	ui->tableWidget->refresh();
 }
 
 void MultinomialTestForm::addFixedFactors() {
@@ -164,7 +165,7 @@ void MultinomialTestForm::addColumnToTable() {
 		ui->addColumn->setEnabled(false);
 	}
 
-	ui->tableWidget->callNotifyChanged();
+	ui->tableWidget->refresh();
 }
 
 void MultinomialTestForm::deleteColumnFromTable() {
@@ -192,7 +193,7 @@ void MultinomialTestForm::deleteColumnFromTable() {
 		ui->deleteColumn->setEnabled(false);
 	}
 
-	ui->tableWidget->callNotifyChanged();
+	ui->tableWidget->refresh();
 }
 
 void MultinomialTestForm::on_addColumn_clicked(bool checked)

@@ -9,8 +9,7 @@
 			"template": [
 				{
 					"name": "name",
-					"type": "String",
-					"default": "H1"
+					"type": "String"
 				},
 				{
 					"name": "factors",
@@ -23,13 +22,7 @@
 					"default": []
 				}
 			],
-			"default": [
-				{
-					"name": "H1",
-					"factors": ["One", "Two"],
-					"factor_values": ["1", "2"]
-				}
-			]
+			"default": []
 		},
     {
       "name": "factor",
