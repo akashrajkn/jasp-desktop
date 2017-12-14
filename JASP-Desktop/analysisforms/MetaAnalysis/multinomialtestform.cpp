@@ -16,8 +16,6 @@
 // <http://www.gnu.org/licenses/>.
 //
 
-#include <QDebug>
-
 #include "multinomialtestform.h"
 #include "ui_multinomialtestform.h"
 
@@ -48,7 +46,6 @@ MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
 	ui->counts->setDoubleClickTarget(ui->listAvailableVariables);
 	ui->assignCounts->setSourceAndTarget(ui->listAvailableVariables, ui->counts);
 
-
 	TableModelVariablesAssigned *probVarModel = new TableModelVariablesAssigned(this);
 	probVarModel->setSource(&_availableVariablesModel);
 	probVarModel->setVariableTypesSuggested(Column::ColumnTypeOrdinal | Column::ColumnTypeScale);
@@ -58,31 +55,8 @@ MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
 	ui->exProbVar->setDoubleClickTarget(ui->listAvailableVariables);
 	ui->assignExProbVar->setSourceAndTarget(ui->listAvailableVariables, ui->exProbVar);
 
-	// TableModelMultinomialModel *multinomialTable = new TableModelMultinomialModel(this);
-	// qDebug() << "setModel";
-	//
-	// ui->tableView->setModel(multinomialTable);
-
 	connect(factorModel, SIGNAL(assignmentsChanged()), this, SLOT(addFixedFactors()));
 	connect(ui->tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(cellChangedHandler()));
-
-	// Define Multinomial Table
-	// ui->tableWidget->setRowCount(2);
-	// verticalLabels << "Male" << "Female";
-	// ui->tableWidget->setVerticalHeaderLabels(verticalLabels);
-
-	// Initialize Table with one hypothesis
-	// addColumnToTable();
-
-	// ui->tableWidget->setColumnCount(1);
-	// horizontalLabels << "H1";
-	// ui->tableWidget->setHorizontalHeaderLabels(horizontalLabels);
-
-	// QTableWidgetItem *newItem = new QTableWidgetItem(tr("Male").arg((0+1)*(0+1)));
-	// ui->tableWidget->setItem(0, 0, newItem);
-	//
-	// QTableWidgetItem *newItem2 = new QTableWidgetItem(tr("Female").arg((1+1)*(0+1)));
-	// ui->tableWidget->setItem(1, 0, newItem2);
 }
 
 MultinomialTestForm::~MultinomialTestForm()
@@ -98,33 +72,14 @@ void MultinomialTestForm::bindTo(Options *options, DataSet *dataSet)
 	// FIXME: If a jasp file is opened which already has factors assigned,
 	// the below statement is required to construct the multinomial table
 	addFixedFactors();
-
-	// ui->hypothesisTable->set_dataSet(dataSet);
-
-	// factorsChanging();
-	Option *factor = options->get("tableWidget");
-
-	// factor->rowTemplate()->get("name")
-	qDebug() << "here";
-
-	if (factor != NULL) {
-		qDebug() << "woah";
-	}
-
-	// factorsChanged();
 }
 
 void MultinomialTestForm::cellChangedHandler()
 {
-	// FIXME: Use refresh instead of this.
-	ui->tableWidget->refresh();
+	ui->tableWidget->updateTableValues();
 }
 
 void MultinomialTestForm::addFixedFactors() {
-
-	// qDebug() << "-----------------------------------------";
-	// qDebug() << QString::fromStdString(factorModel->assigned().asString());
-	// qDebug() << "-----------------------------------------";
 
 	// Clear table contents before updating it with values
 	ui->tableWidget->clearContents();
@@ -149,7 +104,7 @@ void MultinomialTestForm::addFixedFactors() {
 		addColumnToTable();
 	}
 
-	ui->tableWidget->callNotifyChanged();
+	ui->tableWidget->updateTableValues();
 }
 
 void MultinomialTestForm::addColumnToTable() {
@@ -165,7 +120,7 @@ void MultinomialTestForm::addColumnToTable() {
 		ui->addColumn->setEnabled(false);
 	}
 
-	ui->tableWidget->refresh();
+	ui->tableWidget->updateTableValues();
 }
 
 void MultinomialTestForm::deleteColumnFromTable() {
@@ -193,7 +148,7 @@ void MultinomialTestForm::deleteColumnFromTable() {
 		ui->deleteColumn->setEnabled(false);
 	}
 
-	ui->tableWidget->refresh();
+	ui->tableWidget->updateTableValues();
 }
 
 void MultinomialTestForm::on_addColumn_clicked(bool checked)

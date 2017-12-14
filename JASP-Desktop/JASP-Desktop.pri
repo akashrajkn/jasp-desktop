@@ -135,7 +135,6 @@ SOURCES += \
     $$PWD/widgets/tablemodelanovamodelnuisancefactors.cpp \
     $$PWD/widgets/tablemodelanovawithinsubjectcells.cpp \
     $$PWD/widgets/tablemodelcontrasts.cpp \
-    $$PWD/widgets/tablemodelmultinomialmodel.cpp \
     $$PWD/widgets/tablemodelpairsassigned.cpp \
     $$PWD/widgets/tablemodelvariables.cpp \
     $$PWD/widgets/tablemodelvariablesassigned.cpp \
@@ -297,7 +296,6 @@ HEADERS  += \
     $$PWD/widgets/tablemodelanovamodelnuisancefactors.h \
     $$PWD/widgets/tablemodelanovawithinsubjectcells.h \
     $$PWD/widgets/tablemodelcontrasts.h \
-    $$PWD/widgets/tablemodelmultinomialmodel.h \
     $$PWD/widgets/tablemodelpairsassigned.h \
     $$PWD/widgets/tablemodelvariables.h \
     $$PWD/widgets/tablemodelvariablesassigned.h \

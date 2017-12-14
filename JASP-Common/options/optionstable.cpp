@@ -92,11 +92,6 @@ void OptionsTable::setValue(const vector<Options *> &value)
 	notifyChanged();
 }
 
-void OptionsTable::callNotifyChanged()
-{
-	notifyChanged();
-}
-
 Options *OptionsTable::rowTemplate() const
 {
 	return _template;
