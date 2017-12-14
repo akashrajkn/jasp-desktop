@@ -38,8 +38,7 @@ public:
 
 	virtual void bindTo(Option *option) OVERRIDE;
 
-	void refresh();
-	void callNotifyChanged();
+	void updateTableValues();
 
 private:
 	OptionsTable *_boundTo;

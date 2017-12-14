@@ -30,10 +30,6 @@ AnovaRepeatedMeasuresBayesian <- function(dataset = NULL, options, perform = "ru
 	if (is.null(base::options()$BFfactorsMax))
 		base::options(BFfactorsMax = 5)
 
-	print("-----------------------------")
-	print(options$repeatedMeasuresFactors)
-	print("-----------------------------")
-
 	env <- environment()
 
 	.callbackBFpackage <- function(...) {

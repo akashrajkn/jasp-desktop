@@ -32,6 +32,33 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
   }
 
 
+	tableWidget = options$tableWidget
+	allNames <- unlist(lapply(options$tableWidget, function(x) x$name))
+	allValues <- unlist(lapply(options$tableWidget, function(x) x$factor_values))
+	allFactors <- unlist(lapply(options$tableWidget, function(x) x$factors))
+
+	print("##############################")
+
+	for (obj in tableWidget) {
+		print(obj$name)
+		print(obj$factor_values)
+	}
+
+
+
+	# print(allNames)
+	# print("FACTORS")
+	# if(!is.null(allFactors)) {
+	# 	print(allFactors)
+	# }
+	#
+	# for (i in 1:length(allNames)) {
+	# 	print(allNames[[i]])
+	# 	print(allValues)
+	# }
+
+	print("##############################")
+
   if (is.null(dataset)) {
     if (perform == "run") {
       dataset <- .readDataSetToEnd(columns.as.numeric=asnum,
