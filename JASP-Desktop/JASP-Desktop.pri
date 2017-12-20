@@ -124,7 +124,6 @@ SOURCES += \
     $$PWD/widgets/itemmodelselectitem.cpp \
     $$PWD/widgets/itemmodelselectvariable.cpp \
     $$PWD/widgets/listview.cpp \
-    $$PWD/widgets/multinomialmodelwidget.cpp \
     $$PWD/widgets/progresswidget.cpp \
     $$PWD/widgets/ribbonbutton.cpp \
     $$PWD/widgets/stealthbutton.cpp \
@@ -284,7 +283,6 @@ HEADERS  += \
     $$PWD/widgets/itemmodelselectitem.h \
     $$PWD/widgets/itemmodelselectvariable.h \
     $$PWD/widgets/listview.h \
-    $$PWD/widgets/multinomialmodelwidget.h \
     $$PWD/widgets/progresswidget.h \
     $$PWD/widgets/ribbonbutton.h \
     $$PWD/widgets/stealthbutton.h \
@@ -319,7 +317,6 @@ FORMS += \
     $$PWD/variableswidget.ui \
     $$PWD/widgets/anovamodelwidget.ui \
     $$PWD/widgets/boundassignwidget.ui \
-    $$PWD/widgets/multinomialmodelwidget.ui \
     $$PWD/widgets/progresswidget.ui \
     $$PWD/widgets/subjectivepriorswidget.ui
 
