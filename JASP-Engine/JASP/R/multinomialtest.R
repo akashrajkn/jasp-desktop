@@ -601,11 +601,11 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
     return(eProps)
 
 
-  } else if (length(options$exPropTable) > 0) {
+  } else if (length(options$tableWidget) > 0) {
 
-    eProps <- sapply(options$exPropTable, function(x) x$values)
-    colnames(eProps) <- sapply(options$exPropTable, function(x) x$name)
-    rownames(eProps) <- options$exPropTable[[1]]$levels
+    eProps <- sapply(options$tableWidget, function(x) x$values)
+    colnames(eProps) <- sapply(options$tableWidget, function(x) x$name)
+    rownames(eProps) <- options$tableWidget[[1]]$levels
     return(data.frame(eProps))
 
   } else {

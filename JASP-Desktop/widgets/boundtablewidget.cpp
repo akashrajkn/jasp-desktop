@@ -71,10 +71,12 @@ void BoundTableWidget::updateTableValues()
 		}
 		factorName->setValue(fq(header));
 
-		OptionVariables *option = static_cast<OptionVariables *>(newRow->get("values"));
+		// OptionVariables *option = static_cast<OptionVariables *>(newRow->get("values"));
+		OptionDoubleArray *option = static_cast<OptionDoubleArray *>(newRow->get("values"));
 		OptionVariables *headers = static_cast<OptionVariables *>(newRow->get("levels"));
 		headers->setValue(verticalHeaders);
-		std::vector<std::string> values;
+		// std::vector<std::string> values;
+		std::vector<double> values;
 		std::vector<std::string> levels;
 
 		for (int j = 0; j < rowCount; ++j) {
@@ -85,7 +87,11 @@ void BoundTableWidget::updateTableValues()
 				content = rowItem->text();
 			}
 
-			values.push_back(fq(content));
+			// values.push_back(fq(content));
+			qDebug() << "HOOOLLLLAAA";
+			qDebug() << QString::number(content.toDouble());
+			qDebug() << "YYYYYEEESSS";
+			values.push_back(content.toDouble());
 		}
 
 		option->setValue(values);

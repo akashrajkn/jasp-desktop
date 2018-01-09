@@ -27,6 +27,7 @@
 #include "options/option.h"
 #include "options/optionstable.h"
 #include "options/optionvariables.h"
+#include "options/optiondoublearray.h"
 #include "options/optionstring.h"
 
 #include "qutils.h"
