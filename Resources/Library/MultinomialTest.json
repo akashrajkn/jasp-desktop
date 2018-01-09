@@ -12,12 +12,12 @@
 					"type": "String"
 				},
 				{
-					"name": "factors",
+					"name": "levels",
 					"type": "Variables",
 					"default": []
 				},
 				{
-					"name": "factor_values",
+					"name": "values",
 					"type": "Variables",
 					"default": []
 				}

@@ -34,14 +34,14 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
 
 	tableWidget = options$tableWidget
 	allNames <- unlist(lapply(options$tableWidget, function(x) x$name))
-	allValues <- unlist(lapply(options$tableWidget, function(x) x$factor_values))
-	allFactors <- unlist(lapply(options$tableWidget, function(x) x$factors))
+	allValues <- unlist(lapply(options$tableWidget, function(x) x$values))
+	allFactors <- unlist(lapply(options$tableWidget, function(x) x$levels))
 
 	print("##############################")
 
 	for (obj in tableWidget) {
 		print(obj$name)
-		print(obj$factor_values)
+		print(obj$values)
 	}
 
 

@@ -71,11 +71,11 @@ void BoundTableWidget::updateTableValues()
 		}
 		factorName->setValue(fq(header));
 
-		OptionVariables *option = static_cast<OptionVariables *>(newRow->get("factor_values"));
-		OptionVariables *headers = static_cast<OptionVariables *>(newRow->get("factors"));
+		OptionVariables *option = static_cast<OptionVariables *>(newRow->get("values"));
+		OptionVariables *headers = static_cast<OptionVariables *>(newRow->get("levels"));
 		headers->setValue(verticalHeaders);
-		std::vector<std::string> factor_values;
-		std::vector<std::string> factors;
+		std::vector<std::string> values;
+		std::vector<std::string> levels;
 
 		for (int j = 0; j < rowCount; ++j) {
 			QTableWidgetItem *rowItem = this->item(j, i);
@@ -85,10 +85,10 @@ void BoundTableWidget::updateTableValues()
 				content = rowItem->text();
 			}
 
-			factor_values.push_back(fq(content));
+			values.push_back(fq(content));
 		}
 
-		option->setValue(factor_values);
+		option->setValue(values);
 
 		_groups.push_back(newRow);
 	}
