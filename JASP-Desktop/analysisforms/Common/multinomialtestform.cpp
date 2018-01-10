@@ -55,6 +55,8 @@ MultinomialTestForm::MultinomialTestForm(QWidget *parent) :
 	ui->exProbVar->setDoubleClickTarget(ui->listAvailableVariables);
 	ui->assignExProbVar->setSourceAndTarget(ui->listAvailableVariables, ui->exProbVar);
 
+	ui->widget_expectedProbsTable->hide();
+
 	connect(factorModel, SIGNAL(assignmentsChanged()), this, SLOT(addFixedFactors()));
 	connect(ui->tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(cellChangedHandler()));
 }
