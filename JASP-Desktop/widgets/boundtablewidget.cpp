@@ -29,7 +29,7 @@ BoundTableWidget::BoundTableWidget(QWidget *parent)
 void BoundTableWidget::bindTo(Option *option)
 {
 	_boundTo = dynamic_cast<OptionsTable *>(option);
-
+	qDebug() << "bindTo()";
 	if (_boundTo != NULL) {
 		_groups = _boundTo->value();
 	}
@@ -40,6 +40,9 @@ void BoundTableWidget::updateTableValues()
 	if (_boundTo == NULL) {
 		return;
 	}
+
+	qDebug() << "updateTableValues()";
+
 
 	int columnCount = this->columnCount();
 	int rowCount = this->rowCount();
@@ -88,9 +91,6 @@ void BoundTableWidget::updateTableValues()
 			}
 
 			// values.push_back(fq(content));
-			qDebug() << "HOOOLLLLAAA";
-			qDebug() << QString::number(content.toDouble());
-			qDebug() << "YYYYYEEESSS";
 			values.push_back(content.toDouble());
 		}
 

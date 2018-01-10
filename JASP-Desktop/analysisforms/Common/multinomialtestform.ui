@@ -555,39 +555,45 @@
         </property>
        </spacer>
       </item>
-      <item row="4" column="0">
-       <widget class="BoundTableWidget" name="tableWidget"/>
-      </item>
-      <item row="4" column="1">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QPushButton" name="addColumn">
-          <property name="text">
-           <string>Add column</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="deleteColumn">
-          <property name="text">
-           <string>Delete column</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
+      <item row="4" column="0" colspan="2">
+       <widget class="QWidget" name="widget_expectedProbsTable" native="true">
+        <layout class="QGridLayout" name="layout_expectedProbsTable">
+         <item row="0" column="0">
+          <widget class="BoundTableWidget" name="tableWidget"/>
+         </item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QPushButton" name="addColumn">
+             <property name="text">
+              <string>Add column</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="deleteColumn">
+             <property name="text">
+              <string>Delete column</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -663,6 +669,22 @@
     <hint type="destinationlabel">
      <x>424</x>
      <y>809</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_2expectedProbs</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget_expectedProbsTable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>753</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>271</x>
+     <y>845</y>
     </hint>
    </hints>
   </connection>
