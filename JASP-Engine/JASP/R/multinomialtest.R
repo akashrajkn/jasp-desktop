@@ -93,7 +93,8 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
       if (!any(diff[["factor"]], diff[["counts"]],
                diff[["confidenceIntervalInterval"]],
                diff[["hypothesis"]], diff[["exProbVar"]],
-               diff[["expectedProbs"]], diff[["simulatepval"]])){
+               diff[["expectedProbs"]], diff[["simulatepval"]],
+               diff[["tableWidget"]])) {
 
         chisqResults <- state[["chisqResults"]]
 
