@@ -421,13 +421,15 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
       div <- sum(chisqResults[[1]][["observed"]])
     }
 
-    tableFrame <- data.frame(factor = names(chisqResults[[1]][["observed"]]),
-                             observed = as.integer(chisqResults[[1]][["observed"]])/div,
-                             stringsAsFactors = FALSE)
+    tableFrame <- data.frame(
+      factor = names(chisqResults[[1]][["observed"]]),
+      observed = as.integer(chisqResults[[1]][["observed"]])/div,
+      stringsAsFactors = FALSE
+    )
 
 
     for (r in chisqResults){
-      tableFrame <- cbind(tableFrame, as.numeric(r[["expected"]])/div)
+      tableFrame <- cbind(tableFrame, as.integer(r[["expected"]])/div)
     }
 
     if (length(nms) == 1) {
@@ -573,19 +575,14 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
 .multinomialHypotheses <- function(dataset, options, nlevels) {
   # This function transforms the input into a list of hypotheses
   hyps <- list()
-
-  if (options$hypothesis == "multinomialTest"){
+  if (options$exProbVar == "" && options$hypothesis == "multinomialTest") {
     # Expected probabilities are simple now
     hyps[["Multinomial"]] <- rep(1/nlevels, nlevels)
-
   } else {
-
     # First, generate a table with expected probabilities based on input
     expectedDf <- .generateExpectedProps(dataset, options, nlevels)
-
     # assign each hypothesis to the hyps object
     hyps <- as.list(expectedDf)
-
   }
   return(hyps)
 }
@@ -597,10 +594,16 @@ MultinomialTest <- function(dataset = NULL, options, perform = "run",
 
   if (options$exProbVar != "") {
     # use only exProbVar
+    fact <- dataset[[.v(options$factor)]]
     eProps <- data.frame(dataset[[.v(options$exProbVar)]])
-    colnames(eProps) <- options$exProbVar
+    rownames(eProps) <- fact
 
-    if (nlevels != nrow(eProps)){
+    # Reorder to match factor levels
+    eProps <- data.frame(eProps[levels(fact),])
+    colnames(eProps) <- options$exProbVar
+    rownames(eProps) <- levels(fact)
+
+    if (nlevels != nrow(eProps)) {
       stop("Expected counts do not match number of levels of factor!")
     }
 
