@@ -13,6 +13,7 @@ matrix:
         "echo 'Installing R package dependencies'",
         "sudo apt-get install libnlopt-dev",
         "sudo apt-get install r-cran-rcppeigen",
+        "sudo apt-get install r-cran-car",
         "sudo apt-get install r-cran-plogr"
       ]
       install: Rscript Tools/requiredPackages.R JASP-Engine/JASP/R true true
