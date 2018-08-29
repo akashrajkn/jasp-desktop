@@ -195,8 +195,10 @@ HEADERS += \
     $$PWD/modules/analysisentry.h \
     $$PWD/modules/dynamicmodule.h \
     $$PWD/modules/dynamicmodules.h \
-    $$PWD/modules/module.h \
     $$PWD/modules/ribbonentry.h \
+    modules/ribbonmodel.h \
+    modules/ribbonbuttonmodel.h \
+    modules/analysismenumodel.h \
     $$PWD/osf/onlinedataconnection.h \
     $$PWD/osf/onlinedatamanager.h \
     $$PWD/osf/onlinedatanode.h \
@@ -299,7 +301,6 @@ HEADERS += \
     $$PWD/widgets/textmodellavaan.h \
     $$PWD/widgets/toolbutton.h \
     $$PWD/mainwindow.h \
-    $$PWD/analysis/ribbons/ribbonwidget.h \
     $$PWD/utilities/extractarchive.h \
     $$PWD/widgets/boundqmlfactorslist.h \
     $$PWD/widgets/listmodelfactors.h \
@@ -408,8 +409,10 @@ SOURCES += \
     $$PWD/modules/analysisentry.cpp \
     $$PWD/modules/dynamicmodule.cpp \
     $$PWD/modules/dynamicmodules.cpp \
-    $$PWD/modules/module.cpp \
     $$PWD/modules/ribbonentry.cpp \
+    modules/ribbonmodel.cpp \
+    modules/ribbonbuttonmodel.cpp \
+    modules/analysismenumodel.cpp \
     $$PWD/osf/onlinedataconnection.cpp \
     $$PWD/osf/onlinedatamanager.cpp \
     $$PWD/osf/onlinedatanode.cpp \
@@ -505,7 +508,6 @@ SOURCES += \
     $$PWD/widgets/toolbutton.cpp \
     $$PWD/main.cpp \
     $$PWD/mainwindow.cpp \
-    $$PWD/analysis/ribbons/ribbonwidget.cpp \
     $$PWD/utilities/extractarchive.cpp \
     $$PWD/widgets/boundqmlfactorslist.cpp \
     $$PWD/widgets/listmodelfactors.cpp \

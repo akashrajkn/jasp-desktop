@@ -1,0 +1,40 @@
+{
+	"moduleDescription" :
+	{
+		"title" : 		"Learn Bayes",
+		"description" : "Learn Bayes module.",
+		"version":		1,
+		"author":		"JASP Team",
+		"maintainer":	"JASP Team <jasp-stats.org>",
+		"website":		"jasp-stats.org",
+		"license":		"GPL (>= 2)"
+	},
+
+	"requiredPackages":	[],
+
+	"ribbonEntries":
+	[
+		{
+			"title": 	"Module 1",
+			"icon": 	"analysis-bayesian-ttest.svg",
+			"analyses":
+			[
+				{
+					"title":	"Analysis 1",
+					"qml":		"Descriptives.qml",
+					"function":	"Descriptives"
+				},
+				{
+					"title":	"Analysis 2",
+					"qml":		"Descriptives.qml",
+					"function":	"Descriptives"
+				},
+				{
+					"title":	"Analysis 3",
+					"qml":		"Descriptives.qml",
+					"function":	"Descriptives"
+				}
+			]
+		}
+	]
+}
