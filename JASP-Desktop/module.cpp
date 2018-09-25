@@ -27,7 +27,8 @@ map<QString, Module> Module::AllModules = {
 	{"SummaryStats", Module("SummaryStats", "Summary Stats", 3)},
 	{"MetaAnalysis", Module("MetaAnalysis", "Meta Analysis", 4)},
 	{"Network", Module("Network", 5)},
-///// ribbon tab number: 6
+	{"LearnBayes", Module("LearnBayes", "Learn Bayes", 6)},
+///// ribbon tab number: 7
 };
 
 

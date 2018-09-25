@@ -123,5 +123,13 @@
 				"name": "Network"
 			}
 		]
+	},
+	{
+		"name": "Learn Bayes",
+		"ribbon": [
+			{
+				"name": "Basics"
+			}
+		]
 	}
 ]

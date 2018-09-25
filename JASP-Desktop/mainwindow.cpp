@@ -68,6 +68,7 @@
 
 #include "analysisforms/MetaAnalysis/classicalmetaanalysisform.h"
 
+#include "analysisforms/LearnBayes/learnbayesbasicsform.h"
 
 ///// 1-analyses headers
 
@@ -134,10 +135,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	StartOnlineDataManager();
 	initQWidgetGUIParts();
 	makeConnections();
-	
+
 	// Set the initial tab on Common.
 	tabChanged(1);
-	
+
 	qmlRegisterType<DataSetView>("JASP", 1, 0, "DataSetView");
 	loadQML();
 
@@ -247,6 +248,7 @@ void MainWindow::makeConnections()
 	connectRibbonButton(ui->ribbonSummaryStatistics);
 	connectRibbonButton(ui->ribbonMetaAnalysis);
 	connectRibbonButton(ui->ribbonNetworkAnalysis);
+	connectRibbonButton(ui->ribbonLearnBayes);
 }
 
 void MainWindow::initQWidgetGUIParts()
@@ -424,12 +426,12 @@ bool MainWindow::filterShortCut()
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateExcludeKey()));
 	timer->start(100);
 #endif
-	
+
 	return exclude;
 }
 
 void MainWindow::saveKeysSelected()
-{	
+{
 	if (filterShortCut())
 		return;
 
@@ -451,7 +453,7 @@ void MainWindow::refreshKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	refreshAllAnalyses();
 }
 
@@ -459,7 +461,7 @@ void MainWindow::zoomInKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomIn();
 }
 
@@ -467,7 +469,7 @@ void MainWindow::zoomOutKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomOut();
 }
 
@@ -475,7 +477,7 @@ void MainWindow::zoomEqualKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomReset();
 }
 
@@ -598,8 +600,6 @@ void MainWindow::packageDataChanged(DataSetPackage *package,
 	refreshAnalysesUsingColumns(changedColumns, missingColumns, changeNameColumns);
 	_filterModel->checkForSendFilter();
 }
-
-
 
 
 void MainWindow::analysisResultsChangedHandler(Analysis *analysis)
@@ -754,7 +754,7 @@ AnalysisForm* MainWindow::loadForm(Analysis *analysis)
 	}
 	else
 		_analysisFormsMap[analysis]->connectToAvailableVariablesModel(_package->dataSet());
-	
+
 	illegalOptionStateChanged(_analysisFormsMap[analysis]);
 	_analysisFormsMap[analysis]->show();
 
@@ -775,6 +775,7 @@ AnalysisForm* MainWindow::loadForm(const string name)
 	else if (name == "NetworkAnalysis")								form = new NetworkAnalysisForm(contentArea);
 	else if (name == "MultinomialTest")								form = new MultinomialTestForm(contentArea);
 	else if (name == "RegressionLinear")							form = new RegressionLinearForm(contentArea);
+	else if (name == "LearnBayesBasics")							form = new LearnBayesBasicsForm(contentArea);
 	else if (name == "AnovaMultivariate")							form = new AnovaMultivariateForm(contentArea);
 	else if (name == "AncovaMultivariate")							form = new AncovaMultivariateForm(contentArea);
 	else if (name == "CorrelationPartial")							form = new CorrelationPartialForm(contentArea);
@@ -1039,7 +1040,7 @@ void MainWindow::dataSetIORequest(FileEvent *event)
 	}
 	else if (event->operation() == FileEvent::FileClose)
 	{
-		
+
 		if (_package->isModified())
 		{
 			QString title = windowTitle();
@@ -1206,7 +1207,7 @@ void MainWindow::populateUIfromDataSet()
 		_filterModel->setDataSetPackage(_package);
 		_filterModel->init();
 	}
-	
+
 	hideProgress();
 
 	bool errorFound = false;
@@ -1309,6 +1310,7 @@ void MainWindow::updateMenuEnabledDisabledStatus()
 	ui->ribbonReinforcementLearning->setDataSetLoaded(loaded);
 	ui->ribbonMetaAnalysis->setDataSetLoaded(loaded);
 	ui->ribbonNetworkAnalysis->setDataSetLoaded(loaded);
+	ui->ribbonLearnBayes->setDataSetLoaded(loaded);
 ///// 5-ribbon updateMenuEnabledDisabledStatus
 }
 
@@ -1654,7 +1656,7 @@ void MainWindow::removeAnalysis(Analysis *analysis)
 		selected = true;
 		closeCurrentOptionsWidget();
 	}
-	
+
 	delete _analysisFormsMap[analysis];
 	_analysisFormsMap.erase(analysis);
 
