@@ -26,7 +26,7 @@ LearnBayesBasics <- function (
 ) {
 
     table <- list()
-    table[["title"]] <- "Basics"
+    table[["title"]] <- "Learn Bayes Basics"
     table[["schema"]] <- list(fields = list())
     table[["data"]] <- list()
 

@@ -16,11 +16,11 @@
 // <http://www.gnu.org/licenses/>.
 //
 
-
 #ifndef LEARNBAYESBASICSFORM_H
 #define LEARNBAYESBASICSFORM_H
 
 #include "../analysisform.h"
+
 
 namespace Ui {
 class LearnBayesBasicsForm;

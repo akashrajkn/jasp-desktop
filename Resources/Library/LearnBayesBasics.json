@@ -1,6 +1,65 @@
 {
 	"name": "LearnBayesBasics",
 	"autorun": true,
-	"version": "1.0",
-	"options": []
+	"version": "1.00",
+	"options": [
+		{
+			"name": "variables",
+			"type": "Variables"
+		},
+		{
+			"format": "",
+			"name": "kValue",
+			"type": "Number",
+			"value": 0.0
+		},
+		{
+			"format": "",
+			"name": "nValue",
+			"type": "Number",
+			"value": 0.0
+		},
+		{
+			"name": "hypothesis",
+			"options": [ "notEqualToTestValue", "greaterThanTestValue", "lessThanTestValue" ],
+			"default": "notEqualToTestValue",
+			"type": "List"
+		},
+		{
+			"name": "bayesFactorType",
+			"options": [ "BF10", "BF01", "LogBF10" ],
+			"default": "BF10",
+			"type": "List"
+		},
+		{
+			"name": "plotPrior",
+			"type": "Boolean"
+		},
+		{
+			"name": "plotPosterior",
+			"type": "Boolean"
+		},
+		{
+			"name": "plotLikelihoodFunctions",
+			"type": "Boolean"
+		},
+		{
+			"name": "plotMarginalLikelihood",
+			"type": "Boolean"
+		},
+		{
+			"name": "plotPriorPredictive",
+			"type": "Boolean"
+		},
+		{
+			"name": "plotWidth",
+			"type": "Integer",
+			"default": 160
+		},
+		{
+			"name": "plotHeight",
+			"type": "Integer",
+			"default": 300
+		}
+	]
 }

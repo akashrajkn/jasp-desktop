@@ -25,6 +25,20 @@ LearnBayesBasicsForm::LearnBayesBasicsForm(QWidget *parent) :
 	ui(new Ui::LearnBayesBasicsForm)
 {
 	ui->setupUi(this);
+
+	_availableVariablesModel.setVariableTypesSuggested(Column::ColumnTypeScale);
+	_availableVariablesModel.setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+
+	ui->listAvailableFields->setModel(&_availableVariablesModel);
+	ui->listAvailableFields->setDoubleClickTarget(ui->variables);
+
+	TableModelVariablesAssigned *variablesModel = new TableModelVariablesAssigned(this);
+	variablesModel->setSource(&_availableVariablesModel);
+	variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+	variablesModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+	ui->variables->setModel(variablesModel);
+	ui->variables->setDoubleClickTarget(ui->listAvailableFields);
+	ui->buttonAssign_main_fields->setSourceAndTarget(ui->listAvailableFields, ui->variables);
 }
 
 LearnBayesBasicsForm::~LearnBayesBasicsForm()
