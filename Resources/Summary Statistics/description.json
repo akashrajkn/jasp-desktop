@@ -29,6 +29,20 @@
 				{
 					"title"   : "Bayesian One Sample T-Test",
 					"function": "SummaryStatsTTestBayesianOneSample"
+				},
+				{
+				},
+				{
+					"title"   : "QML Bayesian Independent Samples T-Test",
+					"function": "QMLSummaryStatsTTestBayesianIndependentSamples"
+				},
+				{
+					"title"   : "QML Bayesian Paired Samples T-Test",
+					"function": "QMLSummaryStatsTTestBayesianPairedSamples"
+				},
+				{
+					"title"   : "QML Bayesian One Sample T-Test",
+					"function": "QMLSummaryStatsTTestBayesianOneSample"
 				}
 			]
 		},
@@ -44,6 +58,16 @@
 				{
 					"title"   : "Bayesian Linear Regression",
 					"function": "SummaryStatsRegressionLinearBayesian"
+				},
+				{
+				},
+				{
+					"title"   : "QML Bayesian Correlation Pairs",
+					"function": "QMLSummaryStatsCorrelationBayesianPairs"
+				},
+				{
+					"title"   : "QML Bayesian Linear Regression",
+					"function": "QMLSummaryStatsRegressionLinearBayesian"
 				}
 			]
 		},
