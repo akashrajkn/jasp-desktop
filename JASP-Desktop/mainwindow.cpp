@@ -278,15 +278,16 @@ void MainWindow::setupRibbonModels(QFileInfo modulePath)
 	moduleStatus				_status = moduleStatus::installNeeded;
 	std::string					_title;
 	bool						_requiresDataset;
+	bool						_isDynamicModule;
 
 	Json::Value					_requiredPackages;
 	std::vector<Modules::RibbonEntry*>	_ribbonEntries;
-
 
 	try {
 		Json::Value & moduleDescription = descriptionJson["moduleDescription"];
 		_title							= moduleDescription.get("title",			"???").asString();
 		_requiresDataset				= moduleDescription.get("requiresDataset",	true).asBool();
+		_isDynamicModule				= moduleDescription.get("dynamic", true).asBool();
 
 		for(Json::Value & ribbonEntry : descriptionJson["ribbonEntries"])
 			_ribbonEntries.push_back(new Modules::RibbonEntry(ribbonEntry, NULL));
@@ -298,6 +299,7 @@ void MainWindow::setupRibbonModels(QFileInfo modulePath)
 	_ribbonButtonModel = new RibbonButtonModel(this);
 	_ribbonButtonModel->setRibbonEntries(_ribbonEntries);
 	_ribbonButtonModel->setRequiresDataset(_requiresDataset);
+	_ribbonButtonModel->setDynamic(_isDynamicModule);
 
 	_ribbonModel->addRibbonName(_title);
 	_ribbonModel->addRibbonButtonModel(_ribbonButtonModel);
@@ -373,7 +375,7 @@ void MainWindow::loadQML()
 
 	setFilterConstructorJson(QString::fromStdString(_package->filterConstructorJson()));
 
-	ui->quickWidget_Data->engine()->addImportPath("qrc:///components");	
+	ui->quickWidget_Data->engine()->addImportPath("qrc:///components");
 	ui->quickWidget_Data->setSource(QUrl(QString("qrc:///qml/dataset.qml")));
 
 	QObject * DataView				= ui->quickWidget_Data->rootObject()->findChild<QObject*>("dataSetTableView");
@@ -970,7 +972,7 @@ void MainWindow::showForm(Analysis *analysis)
 
 		theWidget->setMinimumWidth(ui->panel_2_Options->minimumWidth() - _scrollbarWidth);
 		theWidget->show();
-		
+
 		ui->scrollArea->setVerticalScrollBarPolicy(analysis->fromQML() ? Qt::ScrollBarAlwaysOff : Qt::ScrollBarAlwaysOn);
 		ui->optionsContentAreaLayout->addWidget(theWidget);//, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
@@ -2096,7 +2098,7 @@ void MainWindow::showQMLWindow(QString urlQml)
 
 	QQuickView * newQMLWindow = new QQuickView;
 
-	newQMLWindow->engine()->addImportPath("qrc:///components");		
+	newQMLWindow->engine()->addImportPath("qrc:///components");
 	newQMLWindow->rootContext()->setContextProperty("dynamicModules", _dynamicModules);
 	newQMLWindow->setSource(urlQml);
 	newQMLWindow->setResizeMode(QQuickView::SizeRootObjectToView);

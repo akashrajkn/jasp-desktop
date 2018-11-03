@@ -34,6 +34,15 @@ Item {
             jaspRibbon.ribbonButtonClicked(clusterButton)
         }
 
+        function getIconSourcePath(isDynamic) {
+
+            if (isDynamic) {
+                return "file:" + modulesPath + currentActiveModule + "/icons/"
+            } else {
+                return "qrc:/icons/"
+            }
+        }
+
         Row {
             id          : ribbonRow
             objectName  : "ribbonRow"
@@ -51,7 +60,7 @@ Item {
 
                         RibbonButton {
                             text  : displayText
-                            source: "file:" + modulesPath + currentActiveModule + "/icons/" + iconSource
+                            source: jaspRibbon.getIconSourcePath(ribbonButtonModel.isDynamic()) + iconSource
                             menu  : analysisMenu
                         }
                     }

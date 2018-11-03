@@ -7,7 +7,8 @@
 		"author"         : "JASP Team",
 		"maintainer"     : "JASP Team <jasp-stats.org>",
 		"website"        : "jasp-stats.org",
-		"license"        : "GPL (>= 2)"
+		"license"        : "GPL (>= 2)",
+		"dynamic"        : false
 	},
 
 	"ribbonEntries":
@@ -256,7 +257,7 @@
 				{
 					"title":	"Bayesian Log-Linear Regression",
 					"function":	"RegressionLogLinearBayesian"
-				}
+				},
 				{
 				},
 				{
