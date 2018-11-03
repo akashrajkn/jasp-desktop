@@ -28,16 +28,18 @@ JASPControl {
     property alias checked: control.checked
     implicitHeight: control.height
     implicitWidth: control.width
-    
+
+    property RadioButton someRadioButton: something
+
     property var buttonGroup
-    
+
     RadioButton {
         id: control
         height: Theme.radioIndicatorDiameter + 4
         width: Theme.radioIndicatorDiameter + label.implicitWidth + control.spacing + 6
         focus: true
-        ButtonGroup.group: buttonGroup        
-        
+        ButtonGroup.group: buttonGroup
+
         indicator: Rectangle {
             width: Theme.radioIndicatorDiameter
             height: Theme.radioIndicatorDiameter
@@ -49,7 +51,7 @@ JASPControl {
             color: control.checked ? (control.enabled ? Theme.buttonBackgroundColor : Theme.disableControlBackgroundColor) : Theme.controlBackgroundColor
             border.color: control.enabled ? (control.checked ? Theme.buttonBackgroundColor : Theme.borderColor) : Theme.disableControlBackgroundColor
             border.width: 1
-    
+
             Rectangle {
                 anchors.centerIn: parent
                 implicitWidth: Theme.radioIndicatorDiameter / 2
@@ -59,7 +61,7 @@ JASPControl {
                 color: Theme.controlBackgroundColor
             }
         }
-        
+
         contentItem: Label {
             id: label
             anchors.left: control.indicator.right
@@ -67,6 +69,10 @@ JASPControl {
             anchors.top: control.top
             anchors.topMargin: 2
             text: control.text
+        }
+
+        RadioButton {
+            id: something
         }
     }
 }
