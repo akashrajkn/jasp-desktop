@@ -411,6 +411,12 @@ void MainWindow::loadRibbonQML()
 
 	QObject *ribbonButton = ui->quickWidget_Ribbon->rootObject()->findChild<QObject*>("jaspRibbon");
 	connect(ribbonButton, SIGNAL(ribbonButtonClicked(QVariant)), this, SLOT(handleRibbonButtonClicked(QVariant)));
+
+	bool enable = true;
+	if (currentModel->requiresDataset() && _package->dataSet() == NULL) {
+		enable = false;
+	}
+	ui->quickWidget_Ribbon->setEnabled(enable);
 }
 
 
@@ -1040,6 +1046,12 @@ void MainWindow::tabChanged(int index)
 
 		ui->quickWidget_Ribbon->rootContext()->setContextProperty("currentActiveModule", currentActiveTab);
 		ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonButtonModel", currentModel);
+
+		bool enable = true;
+		if (currentModel->requiresDataset() && _package->dataSet() == NULL) {
+			enable = false;
+		}
+		ui->quickWidget_Ribbon->setEnabled(enable);
 	}
 }
 
@@ -1237,6 +1249,8 @@ void MainWindow::dataSetIOCompleted(FileEvent *event)
 					_package->setModified(true);
 				}
 			}
+
+			ui->quickWidget_Ribbon->setEnabled(true);
 		}
 		else
 		{
