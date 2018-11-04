@@ -1,0 +1,24 @@
+{
+	"moduleDescription" :
+	{
+		"title" : 		"Meta Analysis",
+		"description" : "Meta Analysis module.",
+		"version":		1,
+		"author":		"JASP Team",
+		"maintainer":	"JASP Team <jasp-stats.org>",
+		"website":		"jasp-stats.org",
+		"license":		"GPL (>= 2)",
+		"dynamic":		false
+	},
+
+	"requiredPackages":	[],
+
+	"ribbonEntries":
+	[
+		{
+			"title": 	"Classical",
+			"icon": 	"analysis-bayesian-ttest.svg",
+			"analyses":  []
+		}
+	]
+}

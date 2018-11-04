@@ -144,6 +144,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	setupRibbonModels(summaryStatisticsModule);
 	QFileInfo networksModule("Resources/Network/");
 	setupRibbonModels(networksModule);
+	QFileInfo metaAnalysisModule("Resources/Meta Analysis/");
+	setupRibbonModels(metaAnalysisModule);
+	QFileInfo semModule("Resources/SEM/");
+	setupRibbonModels(semModule);
 
 	// Add dynamic Modules
 	for (auto it : _dynamicModules->moduleNames()) {
