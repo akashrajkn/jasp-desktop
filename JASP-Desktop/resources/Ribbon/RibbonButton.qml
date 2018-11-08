@@ -19,6 +19,7 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.1
+import QtGraphicalEffects 1.0
 
 
 Rectangle {
@@ -43,6 +44,12 @@ Rectangle {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 5
+    }
+
+    ColorOverlay {
+        anchors.fill: backgroundImage
+        source: backgroundImage
+        color: "#80ff0000"
     }
 
     Text {
