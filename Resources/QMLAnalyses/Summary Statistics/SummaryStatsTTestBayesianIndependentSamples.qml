@@ -2,6 +2,8 @@ import QtQuick 2.8
 import QtQuick.Layouts 1.3
 import JASP.Controls 1.0
 
+import "../widgets"
+
 Form {
     id: form
 
@@ -16,7 +18,7 @@ Form {
         }
     }
 
-    Divider{}
+    Divider { }
 
     GridLayout {
         ColumnLayout {
@@ -54,5 +56,5 @@ Form {
         }
     }
 
-    SubjectivePriorsComponent { }
+    SubjectivePriors { }
 }
