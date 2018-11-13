@@ -59,9 +59,10 @@ Item {
                         id: ribbonButtonDelegate
 
                         RibbonButton {
-                            text  : displayText
-                            source: jaspRibbon.getIconSourcePath(ribbonButtonModel.isDynamic()) + iconSource
-                            menu  : analysisMenu
+                            text   : displayText
+                            source : jaspRibbon.getIconSourcePath(ribbonButtonModel.isDynamic()) + iconSource
+                            menu   : analysisMenu
+                            enabled: ribbonIsEnabled
                         }
                     }
 

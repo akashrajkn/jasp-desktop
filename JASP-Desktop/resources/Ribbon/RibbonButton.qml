@@ -23,12 +23,13 @@ import QtGraphicalEffects 1.0
 
 
 Rectangle {
-    id                           : button
-    width                        : (innerText.width > backgroundImage.width ? innerText.width : backgroundImage.width) + 20 // + 2*tbutton.width
-    height                       : 60  // backgroundImage.height + innerText.height
-    radius                       : 5
-            property alias text  : innerText.text
-            property alias source: backgroundImage.source
+    id                            : button
+    width                         : (innerText.width > backgroundImage.width ? innerText.width : backgroundImage.width) + 20 // + 2*tbutton.width
+    height                        : 60  // backgroundImage.height + innerText.height
+    radius                        : 5
+            property alias text   : innerText.text
+            property alias source : backgroundImage.source
+            property alias enabled: mice.enabled
     default property var   menu
 
     Material.elevation           : 10  // FIXME
@@ -48,8 +49,8 @@ Rectangle {
 
     ColorOverlay {
         anchors.fill: backgroundImage
-        source: backgroundImage
-        color: "#80ff0000"
+        source      : backgroundImage
+        color       : mice.enabled ? "transparent" : "lightgrey"
     }
 
     Text {
@@ -60,7 +61,7 @@ Rectangle {
         anchors.bottom          : parent.bottom
         anchors.topMargin       : 5
 
-        color: "black"
+        color: mice.enabled ? "black" : "lightgrey"
         font.bold: false
     }
 
@@ -86,5 +87,4 @@ Rectangle {
             button.color = "#FFFFFF";
         }
     }
-
 }

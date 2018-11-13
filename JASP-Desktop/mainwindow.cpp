@@ -416,7 +416,7 @@ void MainWindow::loadRibbonQML()
 	if (currentModel->requiresDataset() && _package->dataSet() == NULL) {
 		enable = false;
 	}
-	ui->quickWidget_Ribbon->setEnabled(enable);
+	ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonIsEnabled", enable);
 }
 
 
@@ -1051,7 +1051,7 @@ void MainWindow::tabChanged(int index)
 		if (currentModel->requiresDataset() && _package->dataSet() == NULL) {
 			enable = false;
 		}
-		ui->quickWidget_Ribbon->setEnabled(enable);
+		ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonIsEnabled", enable);
 	}
 }
 
@@ -1250,7 +1250,7 @@ void MainWindow::dataSetIOCompleted(FileEvent *event)
 				}
 			}
 
-			ui->quickWidget_Ribbon->setEnabled(true);
+			ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonIsEnabled", true);
 		}
 		else
 		{
