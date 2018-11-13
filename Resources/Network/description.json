@@ -18,7 +18,18 @@
 		{
 			"title": 	"Network",
 			"icon": 	"analysis-network.svg",
-			"analyses":  []
+			"analyses":  [
+				{
+					"title":	"Network",
+					"function":	"NetworkAnalysis"
+				},
+				{
+				},
+				{
+					"title":	"QML Network",
+					"function":	"QMLNetworkAnalysis"
+				}
+			]
 		}
 	]
 }

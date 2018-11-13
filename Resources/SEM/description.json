@@ -18,7 +18,18 @@
 		{
 			"title": 	"Lavaan",
 			"icon": 	"analysis-classical-sem.svg",
-			"analyses":  []
+			"analyses":  [
+				{
+					"title":	"Lavaan",
+					"function":	"SEMSimple"
+				},
+				{
+				},
+				{
+					"title":	"QML Lavaan",
+					"function":	"QMLSEMSimple"
+				}
+			]
 		}
 	]
 }
