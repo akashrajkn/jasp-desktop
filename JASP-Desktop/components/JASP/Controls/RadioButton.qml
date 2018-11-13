@@ -29,8 +29,6 @@ JASPControl {
     implicitHeight: control.height
     implicitWidth: control.width
 
-    property RadioButton someRadioButton: something
-
     property var buttonGroup
 
     RadioButton {
@@ -71,8 +69,5 @@ JASPControl {
             text: control.text
         }
 
-        RadioButton {
-            id: something
-        }
     }
 }
