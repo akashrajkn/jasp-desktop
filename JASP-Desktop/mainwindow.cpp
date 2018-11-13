@@ -406,17 +406,17 @@ void MainWindow::loadRibbonQML()
 	ui->quickWidget_Ribbon->rootContext()->setContextProperty("currentActiveModule", currentActiveTab);
 	ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonButtonModel", currentModel);
 
-	ui->quickWidget_Ribbon->rootContext()->setContextProperty("modulesPath", AppDirs::modulesDir());
-	ui->quickWidget_Ribbon->setSource(QUrl(QString("qrc:///qml/Ribbon/Ribbon.qml")));
-
-	QObject *ribbonButton = ui->quickWidget_Ribbon->rootObject()->findChild<QObject*>("jaspRibbon");
-	connect(ribbonButton, SIGNAL(ribbonButtonClicked(QVariant)), this, SLOT(handleRibbonButtonClicked(QVariant)));
-
 	bool enable = true;
 	if (currentModel->requiresDataset() && _package->dataSet() == NULL) {
 		enable = false;
 	}
 	ui->quickWidget_Ribbon->rootContext()->setContextProperty("ribbonIsEnabled", enable);
+
+	ui->quickWidget_Ribbon->rootContext()->setContextProperty("modulesPath", AppDirs::modulesDir());
+	ui->quickWidget_Ribbon->setSource(QUrl(QString("qrc:///qml/Ribbon/Ribbon.qml")));
+
+	QObject *ribbonButton = ui->quickWidget_Ribbon->rootObject()->findChild<QObject*>("jaspRibbon");
+	connect(ribbonButton, SIGNAL(ribbonButtonClicked(QVariant)), this, SLOT(handleRibbonButtonClicked(QVariant)));
 }
 
 
