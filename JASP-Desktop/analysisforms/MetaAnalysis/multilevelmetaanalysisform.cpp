@@ -20,8 +20,8 @@
 #include "ui_multilevelmetaanalysisform.h"
 
 MultiLevelMetaAnalysisForm::MultiLevelMetaAnalysisForm(QWidget *parent) :
-        AnalysisForm("MultiLevelMetaAnalysisForm", parent),
-        ui(new Ui::MultiLevelMetaAnalysisForm)
+		AnalysisForm("MultiLevelMetaAnalysisForm", parent),
+		ui(new Ui::MultiLevelMetaAnalysisForm)
 {
 	ui->setupUi(this);
 
@@ -33,22 +33,31 @@ MultiLevelMetaAnalysisForm::MultiLevelMetaAnalysisForm(QWidget *parent) :
 	_dependentModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
 	ui->dependent->setModel(_dependentModel);
 
-    // QString methods0 = "FE,DL,HE,SJ,ML,REML,EB,HS"; // full is "FE,DL,HE,SJ,ML,REML,EB,HS,GENQ", but GENQ needs weights UI element that isn't yet implemented...;
-    QString methods0 = "Fixed Effects,Maximum Likelihood,Restricted ML,DerSimonian-Laird,Hedges,Hunter-Schmidt,Sidik-Jonkman,Empirical Bayes,Paule-Mandel";
-    //QStringList methods = (QStringList << "FE" << "DL" << "HE" << "SJ" << "ML" << "REML" << "EB" << "HS" << "GENQ");
-    QStringList methods = methods0.split(",");
-    ui->method->addItems(methods);
+	QString methods0 = "Fixed Effects,Maximum Likelihood,Restricted ML,DerSimonian-Laird,Hedges,Hunter-Schmidt,Sidik-Jonkman,Empirical Bayes,Paule-Mandel";
+	QStringList methods = methods0.split(",");
+	ui->method->addItems(methods);
 
-	_covariatesModel = new TableModelVariablesAssigned();
-	_covariatesModel->setSource(&_availableVariablesModel);
-	_covariatesModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	_covariatesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	ui->covariates->setModel(_covariatesModel);
+	_covariatesFixedModel = new TableModelVariablesAssigned();
+	_covariatesFixedModel->setSource(&_availableVariablesModel);
+	_covariatesFixedModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	_covariatesFixedModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+	ui->covariatesFixed->setModel(_covariatesFixedModel);
 
-	_factorsModel = new TableModelVariablesAssigned();
-	_factorsModel->setSource(&_availableVariablesModel);
-	_factorsModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-	ui->factors->setModel(_factorsModel);
+	_factorsFixedModel = new TableModelVariablesAssigned();
+	_factorsFixedModel->setSource(&_availableVariablesModel);
+	_factorsFixedModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	ui->factorsFixed->setModel(_factorsFixedModel);
+
+	_covariatesRandomModel = new TableModelVariablesAssigned();
+	_covariatesRandomModel->setSource(&_availableVariablesModel);
+	_covariatesRandomModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	_covariatesRandomModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+    ui->covariatesRandom->setModel(_covariatesRandomModel);
+
+	_factorsRandomModel = new TableModelVariablesAssigned();
+	_factorsRandomModel->setSource(&_availableVariablesModel);
+	_factorsRandomModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	ui->factorsRandom->setModel(_factorsRandomModel);
 
 	_wlsWeightsModel = new TableModelVariablesAssigned();
 	_wlsWeightsModel->setSource(&_availableVariablesModel);
@@ -56,42 +65,43 @@ MultiLevelMetaAnalysisForm::MultiLevelMetaAnalysisForm(QWidget *parent) :
 	_wlsWeightsModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
 	ui->wlsWeights->setModel(_wlsWeightsModel);
 
-    _studyLabelModel = new TableModelVariablesAssigned();
-    _studyLabelModel->setSource(&_availableVariablesModel);
-    _studyLabelModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
-    ui->studyLabels->setModel(_studyLabelModel);
+	_studyLabelModel = new TableModelVariablesAssigned();
+	_studyLabelModel->setSource(&_availableVariablesModel);
+	_studyLabelModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	ui->studyLabels->setModel(_studyLabelModel);
 
 
 	ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
-	ui->buttonAssignCovariates->setSourceAndTarget(ui->listAvailableFields, ui->covariates);
-	ui->buttonAssignFactors->setSourceAndTarget(ui->listAvailableFields, ui->factors);
+	ui->buttonAssignCovariatesFixed->setSourceAndTarget(ui->listAvailableFields, ui->covariatesFixed);
+	ui->buttonAssignFactorsFixed->setSourceAndTarget(ui->listAvailableFields, ui->factorsFixed);
+	ui->buttonAssignCovariatesRandom->setSourceAndTarget(ui->listAvailableFields, ui->covariatesRandom);
+	ui->buttonAssignFactorsRandom->setSourceAndTarget(ui->listAvailableFields, ui->factorsRandom);
 	ui->buttonAssignWlsWeights->setSourceAndTarget(ui->listAvailableFields, ui->wlsWeights);
-    ui->buttonAssignStudyLabels->setSourceAndTarget(ui->listAvailableFields, ui->studyLabels);
+	ui->buttonAssignStudyLabels->setSourceAndTarget(ui->listAvailableFields, ui->studyLabels);
 
 	_modelModel = new TableModelAnovaModel(this);
 	_modelModel->setPiecesCanBeAssigned(false);
 	ui->modelTerms->setModel(_modelModel);
 	ui->modelTerms->hide();
 
-	connect(_covariatesModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_covariatesModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
-	connect(_covariatesModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addCovariates(Terms)));
-	connect(_covariatesModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
+	connect(_covariatesRandomModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+	connect(_covariatesRandomModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
+	connect(_covariatesRandomModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addCovariates(Terms)));
+	connect(_covariatesRandomModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
 
-	connect(_factorsModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
-	connect(_factorsModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
-	connect(_factorsModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addFixedFactors(Terms)));
-	connect(_factorsModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
+	connect(_factorsRandomModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+	connect(_factorsRandomModel, SIGNAL(assignmentsChanged()),  this, SLOT(factorsChanged()));
+	connect(_factorsRandomModel, SIGNAL(assignedTo(Terms)), _modelModel, SLOT(addFixedFactors(Terms)));
+	connect(_factorsRandomModel, SIGNAL(unassigned(Terms)), _modelModel, SLOT(removeVariables(Terms)));
 
 	ui->panelStatistics->hide();
 	ui->panelIncludeConstant->hide();
-    ui->panelAssumptionChecks->hide();
-
+	ui->panelAssumptionChecks->hide();
 }
 
 MultiLevelMetaAnalysisForm::~MultiLevelMetaAnalysisForm()
 {
-    delete ui;
+	delete ui;
 }
 
 void MultiLevelMetaAnalysisForm::factorsChanging()
@@ -106,13 +116,8 @@ void MultiLevelMetaAnalysisForm::factorsChanged()
 		_options->blockSignals(false);
 }
 
-//MultiLevelMetaAnalysisForm::~MultiLevelMetaAnalysisForm()
-//{
-//	delete ui;
-//}
-
 void MultiLevelMetaAnalysisForm:: bindTo(Options *options, DataSet *dataSet)
 {
 	AnalysisForm::bindTo(options, dataSet);
-	_modelModel->setVariables(Terms(), Terms(), _covariatesModel->assigned());
+	_modelModel->setVariables(Terms(), Terms(), _covariatesFixedModel->assigned());
 }

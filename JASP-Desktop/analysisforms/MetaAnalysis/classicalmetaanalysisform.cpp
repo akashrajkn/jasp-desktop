@@ -106,11 +106,6 @@ void ClassicalMetaAnalysisForm::factorsChanged()
 		_options->blockSignals(false);
 }
 
-//ClassicalMetaAnalysisForm::~ClassicalMetaAnalysisForm()
-//{
-//	delete ui;
-//}
-
 void ClassicalMetaAnalysisForm:: bindTo(Options *options, DataSet *dataSet)
 {
 	AnalysisForm::bindTo(options, dataSet);

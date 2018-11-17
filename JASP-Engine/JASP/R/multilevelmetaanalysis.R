@@ -20,8 +20,9 @@ MultiLevelMetaAnalysis <- function(dataset=NULL, options, perform="run", callbac
   # Restore previous computation state and detect option changes
   run <- perform == "run"
 
-  fitOpts <- c("dependent", "wlsWeights", "method", "studyLabels", "covariates", "test",
-               "factors", "modelTerms", "includeConstant", "regressionCoefficientsConfidenceIntervalsInterval")
+  fitOpts <- c("dependent", "wlsWeights", "method", "studyLabels", "covariatesFixed", "test",
+               "factorsFixed", "modelTerms", "includeConstant", "regressionCoefficientsConfidenceIntervalsInterval",
+               "factorsRandom", "covariatesRandom")
   stateKey <- list(
     rma.fit = fitOpts,
     dataset= fitOpts,
@@ -67,8 +68,8 @@ MultiLevelMetaAnalysis <- function(dataset=NULL, options, perform="run", callbac
   #   intercept:   logical (maps to 'intercept'), intercept in the model?
   #
   ## optional:
-  #   covariates:  string array (maps to 'mods'), names of continuous predictor variables
-  #   factors:     string array (maps to 'mods'), names of nominal/ordinal predictor variables
+  #   covariatesFixed:  string array (maps to 'mods'), names of continuous predictor variables
+  #   factorsFixed:     string array (maps to 'mods'), names of nominal/ordinal predictor variables
   ## plotting:
   #   studylabels:    string (maps to 'slab'), name of variable that contains label for a forrest plot
   #   forrestPlot:    logical, make this plot?
@@ -84,7 +85,7 @@ MultiLevelMetaAnalysis <- function(dataset=NULL, options, perform="run", callbac
   #********
   # debuging:
   #  options = list(effectsize = "yi", stderr = "sei", intercept=TRUE,
-  #                 covariates = NULL, factors = NULL, studylabels = NULL,
+  #                 covariatesFixed = NULL, factorsFixed = NULL, studylabels = NULL,
   #                 forrestPlot = TRUE, funnelPlot = FALSE, method="FE")
   #  readJaspMsg <- function(connection=pipe('pbpaste')) jsonlite::fromJSON(paste(readLines(connection),collapse = "\n"))
   #  readOptions <- function(connection=pipe('pbpaste')) if (is.list) connection$options else readJaspMsg(connection)$options
@@ -107,8 +108,8 @@ MultiLevelMetaAnalysis <- function(dataset=NULL, options, perform="run", callbac
   effsizeName <- unlist(options$dependent)
   stderrName  <- unlist(options$wlsWeight)
 
-  covarNames <- if (length(options$covariates) > 0) unlist(options$covariates)
-  factNames  <- if (length(options$factors) > 0) unlist(options$factors)
+  covarNames <- if (length(options$covariatesFixed) > 0) unlist(options$covariatesFixed)
+  factNames  <- if (length(options$factorsFixed) > 0) unlist(options$factorsFixed)
 
   list.variables    <- Filter(function(s) s != "", c(effsizeName, covarNames))
   numeric.variables <- Filter(function(s) s != "", c(effsizeName, covarNames, stderrName))

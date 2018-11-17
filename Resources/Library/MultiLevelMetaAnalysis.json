@@ -20,11 +20,19 @@
 			"default": "z"
 		},
 		{
-			"name": "covariates",
+			"name": "covariatesFixed",
 			"type": "Variables"
 		},
 		{
-			"name": "factors",
+			"name": "factorsFixed",
+			"type": "Variables"
+		},
+		{
+			"name": "covariatesRandom",
+			"type": "Variables"
+		},
+		{
+			"name": "factorsRandom",
 			"type": "Variables"
 		},
 		{

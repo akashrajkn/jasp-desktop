@@ -33,8 +33,8 @@ class MultiLevelMetaAnalysisForm : public AnalysisForm
 	Q_OBJECT
 
 public:
-    explicit MultiLevelMetaAnalysisForm(QWidget *parent = 0);
-    ~MultiLevelMetaAnalysisForm();
+	explicit MultiLevelMetaAnalysisForm(QWidget *parent = 0);
+	~MultiLevelMetaAnalysisForm();
 
 	void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
 
@@ -43,13 +43,15 @@ private slots:
 	void factorsChanged();
 
 private:
-    Ui::MultiLevelMetaAnalysisForm *ui;
+	Ui::MultiLevelMetaAnalysisForm *ui;
 
-	TableModelVariablesAssigned *_dependentModel;
-    TableModelVariablesAssigned *_covariatesModel;
-    TableModelVariablesAssigned *_factorsModel;
+    TableModelVariablesAssigned *_dependentModel;
 	TableModelVariablesAssigned *_wlsWeightsModel;
-    TableModelVariablesAssigned *_studyLabelModel;
+	TableModelVariablesAssigned *_studyLabelModel;
+	TableModelVariablesAssigned *_covariatesFixedModel;
+	TableModelVariablesAssigned *_factorsFixedModel;
+	TableModelVariablesAssigned *_covariatesRandomModel;
+	TableModelVariablesAssigned *_factorsRandomModel;
 
 	TableModelAnovaModel *_modelModel;
 };
