@@ -1,3 +1,5 @@
+JASP.pro.user.*
+
 # Compiled Object files
 *.slo
 *.lo
@@ -39,7 +41,7 @@ Tools/includeFiles*.nsi
 JASP.pro.user.b601785
 .Rproj.user
 
-#Extracted testfiles 
+#Extracted testfiles
 Resources/TestFiles
 
 *.autosave
