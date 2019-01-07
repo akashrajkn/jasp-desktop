@@ -108,6 +108,11 @@ RibbonAnalysis::RibbonAnalysis(QWidget *parent) :
 	menu->addAction(QString("Exploratory Factor Analysis"), this, SLOT(itemSelected()))->setObjectName("ExploratoryFactorAnalysis");
 
 	ui->factoranalysisButton->setMenu(menu);
+
+	menu = new QMenu(this);
+	menu->addAction(QString("Linear Mixed Models"), this, SLOT(itemSelected()))->setObjectName("LinearMixedModels");
+
+	ui->mixedModelButton->setMenu(menu);
 }
 
 RibbonAnalysis::~RibbonAnalysis()

@@ -68,6 +68,8 @@
 
 #include "analysisforms/MetaAnalysis/classicalmetaanalysisform.h"
 
+#include "analysisforms/Common/linearmixedmodelsform.h"
+
 
 ///// 1-analyses headers
 
@@ -138,10 +140,10 @@ MainWindow::MainWindow(QApplication * application) : QMainWindow(NULL), ui(new U
 	StartOnlineDataManager();
 	initQWidgetGUIParts();
 	makeConnections();
-	
+
 	// Set the initial tab on Common.
 	tabChanged(1);
-	
+
 	qmlRegisterType<DataSetView>("JASP", 1, 0, "DataSetView");
 	loadQML();
 
@@ -435,12 +437,12 @@ bool MainWindow::filterShortCut()
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateExcludeKey()));
 	timer->start(100);
 #endif
-	
+
 	return exclude;
 }
 
 void MainWindow::saveKeysSelected()
-{	
+{
 	if (filterShortCut())
 		return;
 
@@ -462,7 +464,7 @@ void MainWindow::refreshKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	refreshAllAnalyses();
 }
 
@@ -470,7 +472,7 @@ void MainWindow::zoomInKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomIn();
 }
 
@@ -478,7 +480,7 @@ void MainWindow::zoomOutKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomOut();
 }
 
@@ -486,7 +488,7 @@ void MainWindow::zoomEqualKeysSelected()
 {
 	if (filterShortCut())
 		return;
-	
+
 	_resultsJsInterface->zoomReset();
 }
 
@@ -801,7 +803,7 @@ AnalysisForm* MainWindow::loadForm(Analysis *analysis)
 	}
 	else
 		_analysisFormsMap[analysis]->connectToAvailableVariablesModel(_package->dataSet());
-	
+
 	illegalOptionStateChanged(_analysisFormsMap[analysis]);
 	_analysisFormsMap[analysis]->show();
 
@@ -864,6 +866,7 @@ AnalysisForm* MainWindow::loadForm(const string name)
 	else if (name == "BinomialTest")								form = new BinomialTestForm(contentArea);
 	else if (name == "SEMSimple")									form = new SEMSimpleForm(contentArea);
 	else if (name == "Anova")										form = new AnovaForm(contentArea);
+	else if (name == "LinearMixedModels")							form = new LinearMixedModelsForm(contentArea);
 ///// 4-analysis if-else ladder
 	else
 		qDebug() << "MainWindow::loadForm(); form not found : " << name.c_str();
@@ -1261,7 +1264,7 @@ void MainWindow::populateUIfromDataSet()
 		_filterModel->setDataSetPackage(_package);
 		_filterModel->init();
 	}
-	
+
 	hideProgress();
 
 	bool errorFound = false;
@@ -1724,7 +1727,7 @@ void MainWindow::removeAnalysis(Analysis *analysis)
 		selected = true;
 		closeCurrentOptionsWidget();
 	}
-	
+
 	delete _analysisFormsMap[analysis];
 	_analysisFormsMap.erase(analysis);
 
