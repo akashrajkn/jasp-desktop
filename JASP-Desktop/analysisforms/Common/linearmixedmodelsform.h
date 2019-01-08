@@ -21,6 +21,8 @@
 
 #include "../analysisform.h"
 
+#include "widgets/tablemodelvariablesassigned.h"
+#include "widgets/tablemodelanovamodel.h"
 
 namespace Ui {
 class LinearMixedModelsForm;
@@ -34,8 +36,30 @@ public:
 	explicit LinearMixedModelsForm(QWidget *parent = 0);
 	~LinearMixedModelsForm();
 
+	virtual void bindTo(Options *options, DataSet *dataSet) OVERRIDE;
+
 private:
 	Ui::LinearMixedModelsForm *ui;
+
+	TableModelVariablesAssigned *_dependentListModel;
+	TableModelVariablesAssigned *_fixedFactorsListModel;
+	TableModelVariablesAssigned *_randomFactorsListModel;
+	TableModelVariablesAssigned *_wlsWeightsListModel;
+	TableModelVariablesAssigned *_fixedCovariatesListModel;
+
+	TableModelAnovaModel *_anovaModel;
+
+	TableModelVariablesAvailable *_factorsAvailableListModel;
+
+  TableModelVariablesAvailable *_plotFactorsAvailableTableModel;
+  TableModelVariablesAssigned *_horizontalAxisTableModel;
+  TableModelVariablesAssigned *_seperateLinesTableModel;
+  TableModelVariablesAssigned *_seperatePlotsTableModel;
+
+private slots:
+	void factorsChanging();
+	void factorsChanged();
+
 };
 
 #endif // LINEARMIXEDMODELSFORM_H

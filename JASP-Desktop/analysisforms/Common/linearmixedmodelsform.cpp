@@ -25,25 +25,116 @@ LinearMixedModelsForm::LinearMixedModelsForm(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	_availableVariablesModel.setVariableTypesSuggested(Column::ColumnTypeScale);
-	_availableVariablesModel.setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
-
 	ui->listAvailableFields->setModel(&_availableVariablesModel);
-	ui->listAvailableFields->setDoubleClickTarget(ui->variables);
 
-	TableModelVariablesAssigned *variablesModel = new TableModelVariablesAssigned(this);
-	variablesModel->setSource(&_availableVariablesModel);
-	variablesModel->setVariableTypesSuggested(Column::ColumnTypeScale);
-	variablesModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
-	ui->variables->setModel(variablesModel);
-	ui->variables->setDoubleClickTarget(ui->listAvailableFields);
-	ui->buttonAssign_main_fields->setSourceAndTarget(ui->listAvailableFields, ui->variables);
+	_dependentListModel = new TableModelVariablesAssigned(this);
+	_dependentListModel->setSource(&_availableVariablesModel);
+	_dependentListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+	_dependentListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+	ui->dependent->setModel(_dependentListModel);
 
-	// default
-	ui->subjectivePriors->hide();
+	_fixedFactorsListModel = new TableModelVariablesAssigned(this);
+	_fixedFactorsListModel->setSource(&_availableVariablesModel);
+	_fixedFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	_fixedFactorsListModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeNominalText | Column::ColumnTypeOrdinal);
+	ui->fixedFactors->setModel(_fixedFactorsListModel);
+
+	_fixedCovariatesListModel = new TableModelVariablesAssigned(this);
+	_fixedCovariatesListModel->setSource(&_availableVariablesModel);
+	_fixedCovariatesListModel->setVariableTypesSuggested(Column::ColumnTypeScale);
+	_fixedCovariatesListModel->setVariableTypesAllowed(Column::ColumnTypeScale | Column::ColumnTypeOrdinal | Column::ColumnTypeNominal);
+	ui->fixedCovariates->setModel(_fixedCovariatesListModel);
+
+	_randomFactorsListModel = new TableModelVariablesAssigned(this);
+	_randomFactorsListModel->setSource(&_availableVariablesModel);
+	_randomFactorsListModel->setVariableTypesSuggested(Column::ColumnTypeNominal | Column::ColumnTypeOrdinal);
+	_randomFactorsListModel->setVariableTypesAllowed(Column::ColumnTypeNominal | Column::ColumnTypeNominalText | Column::ColumnTypeOrdinal);
+	ui->randomFactors->setModel(_randomFactorsListModel);
+
+	ui->buttonAssignDependent->setSourceAndTarget(ui->listAvailableFields, ui->dependent);
+	ui->buttonAssignFixed->setSourceAndTarget(ui->listAvailableFields, ui->fixedFactors);
+	ui->buttonAssignRandom->setSourceAndTarget(ui->listAvailableFields, ui->randomFactors);
+
+	_anovaModel = new TableModelAnovaModel(this);
+	_anovaModel->setPiecesCanBeAssigned(false);
+	ui->betweenModelTerms->setModel(_anovaModel);
+
+	_plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
+	_plotFactorsAvailableTableModel->setInfoProvider(this);
+	ui->plotVariables->setModel(_plotFactorsAvailableTableModel);
+
+	_horizontalAxisTableModel = new TableModelVariablesAssigned(this);
+	_horizontalAxisTableModel->setSource(_plotFactorsAvailableTableModel);
+	ui->plotHorizontalAxis->setModel(_horizontalAxisTableModel);
+
+	_seperateLinesTableModel = new TableModelVariablesAssigned(this);
+	_seperateLinesTableModel->setSource(_plotFactorsAvailableTableModel);
+	ui->plotSeparateLines->setModel(_seperateLinesTableModel);
+
+	_seperatePlotsTableModel = new TableModelVariablesAssigned(this);
+	_seperatePlotsTableModel->setSource(_plotFactorsAvailableTableModel);
+	ui->plotSeparatePlots->setModel(_seperatePlotsTableModel);
+
+	ui->buttonAssignHorizontalAxis->setSourceAndTarget(ui->plotVariables, ui->plotHorizontalAxis);
+	ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
+	ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
+
+	ui->betweenModelTerms->hide();
+	ui->containerPostHocTests->hide();
+	ui->containerDescriptivesPlot->hide();
+	ui->advancedOptions->hide();
+
+	connect(_fixedFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+	connect(_fixedFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+	connect(_fixedFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addFixedFactors(Terms)));
+	connect(_fixedFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+
+	connect(_randomFactorsListModel, SIGNAL(assignmentsChanging()), this, SLOT(factorsChanging()));
+	connect(_randomFactorsListModel, SIGNAL(assignmentsChanged()), this, SLOT(factorsChanged()));
+	connect(_randomFactorsListModel, SIGNAL(assignedTo(Terms)), _anovaModel, SLOT(addRandomFactors(Terms)));
+	connect(_randomFactorsListModel, SIGNAL(unassigned(Terms)), _anovaModel, SLOT(removeVariables(Terms)));
+
 }
 
 LinearMixedModelsForm::~LinearMixedModelsForm()
 {
 	delete ui;
+}
+
+void LinearMixedModelsForm::bindTo(Options *options, DataSet *dataSet)
+{
+	AnalysisForm::bindTo(options, dataSet);
+
+	factorsChanging();
+
+	_anovaModel->setVariables(_fixedFactorsListModel->assigned(), _randomFactorsListModel->assigned());
+
+	factorsChanged();
+}
+
+void LinearMixedModelsForm::factorsChanging()
+{
+	if (_options != NULL)
+		_options->blockSignals(true);
+}
+
+void LinearMixedModelsForm::factorsChanged()
+{
+	Terms factorsAvailable;
+
+	factorsAvailable.add(_fixedFactorsListModel->assigned());
+	factorsAvailable.add(_randomFactorsListModel->assigned());
+
+	_plotFactorsAvailableTableModel->setVariables(factorsAvailable);
+
+	Terms plotVariablesAssigned;
+	plotVariablesAssigned.add(_horizontalAxisTableModel->assigned());
+	plotVariablesAssigned.add(_seperateLinesTableModel->assigned());
+	plotVariablesAssigned.add(_seperatePlotsTableModel->assigned());
+	_plotFactorsAvailableTableModel->notifyAlreadyAssigned(plotVariablesAssigned);
+
+	ui->postHocTestsVariables->setVariables(factorsAvailable);
+
+	if (_options != NULL)
+		_options->blockSignals(false);
 }
