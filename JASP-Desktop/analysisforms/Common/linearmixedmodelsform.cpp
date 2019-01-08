@@ -57,7 +57,7 @@ LinearMixedModelsForm::LinearMixedModelsForm(QWidget *parent) :
 
 	_anovaModel = new TableModelAnovaModel(this);
 	_anovaModel->setPiecesCanBeAssigned(false);
-	ui->betweenModelTerms->setModel(_anovaModel);
+	ui->randomEffectsTerms->setModel(_anovaModel);
 
 	_plotFactorsAvailableTableModel = new TableModelVariablesAvailable();
 	_plotFactorsAvailableTableModel->setInfoProvider(this);
@@ -79,7 +79,7 @@ LinearMixedModelsForm::LinearMixedModelsForm(QWidget *parent) :
 	ui->buttonAssignSeperateLines->setSourceAndTarget(ui->plotVariables, ui->plotSeparateLines);
 	ui->buttonAssignSeperatePlots->setSourceAndTarget(ui->plotVariables, ui->plotSeparatePlots);
 
-	ui->betweenModelTerms->hide();
+	ui->randomEffectsTerms->hide();
 	ui->containerPostHocTests->hide();
 	ui->containerDescriptivesPlot->hide();
 	ui->advancedOptions->hide();

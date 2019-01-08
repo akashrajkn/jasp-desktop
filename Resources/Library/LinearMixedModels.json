@@ -12,11 +12,49 @@
 			"type": "Variables"
 		},
 		{
+			"name": "fixedCovariates",
+			"type": "Variables"
+		},
+		{
 			"name": "randomFactors",
 			"type": "Variables"
 		},
 		{
-			"name": "modelTerms",
+			"name": "estimationREML",
+			"type": "Boolean"
+		},
+		{
+			"name": "confidenceIntervals",
+			"type": "Boolean"
+		},
+		{
+			"name": "confidenceIntervalsInterval",
+			"type": "Number",
+			"format": "%",
+			"max": 0.999,
+			"min": 0.000,
+			"value": 0.95
+		},
+		{
+			"name": "fixedEffectsModelTerms",
+			"template": [
+				{
+					"name": "components",
+					"type": "Term"
+				},
+				{
+					"name": "isNuisance",
+					"type": "Boolean"
+				}
+			],
+			"type": "Table"
+		},
+		{
+			"name": "fixedIntercept",
+			"type": "Boolean"
+		},
+		{
+			"name": "randomEffectsTerms",
 			"template": [
 				{
 					"name": "components",
@@ -49,9 +87,10 @@
 			"type": "Variables"
 		},
 		{
-			"name": "postHocTestsNullControl",
-			"type": "Boolean",
-			"default": true
+			"name": "postHocCorrection",
+			"options": [ "noCorrection", "bonferroni", "holm" ],
+			"default": "noCorrection",
+			"type": "List"
 		},
 		{
 			"name": "descriptives",
@@ -67,6 +106,18 @@
 		},
 		{
 			"name": "plotSeparatePlots",
+			"type": "Variable"
+		},
+		{
+			"name": "simpleEffectsVariable",
+			"type": "Variable"
+		},
+		{
+			"name": "moderator",
+			"type": "Variable"
+		},
+		{
+			"name": "breakingVariable",
 			"type": "Variable"
 		},
 		{
@@ -116,16 +167,12 @@
 			"type": "Boolean"
 		},
 		{
-			"options": [ "BF10", "BF01", "LogBF10" ],
-			"default": "BF10",
-			"name": "bayesFactorType",
-			"type": "List"
+			"name": "estimatedMarginalMeans",
+			"type": "Boolean"
 		},
 		{
-			"name": "bayesFactorOrder",
-			"options": [ "nullModelTop", "bestModelTop" ],
-			"default": "nullModelTop",
-			"type": "List"
+			"name": "includeCovariates",
+			"type": "Boolean"
 		},
 		{
 			"name": "posteriorEstimatesCredibleIntervalInterval",
@@ -134,27 +181,6 @@
 			"value": 0.95,
 			"min": 0.5,
 			"max": 0.999
-		},
-		{
-			"name": "posteriorEstimatesMCMCIterations",
-			"type": "Number",
-			"value": 10000,
-			"min": 1,
-			"max": 1000000
-		},
-		{
-			"name": "priorFixedEffects",
-			"type": "Number",
-			"value": 0.5,
-			"min": 0,
-			"max": 2
-		},
-		{
-			"name": "priorRandomEffects",
-			"type": "Number",
-			"value": 1,
-			"min": 0,
-			"max": 2
 		}
 	]
 }

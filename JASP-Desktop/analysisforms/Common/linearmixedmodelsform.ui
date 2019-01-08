@@ -359,48 +359,30 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="BoundAssignWidget" name="postHocTestsVariables" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>160</height>
-            </size>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_12"/>
-          </widget>
-         </item>
          <item row="1" column="0">
-          <widget class="GroupBox" name="groupPostHocOptions">
+          <widget class="BoundGroupBox" name="postHocCorrection">
            <property name="title">
             <string>Correction</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_37">
-            <item row="1" column="0">
-             <widget class="BoundCheckBox" name="postHocTestsBonferroni">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_19">
+            <item row="0" column="1" rowspan="3">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-              <property name="text">
-               <string>Bonferroni</string>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="BoundCheckBox" name="postHocTestsNoCorrection">
-              <property name="text">
-               <string>No correction</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
+             </spacer>
             </item>
             <item row="2" column="0">
-             <widget class="BoundCheckBox" name="postHocTestsHolm">
+             <widget class="QRadioButton" name="_6">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -412,18 +394,46 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="_4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="text">
+               <string>No correction</string>
               </property>
-             </spacer>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="_5">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Bonferroni</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="BoundAssignWidget" name="postHocTestsVariables" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>160</height>
+            </size>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_12">
+            <item row="2" column="0">
+             <widget class="QWidget" name="widget_4" native="true"/>
             </item>
            </layout>
           </widget>
@@ -491,7 +501,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="AnovaModelWidget" name="betweenModelTerms" native="true">
+          <widget class="AnovaModelWidget" name="randomEffectsTerms" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -960,7 +970,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="AnovaModelWidget" name="betweenModelTerms_2" native="true">
+          <widget class="AnovaModelWidget" name="fixedEffectsModelTerms" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -972,6 +982,13 @@
              <width>0</width>
              <height>140</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="BoundCheckBox" name="fixedIntercept">
+           <property name="text">
+            <string>Fixed intercept</string>
            </property>
           </widget>
          </item>
@@ -1692,7 +1709,7 @@
              </widget>
             </item>
             <item>
-             <widget class="BoundTextBox" name="interval">
+             <widget class="BoundTextBox" name="confidenceIntervalsInterval">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
