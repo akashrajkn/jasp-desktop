@@ -196,6 +196,17 @@
 					"function":	"LinearMixedModels"
 				}
 			]
+		},
+		{
+			"title":	"Teach Bayes",
+			"icon":		"analysis-descriptives.svg",
+			"analyses":
+			[
+				{
+					"title":	"Teach Bayes",
+					"function":	"TeachBayes"
+				}
+			]
 		}
 	]
 }
