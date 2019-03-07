@@ -29,7 +29,26 @@ Form
 	Group
 	{
 		IntegerField { name: "k";	label: qsTr("k")	}
-		IntegerField { name: "n";	label: qsTr("n")		}
+		IntegerField { name: "n";	label: qsTr("n")	}
+	}
+
+	Group
+	{
+		title	: qsTr("Prior Plots")
+
+		CheckBox	{ name: "plotPriorModelProbabilities";	label: qsTr("Prior model probabilities")	}
+		CheckBox
+		{
+			name	: "plotPriorPredictiveFit"
+			label	: qsTr("Prior predictive fit")
+			PercentField
+			{
+				name			: "plotPriorPredictiveFitN";
+				label			: qsTr("n")
+				defaultValue	: 1
+				showPercent		: false
+			}
+		}
 	}
 
 	Divider { }
@@ -52,7 +71,6 @@ Form
 	}
 
 	BayesFactorType { }
-
 
 	Group
 	{

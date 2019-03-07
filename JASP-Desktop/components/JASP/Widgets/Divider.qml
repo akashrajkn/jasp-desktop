@@ -22,23 +22,28 @@ import QtQuick.Layouts 1.3
 import JASP.Theme 1.0
 
 
-ColumnLayout {
-    spacing: 5
-	Layout.columnSpan: parent.columns
-    implicitHeight: 2
-    implicitWidth: parent.width
-    property alias label: textLabel.text
+ColumnLayout
+{
+	spacing				: 5
+	implicitHeight		: 2
+	implicitWidth		: parent.width
+	Layout.columnSpan	: parent.columns
 
-    Rectangle {
-        border.width: 1
-        implicitHeight: parent.implicitHeight
-        implicitWidth: parent.implicitWidth
-        border.color: Theme.black
-    }
-    Text {
-        id: textLabel
-        visible: text !== ''
-        horizontalAlignment: Text.AlignHCenter
-        font.bold: true
-    }
+	property alias label: textLabel.text
+
+	Rectangle
+	{
+		implicitHeight	: parent.implicitHeight
+		implicitWidth	: parent.implicitWidth
+		border.width	: 1
+		border.color	: Theme.black
+	}
+
+	Text
+	{
+		id					: textLabel
+		visible				: text !== ''
+		horizontalAlignment	: Text.AlignHCenter
+		font.bold			: true
+	}
 }
