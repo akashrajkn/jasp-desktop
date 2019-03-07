@@ -37,7 +37,7 @@ Rectangle
 				height: loaderAndError.y + loaderAndError.height
 			}
 			PropertyChanges {
-				target: expanderIcon	
+				target: expanderIcon
 				rotation: 90
 			}
 		}
@@ -79,7 +79,7 @@ Rectangle
 			}
 			height:			expanderRectangle.height / 3.5
 			width:			height
-			contextType:	"2d"	
+			contextType:	"2d"
 			onPaint:
 			{
 				context.reset();
@@ -91,7 +91,7 @@ Rectangle
 				context.fill();
 			}
 		}
-		
+
 		Text
 		{
 			id:			label
@@ -150,7 +150,7 @@ Rectangle
 	{
 		id:		loaderAndError
 		height:	Math.max(loader.height, errorRect.height * preferencesModel.uiScale)
-		
+
 		anchors
 		{
 			top:				expanderRectangle.bottom
@@ -163,11 +163,11 @@ Rectangle
 		{
 			id: errorRect
 			visible:		loader.status === Loader.Error
-			anchors.top:	parent.top			
+			anchors.top:	parent.top
 			color:			Theme.errorMessagesBackgroundColor
 			width:			parent.width
 			height:			visible ? errorMessagesText.height : 0
-			
+
 			Text
 			{
 				id:					errorMessagesText
@@ -179,14 +179,14 @@ Rectangle
 				wrapMode: Text.Wrap
 			}
 		}
-		
-	
+
+
 		Loader
 		{
 			id:					loader
 			source:				!expanderButton.imploded || expanderButton.expanded ? formQmlUrl : ""
 			asynchronous:		false // makes it slow when true
-	
+
 			property int		myIndex:			-1
 			property int		myID:				-1
 			property string		analysisTitle:		"???"
