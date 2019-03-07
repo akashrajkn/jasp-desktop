@@ -186,18 +186,6 @@
 		{
 		},
 		{
-			"title":	"Mixed Models",
-			"debug":	true,
-			"icon":		"analysis-classical-sem.svg",
-			"analyses":
-			[
-				{
-					"title":	"Linear Mixed Models",
-					"function":	"LinearMixedModels"
-				}
-			]
-		},
-		{
 			"title":	"Teach Bayes",
 			"icon":		"analysis-descriptives.svg",
 			"analyses":
