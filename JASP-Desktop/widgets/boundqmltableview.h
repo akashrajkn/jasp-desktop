@@ -30,24 +30,24 @@
 class BoundQMLTableView : public QMLListView, public BoundQMLItem
 {
 	Q_OBJECT
-
+	
 public:
 	BoundQMLTableView(QQuickItem* item, AnalysisForm* form);
 	virtual void bindTo(Option *option) OVERRIDE;
-
+	
 	virtual ListModel* model() OVERRIDE		{ return _tableModel; }
-
+	
 	virtual Option* createOption() OVERRIDE;
-	virtual bool isOptionValid(Option* option) OVERRIDE;
+	virtual bool isOptionValid(Option* option) OVERRIDE;	
 	virtual Option* boundTo() OVERRIDE { return _boundTo; }
 	virtual void setUp() OVERRIDE;
 
-
+    
 protected:
 	OptionsTable *_boundTo;
 	ListModel *_tableModel = nullptr;
 	ListModelMultinomialChi2Test *_multinomialChi2TestModel = nullptr;
-
+	
 private slots:
 	void addColumnSlot();
 	void removeColumnSlot(int col);
