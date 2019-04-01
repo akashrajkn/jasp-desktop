@@ -434,14 +434,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		/*
 			TODO:
-				1. Change background color
-					.ql-contianer.ql-snow{
-						background-color: #f5f6f6
-					}
-				2. Remove borders
-					.ql-snow{
-						border: "none"
-					}
 				3. Fix Font size option
 				4. Add close button, to remove note
 		*/

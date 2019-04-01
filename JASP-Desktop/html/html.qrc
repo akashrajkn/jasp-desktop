@@ -22,9 +22,11 @@
         <file>js/jquery-1.9.1.js</file>
         <file>js/jquery-ui-1.10.1.custom.js</file>
         <file>js/jquery-ui-1.10.1.custom.min.js</file>
+        <file>js/quill.js</file>
         <file>js/table.js</file>
         <file>js/utils.js</file>
         <file>css/theme-jasp.css</file>
+        <file>css/quill.snow.css</file>
         <file>css/images/copy.png</file>
         <file>css/images/running.gif</file>
         <file>css/images/waiting.gif</file>
