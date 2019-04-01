@@ -432,27 +432,68 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		// 	}
 		// }
 
+		/*
+			TODO:
+				1. Change background color
+					.ql-contianer.ql-snow{
+						background-color: #f5f6f6
+					}
+				2. Remove borders
+					.ql-snow{
+						border: "none"
+					}
+				3. Fix Font size option
+				4. Add close button, to remove note
+		*/
+
 		var toolbarOptions = [
-			['bold', 'italic', 'underline', 'link', 'image'],        // toggled buttons
+			['bold', 'italic', 'underline', 'image'],
 			['blockquote', 'code-block'],
-
+			// [{ 'size': ['small', false, 'large', 'huge'] }],
 			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-			[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-			[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+			[{ 'script': 'sub'}, { 'script': 'super' }],
+			[{ 'indent': '-1'}, { 'indent': '+1' }],
+			[{ 'header': [1, 2, 3, 4, false] }],
+			[{ 'color': [] }, { 'background': [] }],
+			[{ 'font': [] }, { 'align': [] }],
 
-			[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-			[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-			[{ 'font': [] }],
-			[{ 'align': [] }],
-
-			['clean']                                         // remove formatting button
+			['clean']
 		];
 
-		var quill = new Quill('#editor', {
+		let targetDiv = document.getElementById(this.id).getElementsByClassName('editor')[0]
+		let quill = new Quill(targetDiv, {
 			modules: {
 				toolbar: toolbarOptions
 			},
 			theme: 'snow'
+		});
+		quill['analysis-id'] = this.id;
+
+		let toolbar = document.getElementById(this.id).getElementsByClassName('ql-toolbar')[0];
+		toolbar.style.display = 'none';  // hide by default
+
+		quill.on('selection-change', function(range, oldRange, source) {
+
+			let toolbar = document.getElementById(quill['analysis-id']).getElementsByClassName('ql-toolbar')[0];
+			if (range) {
+
+				if (range.length == 0) {
+					toolbar.style.display = "block";
+					console.log('User cursor is on', range.index);
+				} else {
+					toolbar.style.display = "block";
+					let text = quill.getText(range.index, range.length);
+					console.log('User has highlighted', text);
+				}
+			} else {
+
+				console.log('Cursor not in the editor');
+				var expandedElements = toolbar.getElementsByClassName('ql-expanded');
+
+				if (expandedElements === undefined || expandedElements.length === 0) {
+					toolbar.style.display = "none";
+				}
+			}
 		});
 
 		return true;
@@ -660,7 +701,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		$innerElement.empty();
 
 		// For Quill js
-		$innerElement.append('<div id="editor"> </div>')
+		$innerElement.append('<div class="editor"> </div>')
 
 		if (!results.error) {
 			$innerElement.removeClass("error-state");

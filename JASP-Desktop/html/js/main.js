@@ -372,6 +372,7 @@ $(document).ready(function () {
 		if (showInstructions)
 			$instructions.fadeIn(400, "easeOutCubic")
 
+		// probably change something here
 		var id = "id-" + analysis.id
 
 		var spacer = $("#spacer")
