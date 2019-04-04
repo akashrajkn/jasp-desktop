@@ -440,14 +440,13 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		var toolbarOptions = [
 			['bold', 'italic', 'underline', 'image'],
-			['blockquote', 'code-block'],
 			// [{ 'size': ['small', false, 'large', 'huge'] }],
-			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-			[{ 'script': 'sub'}, { 'script': 'super' }],
-			[{ 'indent': '-1'}, { 'indent': '+1' }],
 			[{ 'header': [1, 2, 3, 4, false] }],
+			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
 			[{ 'color': [] }, { 'background': [] }],
-			[{ 'font': [] }, { 'align': [] }],
+			[{ 'script': 'sub'}, { 'script': 'super' }],
+			['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
+			// [{ 'font': [] }, { 'align': [] }],
 
 			['clean']
 		];
