@@ -99,8 +99,9 @@ Item
 						height	: Theme.menuItemHeight
 						color	: mouseArea.pressed ? Theme.buttonColorPressed : mouseArea.containsMouse ? Theme.buttonColorHovered : "transparent"
 
-						property double initWidth: (menu.hasIcons ? menuItemImage.width : 0) + menuItemText.implicitWidth + (menu.hasIcons ? 15 : 10) * preferencesModel.uiScale
-						// 15 = menuItemImage.leftMargin + menuItemText.leftMargin + menuItemText.rightMargin + menuItemImage.smallerBy
+						property double initWidth: (menu.hasIcons ? menuItemImage.width : 0) + menuItemText.implicitWidth + (menu.hasIcons ? 5 : 4) * menu._iconPad
+						// 5 * _iconPad: 2 menuItemImage.leftMargin + 2 menuItemText.rightMargin + 1 menuItemText.leftMargin
+						// 4 * _iconPad: 2 menuItemText.leftMargin  + 2 menuItemText.rightMargin
 
 						Image
 						{
@@ -115,7 +116,7 @@ Item
 							fillMode				: Image.PreserveAspectFit
 
 							anchors.left			: parent.left
-							anchors.leftMargin		: menu._iconPad
+							anchors.leftMargin		: menu._iconPad * 2
 							anchors.verticalCenter	: parent.verticalCenter
 						}
 
@@ -128,7 +129,8 @@ Item
 							verticalAlignment	: Text.AlignVCenter
 
 							anchors.left		: menu.hasIcons ? menuItemImage.right : parent.left
-							anchors.leftMargin	: menu._iconPad
+							anchors.leftMargin	: (menu.hasIcons ? 1 : 2) * menu._iconPad
+							anchors.rightMargin	: menu._iconPad * 2
 						}
 
 						MouseArea
@@ -150,7 +152,7 @@ Item
 						width	: initWidth
 						height	: Theme.menuGroupTitleHeight
 
-						property double initWidth: menuItemImage.width + menuItemText.implicitWidth + 15 * preferencesModel.uiScale
+						property double initWidth: menuItemImage.width + menuItemText.implicitWidth + 5 * menu._iconPad * preferencesModel.uiScale
 
 
 						Image
@@ -166,17 +168,17 @@ Item
 							fillMode				: Image.PreserveAspectFit
 
 							anchors.left			: parent.left
-							anchors.leftMargin		: menu._iconPad
+							anchors.leftMargin		: menu._iconPad * 2
 							anchors.verticalCenter	: parent.verticalCenter
 						}
 
 						Text
 						{
-							id					: menuItemText
-							text				: displayText
-							font				: Theme.fontGroupTitle
-							anchors.left		: menuImageSource ? menuItemImage.right : menuItem.left
-							anchors.leftMargin	: menu._iconPad
+							id						: menuItemText
+							text					: displayText
+							font					: Theme.fontGroupTitle
+							anchors.left			: menuImageSource ? menuItemImage.right : menuItem.left
+							anchors.leftMargin		: menu._iconPad
 							anchors.verticalCenter	: parent.verticalCenter
 						}
 					}
