@@ -12,11 +12,14 @@
 		"dynamic"        : false
 	},
 
+	"requiredPackages": [],
+
 	"menu":
 	[
 		{
 			"title":	"Linear Mixed Models",
-			"function":	"LinearMixedModels"
+			"function":	"LinearMixedModels",
+			"qml": "LinearMixedModels.qml"
 		}
 	]
 }

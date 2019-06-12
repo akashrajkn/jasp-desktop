@@ -33,10 +33,11 @@ JASPControl
 	height:				singleVariable ? Theme.defaultSingleItemListHeight : Theme.defaultVariablesFormHeight
 	implicitHeight:		height
 	useControlMouseArea:	false
-	
+
 	property var	model
 	property string title
 	property alias	label:				variablesList.title
+	property alias	titleHeight:		text.height
 	property alias	count:				listView.count
 	property int	columns:			1
 	property string itemType:			"variables"
@@ -60,18 +61,18 @@ JASPControl
 	property bool	setHeightInForm:	false
 	property bool	mustContainLowerTerms: true
 	property bool	addAvailableVariablesToAssigned: listViewType === "Interaction"
-	
+
 	property var	interactionControl
 	property bool	addInteractionOptions:	false
-	
+
 	property var	extraControlColumns:		[]
 	property string extraControlOptionName:		""
 	property alias	extraControlTitles:	titles.model
-	
+
 	property int	indexInDroppedListViewOfDraggedItem:	-1
-	
+
 	readonly property int rectangleY: rectangle.y
-	
+
 	signal itemDoubleClicked(int index);
 	signal itemsDropped(var indexes, var dropList, int dropItemIndex, string assignOption);
 	signal hasSelectedItemsChanged();
@@ -99,19 +100,19 @@ JASPControl
 	function moveSelectedItems(target)
 	{
 		if (listView.selectedItems.length === 0) return;
-		
+
 		var assignOption = target.interactionControl ? target.interactionControl.model.get(target.interactionControl.currentIndex).value : ""
 		itemsDropped(selectedItems, target, -1, assignOption);
 		listView.clearSelectedItems(true);
 	}
-	
+
 	DropArea
 	{
 		id: dropArea
 		anchors.fill: parent
-		
+
 		property bool canDrop: containsDrag && (variablesList.allowedColumns.length === 0 || variablesList.allowedColumns.indexOf(drag.source.columnType) >=0 )
-		
+
 		onPositionChanged:
 		{
 			if (variablesList.singleVariable || (!variablesList.dropModeInsert && !variablesList.dropModeReplace)) return;
@@ -120,7 +121,7 @@ JASPControl
 			{
 				itemIndex = itemIndex * 2 + Math.floor(drag.x / listView.cellWidth);
 			}
-			
+
 			if (itemIndex >= 0 && itemIndex < listView.contentItem.children.length)
 			{
 				var item = listView.contentItem.children[itemIndex].children[0];
@@ -145,7 +146,7 @@ JASPControl
 			variablesList.indexInDroppedListViewOfDraggedItem = -1
 		}
 	}
-	
+
 	Text
 	{
 		id:				text
@@ -155,9 +156,9 @@ JASPControl
 		height:			title ? Theme.variablesListTitle : 0
 		font:			Theme.font
 		color:			enabled ? Theme.textEnabled : Theme.textDisabled
-		
+
 	}
-	
+
 	Row
 	{
 		width:				parent.width
@@ -170,7 +171,7 @@ JASPControl
 			Label { text: modelData }
 		}
 	}
-	
+
 	Rectangle
 	{
 		id:				rectangle
@@ -181,7 +182,7 @@ JASPControl
 		color:			debug ? Theme.debugBackgroundColor : Theme.controlBackgroundColor
 		border.width:	1
 		border.color:	dropArea.canDrop ? Theme.containsDragBorderColor : Theme.borderColor
-		
+
 		states: [
 			State
 			{
@@ -215,7 +216,7 @@ JASPControl
 				}
 			}
 		}
-		
+
 		Component.onCompleted:
 		{
 			var mySuggestedColumns = []
@@ -252,7 +253,7 @@ JASPControl
 			}
 			suggestedColumns = mySuggestedColumns.concat()
 			allowedColumns = myAllowedColumns.concat()
-			
+
 			var length = variablesList.resources.length
 			for (var i = length - 1; i >= 0; i--)
 			{
@@ -278,7 +279,7 @@ JASPControl
 				margins:	2
 			}
 		}
-		
+
 		GridView
 		{
 			id:						listView
@@ -292,7 +293,7 @@ JASPControl
 			model:					variablesList.model
 			delegate:				itemComponent
 			boundsBehavior:			Flickable.StopAtBounds
-			
+
 			property int startShiftSelected: 0;
 			property int endShiftSelected: -1;
 			property var selectedItems: [];
@@ -300,7 +301,7 @@ JASPControl
 			property bool shiftPressed: false;
 			property var itemContainingDrag
 			property var draggingItems: []
-			
+
 			onCurrentItemChanged:
 			{
 				if (shiftPressed)
@@ -323,7 +324,7 @@ JASPControl
 					}
 				}
 			}
-			
+
 			Keys.onPressed:
 			{
 				if (event.modifiers & Qt.ShiftModifier || event.key === Qt.Key_Shift)
@@ -331,13 +332,13 @@ JASPControl
 				else
 					shiftPressed = false;
 			}
-			
+
 			Keys.onReleased:
 			{
 				if (event.modifiers & Qt.ShiftModifier || event.key === Qt.Key_Shift)
 					shiftPressed = false;
 			}
-			
+
 			Keys.onSpacePressed:
 			{
 				moveSelectedItems()
@@ -362,17 +363,17 @@ JASPControl
 
 				return items;
 			}
-			
+
 			function addSelectedItem(itemRank)
 			{
 				if (selectedItems.includes(itemRank))
 					return;
-				
+
 				selectedItems.push(itemRank);
 				selectedItems.sort();
 				variablesList.setSelectedItems()
 			}
-			
+
 			function removeSelectedItem(itemRank)
 			{
 				var index = selectedItems.indexOf(itemRank)
@@ -382,14 +383,14 @@ JASPControl
 					variablesList.setSelectedItems()
 				}
 			}
-			
+
 			function clearSelectedItems(emitSignal)
 			{
 				selectedItems = [];
 				if (emitSignal)
 					variablesList.setSelectedItems()
 			}
-			
+
 			function selectShiftItems(selected)
 			{
 				var startIndex = listView.startShiftSelected;
@@ -423,7 +424,7 @@ JASPControl
 			}
 		}
 	}
-	
+
 	Component
 	{
 		id: itemComponent
@@ -433,7 +434,7 @@ JASPControl
 			id:			itemWrapper
 			height:		listView.cellHeight
 			width:		listView.cellWidth
-			
+
 			Rectangle
 			{
 				id:							itemRectangle
@@ -447,8 +448,8 @@ JASPControl
 				focus:			true
 				border.width:	containsDragItem && variablesList.dropModeReplace ? 2 : (variablesList.showElementBorder ? 1 : 0)
 				border.color:	containsDragItem && variablesList.dropModeReplace ? Theme.containsDragBorderColor : Theme.grayLighter
-				
-				
+
+
 				property bool clearOtherSelectedItemsWhenClicked: false
 				property bool selected:				listView.selectedItems.includes(rank)
 				property bool dragging:				false
@@ -464,13 +465,13 @@ JASPControl
 				property var extraColumnsModel:		model.extraColumns
 
 				enabled: variablesList.listViewType != "AvailableVariables" || !columnType || variablesList.allowedColumns.length == 0 || (variablesList.allowedColumns.indexOf(columnType) >= 0)
-				
+
 				function setRelative(draggedRect)
 				{
 					x = Qt.binding(function (){ return draggedRect.x + offsetX; })
 					y = Qt.binding(function (){ return draggedRect.y + offsetY; })
 				}
-				
+
 				color:
 				{
 					if (!itemRectangle.draggable)											return Theme.controlBackgroundColor;
@@ -483,12 +484,12 @@ JASPControl
 				Drag.active:	mouseArea.drag.active
 				Drag.hotSpot.x:	itemRectangle.width / 2
 				Drag.hotSpot.y:	itemRectangle.height / 2
-				
+
 				// Use the ToolTip Attached property to avoid creating ToolTip object for each item
 				QTCONTROLS.ToolTip.visible: mouseArea.containsMouse && model.name && !itemRectangle.containsDragItem
 				QTCONTROLS.ToolTip.delay: 300
 				QTCONTROLS.ToolTip.text: model.name
-				
+
 				Rectangle
 				{
 					height:		2
@@ -496,7 +497,7 @@ JASPControl
 					color:		Theme.red
 					visible:	itemRectangle.containsDragItem && variablesList.dropModeInsert
 				}
-				
+
 				Image
 				{
 					id:						icon
@@ -518,7 +519,7 @@ JASPControl
 					color:					!enabled ? Theme.textDisabled : itemRectangle.isVirtual ? Theme.grayLighter : (itemRectangle.color === Theme.itemSelectedColor ? Theme.white : Theme.black)
 					font:					Theme.font
 				}
-				
+
 				RowLayout
 				{
 					anchors.verticalCenter:	parent.verticalCenter
@@ -526,13 +527,13 @@ JASPControl
 					anchors.rightMargin:	10  * preferencesModel.uiScale
 					spacing:				1
 					z:						10
-					
+
 					layoutDirection: Qt.RightToLeft
-					
+
 					Repeater
 					{
 						model: itemRectangle.extraColumnsModel
-						
+
 						delegate: Loader
 						{
 							sourceComponent: model.type === "CheckBox" ? extraCheckBoxComponent :
@@ -551,7 +552,7 @@ JASPControl
 						}
 					}
 				}
-				
+
 				states: [
 					State
 					{
@@ -574,7 +575,7 @@ JASPControl
 						}
 					}
 				]
-				
+
 				MouseArea
 				{
 					id: mouseArea
@@ -582,7 +583,7 @@ JASPControl
 					drag.target:	parent
 					hoverEnabled:	true
 					cursorShape:	Qt.PointingHandCursor
-					
+
 					onDoubleClicked:
 					{
 						if (itemRectangle.draggable)
@@ -591,7 +592,7 @@ JASPControl
 							itemDoubleClicked(index);
 						}
 					}
-					
+
 					onClicked:
 					{
 						if (itemRectangle.clearOtherSelectedItemsWhenClicked)
@@ -600,7 +601,7 @@ JASPControl
 							listView.addSelectedItem(itemRectangle.rank)
 						}
 					}
-					
+
 					onPressed:
 					{
 						listView.mousePressed = true
@@ -634,7 +635,7 @@ JASPControl
 							{
 								itemRectangle.clearOtherSelectedItemsWhenClicked = true;
 							}
-							
+
 							listView.startShiftSelected = index;
 							listView.endShiftSelected = -1;
 						}
@@ -643,7 +644,7 @@ JASPControl
 					{
 						listView.mousePressed = false;
 					}
-					
+
 					drag.onActiveChanged:
 					{
 						if (drag.active)
@@ -671,7 +672,7 @@ JASPControl
 									}
 								}
 							}
-							
+
 						}
 						else
 						{
@@ -690,7 +691,7 @@ JASPControl
 								var dropTarget = itemRectangle.Drag.target.parent
 								if (dropTarget.singleVariable && listView.selectedItems.length > 1)
 									return;
-								
+
 								var variablesListName = variablesList.name
 								var assignOption = dropTarget.interactionControl ? dropTarget.interactionControl.model.get(dropTarget.interactionControl.currentIndex).value : ""
 								itemsDropped(listView.selectedItems, dropTarget, dropTarget.indexInDroppedListViewOfDraggedItem, assignOption);

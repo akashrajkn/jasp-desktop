@@ -58,7 +58,7 @@ AnalysisForm::AnalysisForm(QQuickItem *parent) : QQuickItem(parent)
 	setObjectName("AnalysisForm");
 	_options = nullptr;
 	_dataSet = nullptr;
-	
+
 	connect(this, &AnalysisForm::formCompleted, this, &AnalysisForm::formCompletedHandler);
 }
 
@@ -112,7 +112,7 @@ void AnalysisForm::_cleanUpForm()
 }
 
 void AnalysisForm::runScriptRequestDone(const QString& result, const QString& controlName)
-{	
+{
 	BoundQMLItem* item = dynamic_cast<BoundQMLItem*>(getControl(controlName));
 	if (item)
 		item->rScriptDoneHandler(result);
@@ -192,6 +192,13 @@ void AnalysisForm::_parseQML()
 			break;
 		}
 		case qmlControlType::RepeatedMeasuresFactorsList:
+		{
+			BoundQMLRepeatedMeasuresFactors* factorList = new BoundQMLRepeatedMeasuresFactors(quickItem, this);
+			control = factorList;
+			_modelMap[controlName] = factorList->model();
+			break;
+		}
+		case qmlControlType::RandomEffectsGroupingFactors:
 		{
 			BoundQMLRepeatedMeasuresFactors* factorList = new BoundQMLRepeatedMeasuresFactors(quickItem, this);
 			control = factorList;
@@ -298,7 +305,7 @@ void AnalysisForm::_setUpRelatedModels(const map<QString, QString>& relationMap)
 		}
 		else
 			_errorMessages.append(QString::fromLatin1("Cannot find a ListView for ") + (!sourceModel ? pair.first : pair.second));
-	}	
+	}
 }
 
 void AnalysisForm::_setUpItems()
@@ -329,15 +336,15 @@ void AnalysisForm::_setUpItems()
 			index++;
 		}
 	}
-	std::sort(controls.begin(), controls.end(), 
-			  [](QMLItem* a, QMLItem* b) { 
-					return a->depends().length() < b->depends().length(); 
+	std::sort(controls.begin(), controls.end(),
+			  [](QMLItem* a, QMLItem* b) {
+					return a->depends().length() < b->depends().length();
 			});
 
 	for (QMLItem* control : controls)
 	{
 		_orderedControls.push_back(control);
-	}	
+	}
 }
 
 void AnalysisForm::addListView(QMLListView* listView, const map<QString, QString>& relationMap)
@@ -403,7 +410,7 @@ void AnalysisForm::_setAllAvailableVariablesModel(bool refreshAssigned)
 			QMLListViewTermsAvailable* qmlAvailableListView = dynamic_cast<QMLListViewTermsAvailable*>(model->listView());
 			if (qmlAvailableListView)
 			{
-				const QList<ListModelAssignedInterface*>& assignedModels = qmlAvailableListView->assignedModel();	
+				const QList<ListModelAssignedInterface*>& assignedModels = qmlAvailableListView->assignedModel();
 				for (ListModelAssignedInterface* modelAssign : assignedModels)
 					modelAssign->refresh();
 			}
@@ -422,9 +429,9 @@ void AnalysisForm::bindTo()
 	QVector<ListModelAvailableInterface*> availableModelsToBeReset;
 
 	_options->blockSignals(true);
-	
-	_setAllAvailableVariablesModel();	
-	
+
+	_setAllAvailableVariablesModel();
+
 	for (QMLItem* control : _orderedControls)
 	{
 		BoundQMLItem* boundControl = dynamic_cast<BoundQMLItem*>(control);
@@ -497,7 +504,7 @@ void AnalysisForm::bindTo()
 
 	for (ListModelAvailableInterface* availableModel : availableModelsToBeReset)
 		availableModel->resetTermsFromSourceModels(true);
-	
+
 	_options->blockSignals(false, false);
 }
 
@@ -505,7 +512,7 @@ void AnalysisForm::unbind()
 {
 	if (_options == nullptr)
 		return;
-	
+
 	for (QMLItem* control : _orderedControls)
 	{
 		BoundQMLItem* boundControl = dynamic_cast<BoundQMLItem*>(control);
@@ -549,5 +556,3 @@ void AnalysisForm::dataSetChanged()
 		_setAllAvailableVariablesModel(true);
 	}
 }
-
-

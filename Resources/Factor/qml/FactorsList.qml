@@ -4,20 +4,32 @@ import JASP.Theme 1.0
 
 JC.VariablesList
 {
-	property alias editableTitle: titleField.value
+	property string editableTitle
+	// property alias editableTitle: titleField.value
 	signal titleIsChanged()
 	title: " " //dummy
 
-    JC.TextField 
-    {
+	JC.Label
+	{
 		id: titleField
-		isBound: false
-        anchors.top: parent.top
+		// isBound: false
+		anchors.top: parent.top
         anchors.left: parent.left
         height: text.height
-        fieldWidth: parent.width
-    }
+		text: "Hello component"
+        // fieldWidth: parent.width
+	}
 
-	Component.onCompleted: titleField.editingFinished.connect(titleIsChanged);
+    // JC.TextField
+    // {
+	// 	id: titleField
+	// 	isBound: false
+    //     anchors.top: parent.top
+    //     anchors.left: parent.left
+    //     height: text.height
+    //     fieldWidth: parent.width
+    // }
+	//
+	// Component.onCompleted: titleField.editingFinished.connect(titleIsChanged);
 
 }

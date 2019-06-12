@@ -794,7 +794,7 @@ void MainWindow::dataSetIORequestHandler(FileEvent *event)
 			event->setComplete();
 			dataSetIOCompleted(event);
 		}
-		
+
 		_resultsJsInterface->resetResults();
 		setDataPanelVisible(false);
 		setDataAvailable(false);
