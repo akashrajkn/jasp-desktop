@@ -25,6 +25,10 @@
 		{
 			"title":	"Confirmatory Factor Analysis",
 			"function":	"ConfirmatoryFactorAnalysis"
+		},
+		{
+			"title":	"Linear Mixed Models",
+			"function":	"LinearMixedModels"
 		}
 	]
 }

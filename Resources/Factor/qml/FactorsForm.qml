@@ -21,7 +21,7 @@ JASPControl
     property bool   allowAll: false
 	property int	initNumberFactors: 1
 	property int    listWidth:			parent.width * 2 / 5
-    property int    factorListHeight: (Theme.defaultVariablesFormHeight - factorButtons.height) / 3 - factorsFormColumn.spacing 
+    property int    factorListHeight: (Theme.defaultVariablesFormHeight - factorButtons.height) / 3 - factorsFormColumn.spacing
 
 	signal titleChanged(int index, string title);
 	signal factorAdded(int index, var item);
@@ -35,16 +35,16 @@ JASPControl
 		anchors.top:	parent.top
 		anchors.left:	parent.left
     }
-    
-    Column 
+
+    Column
     {
         id:             factorsFormColumn
-        spacing:        10 
+        spacing:        10
         width:          parent.width * 3 / 5
 		anchors.top:	parent.top
 		anchors.right:	parent.right
-        
-        Repeater 
+
+        Repeater
         {
             id: factorsFormRepeater
 			model: factorsForm.model
@@ -59,7 +59,7 @@ JASPControl
 					leftSource:         factorsForm.availableVariablesList
 					rightSource:        factorList
                 }
-                SEM.FactorsList 
+                SEM.FactorsList
                 {
 					id:					factorList
 					name:               factorName
@@ -82,49 +82,49 @@ JASPControl
 					}
                 }
             }
-            
+
         }
 
-        Row 
+        Row
         {
             id:             factorButtons
             anchors.right:  parent.right
             spacing:        10
 
-            Button 
-            { 
-                name: "add"; 
+            Button
+            {
+                name: "add";
                 text: qsTr("+")
-                control.width: height 
+                control.width: height
                 width: control.width
-                onClicked: addFactor() 
+                onClicked: addFactor()
             }
-            Button 
-            { 
-                name: "remove"; 
-                text: qsTr("-") 
-                control.width: height 
+            Button
+            {
+                name: "remove";
+                text: qsTr("-")
+                control.width: height
                 width: control.width
-                onClicked: removeFactor() ; 
+                onClicked: removeFactor() ;
                 enabled: factorsFormRepeater.count > 1
             }
         }
-        
+
     }
 
-    function addFactor() 
+    function addFactor()
     {
 		model.addFactor()
         factorsForm.calculateHeight()
     }
 
-    function removeFactor() 
+    function removeFactor()
     {
 		model.removeFactor()
         factorsForm.calculateHeight()
     }
 
-    function calculateHeight() 
+    function calculateHeight()
     {
         if (factorsFormRepeater.count > 3) {
             factorsForm.height = Theme.defaultVariablesFormHeight + (factorsFormRepeater.count - 3) * (factorsForm.factorListHeight + factorsFormColumn.spacing)
@@ -132,5 +132,5 @@ JASPControl
             factorsForm.height = Theme.defaultVariablesFormHeight
         }
     }
-    
+
 }

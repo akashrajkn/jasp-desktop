@@ -8,7 +8,7 @@ JC.VariablesList
 	signal titleIsChanged()
 	title: " " //dummy
 
-    JC.TextField 
+    JC.TextField
     {
 		id: titleField
 		isBound: false
@@ -16,6 +16,13 @@ JC.VariablesList
         anchors.left: parent.left
         height: text.height
         fieldWidth: parent.width
+    }
+
+    JC.ExtraControlColumn {
+        type: "CheckBox"
+        name: "isNuisance"
+        title: qsTr("Add to null model")
+        purpose: "nuisance"
     }
 
 	Component.onCompleted: titleField.editingFinished.connect(titleIsChanged);
