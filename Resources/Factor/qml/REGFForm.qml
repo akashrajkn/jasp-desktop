@@ -21,7 +21,7 @@ JASPControl
 	property bool   allowAll: false
 	property int	initNumberFactors: 1
 	property int    listWidth:			parent.width * 2 / 5
-	property int    factorListHeight: (Theme.defaultVariablesFormHeight) / 3 - factorsFormColumn.spacing
+	property int    factorListHeight: Theme.defaultSingleItemListHeight * 2
 
 	signal titleChanged(int index, string title);
 	signal factorAdded(int index, var item);
@@ -105,7 +105,7 @@ JASPControl
 					hasSelectedItemsChanged.connect(button2.setState);
 					availableVariablesList.hasSelectedItemsChanged.connect(button2.setState);
 					// factorsForm.factorAdded(index, factorList);
-					factorsForm.addFactor()
+					// factorsForm.addFactor()
 				}
 			}
 		}
@@ -113,7 +113,9 @@ JASPControl
 		Repeater
 		{
 			id: factorsFormRepeater
-			model: factorsForm.model
+			// model: factorsForm.model
+
+			model: groupingFactors.model
 			RowLayout
 			{
 				spacing: 0
@@ -128,8 +130,8 @@ JASPControl
 				SEM.FactorsList
 				{
 					id:					factorList
-					name:               factorName
-					editableTitle:      factorTitle
+					// name:               factorName
+					editableTitle:      name
 					dropMode:			"Replace"
 					suggestedColumns:	allowAll ? [] : ["scale"]
 					allowedColumns:     ["scale"]
@@ -143,7 +145,7 @@ JASPControl
 						availableVariablesList.activeFocusChanged.connect(button.setIconToRight);
 						hasSelectedItemsChanged.connect(button.setState);
 						availableVariablesList.hasSelectedItemsChanged.connect(button.setState);
-						factorsForm.factorAdded(index, factorList);
+						// factorsForm.factorAdded(index, factorList);
 						factorsForm.calculateHeight();
 					}
 				}
@@ -192,11 +194,11 @@ JASPControl
 
 	function calculateHeight()
 	{
-		if (factorsFormRepeater.count > 3) {
-			factorsForm.height = Theme.defaultVariablesFormHeight + (factorsFormRepeater.count - 3) * (factorsForm.factorListHeight + factorsFormColumn.spacing)
-		} else {
-			factorsForm.height = Theme.defaultVariablesFormHeight
-		}
+		// if (factorsFormRepeater.count > 3) {
+			factorsForm.height = Theme.defaultVariablesFormHeight + (factorsFormRepeater.count - 3) * (factorsForm.factorListHeight + factorsFormColumn.spacing) + Theme.defaultSingleItemListHeight * 3
+		// } else {
+		// 	factorsForm.height = Theme.defaultVariablesFormHeight
+		// }
 	}
 
 }

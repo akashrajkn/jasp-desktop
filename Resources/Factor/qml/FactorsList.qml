@@ -4,19 +4,28 @@ import JASP.Theme 1.0
 
 JC.VariablesList
 {
-	property alias editableTitle: titleField.value
+	property alias editableTitle: label.text
 	signal titleIsChanged()
 	title: " " //dummy
 
-    JC.TextField
-    {
-		id: titleField
-		isBound: false
-        anchors.top: parent.top
-        anchors.left: parent.left
-        height: text.height
-        fieldWidth: parent.width
-    }
+    // JC.TextField
+    // {
+	// 	id: titleField
+	// 	isBound: false
+    //     anchors.top: parent.top
+    //     anchors.left: parent.left
+    //     height: text.height
+    //     fieldWidth: parent.width
+    // }
+
+	JC.Label
+	{
+		id:				label
+		anchors.top:	parent.top
+		anchors.left:	parent.left
+		// font:			Theme.font
+		// color:			enabled ? Theme.textEnabled : Theme.textDisabled
+	}
 
     JC.ExtraControlColumn {
         type: "CheckBox"
@@ -25,6 +34,6 @@ JC.VariablesList
         purpose: "nuisance"
     }
 
-	Component.onCompleted: titleField.editingFinished.connect(titleIsChanged);
+	// Component.onCompleted: titleField.editingFinished.connect(titleIsChanged);
 
 }
