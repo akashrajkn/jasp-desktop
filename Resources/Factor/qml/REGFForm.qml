@@ -4,7 +4,7 @@ import JASP.Widgets		1.0
 import JASP.Controls	1.0
 import JASP.Theme		1.0
 import QtQuick.Layouts  1.3
-import "." as SEM
+import "." as LMM
 
 JASPControl
 {
@@ -80,6 +80,40 @@ JASPControl
 		{
 			AssignButton
 			{
+				id: button3
+				Layout.leftMargin:  (factorsFormColumn.width / 3 - width) / 2
+				Layout.rightMargin: (factorsFormColumn.width / 3 - width) / 2
+				leftSource:         factorsForm.availableVariablesList
+				rightSource:        fixedFactors
+			}
+
+			VariablesList
+			{
+				id					: fixedFactors
+				name				: "fixedFactors"
+				title				: qsTr("Fixed Factors")
+				listViewType		: "AssignedVariables"
+				dropMode			: "Insert"
+				source				: ""
+				suggestedColumns	: ["scale"]
+
+				implicitWidth		: listWidth
+				height				: Theme.defaultSingleItemListHeight * 2
+
+				Component.onCompleted:
+				{
+					activeFocusChanged.connect(button3.setIconToLeft);
+					availableVariablesList.activeFocusChanged.connect(button3.setIconToRight);
+					hasSelectedItemsChanged.connect(button3.setState);
+					availableVariablesList.hasSelectedItemsChanged.connect(button3.setState);
+				}
+			}
+		}
+
+		RowLayout
+		{
+			AssignButton
+			{
 				id: button2
 				Layout.leftMargin:  (factorsFormColumn.width / 3 - width) / 2
 				Layout.rightMargin: (factorsFormColumn.width / 3 - width) / 2
@@ -89,14 +123,27 @@ JASPControl
 
 			VariablesList
 			{
-				implicitWidth:      listWidth
-				listViewType: "AssignedVariables"
-				dropMode: "Insert"
-				height: Theme.defaultSingleItemListHeight * 2
 				id: groupingFactors
 				name: "groupingFactors"
 				title: qsTr("Grouping Factors")
+				listViewType: "AssignedVariables"
+				source: ""
+
+				implicitWidth:      listWidth
+				dropMode: "Insert"
+				height: Theme.defaultSingleItemListHeight * 2
 				suggestedColumns: ["ordinal", "nominal"]
+
+				ExtraControlColumn {
+					type: "CheckBox"
+					name: "intercept"
+					title: "Inter.  "
+				}
+				ExtraControlColumn {
+					type: "CheckBox"
+					name: "correlation"
+					title: "Corr.  "
+				}
 
 				Component.onCompleted:
 				{
@@ -104,8 +151,6 @@ JASPControl
 					availableVariablesList.activeFocusChanged.connect(button2.setIconToRight);
 					hasSelectedItemsChanged.connect(button2.setState);
 					availableVariablesList.hasSelectedItemsChanged.connect(button2.setState);
-					// factorsForm.factorAdded(index, factorList);
-					// factorsForm.addFactor()
 				}
 			}
 		}
@@ -113,70 +158,51 @@ JASPControl
 		Repeater
 		{
 			id: factorsFormRepeater
-			// model: factorsForm.model
 
 			model: groupingFactors.model
+
 			RowLayout
 			{
-				spacing: 0
+				id					: rowLayout
+				property var name	: model.name
+				spacing				: 0
+
 				AssignButton
 				{
-					id: button
-					Layout.leftMargin:  (factorsFormColumn.width / 3 - width) / 2
-					Layout.rightMargin: (factorsFormColumn.width / 3 - width) / 2
-					leftSource:         factorsForm.availableVariablesList
-					rightSource:        factorList
+					id					: button
+					Layout.leftMargin	: (factorsFormColumn.width / 3 - width) / 2
+					Layout.rightMargin	: (factorsFormColumn.width / 3 - width) / 2
+					leftSource			: factorsForm.availableVariablesList
+					rightSource			: factorList
 				}
-				SEM.FactorsList
-				{
-					id:					factorList
-					// name:               factorName
-					editableTitle:      name
-					dropMode:			"Replace"
-					suggestedColumns:	allowAll ? [] : ["scale"]
-					allowedColumns:     ["scale"]
-					implicitWidth:      listWidth
-					height:             factorsForm.factorListHeight
 
-					onTitleIsChanged: factorsForm.titleChanged(index, editableTitle)
+				LMM.RandomFactorsList
+				{
+					id					: factorList
+					title				: rowLayout.name
+					model 				: fixedFactors.model
+					// listViewType		: "Interaction"
+
+					source				: "fixedFactors"
+					dropMode			: "Replace"
+					suggestedColumns	: allowAll ? [] : ["scale"]
+					allowedColumns		: ["scale"]
+					implicitWidth		: listWidth
+					height				: factorsForm.factorListHeight
+
 					Component.onCompleted:
 					{
 						activeFocusChanged.connect(button.setIconToLeft);
 						availableVariablesList.activeFocusChanged.connect(button.setIconToRight);
 						hasSelectedItemsChanged.connect(button.setState);
 						availableVariablesList.hasSelectedItemsChanged.connect(button.setState);
-						// factorsForm.factorAdded(index, factorList);
+						factorsForm.factorAdded(index, factorList);
 						factorsForm.calculateHeight();
 					}
 				}
 			}
 
 		}
-
-		// Row
-		// {
-		// 	id:             factorButtons
-		// 	anchors.right:  parent.right
-		// 	spacing:        10
-		//
-		// 	Button
-		// 	{
-		// 		name: "add";
-		// 		text: qsTr("+")
-		// 		control.width: height
-		// 		width: control.width
-		// 		onClicked: addFactor()
-		// 	}
-		// 	Button
-		// 	{
-		// 		name: "remove";
-		// 		text: qsTr("-")
-		// 		control.width: height
-		// 		width: control.width
-		// 		onClicked: removeFactor() ;
-		// 		enabled: factorsFormRepeater.count > 1
-		// 	}
-		// }
 
 	}
 
@@ -194,11 +220,7 @@ JASPControl
 
 	function calculateHeight()
 	{
-		// if (factorsFormRepeater.count > 3) {
-			factorsForm.height = Theme.defaultVariablesFormHeight + (factorsFormRepeater.count - 3) * (factorsForm.factorListHeight + factorsFormColumn.spacing) + Theme.defaultSingleItemListHeight * 3
-		// } else {
-		// 	factorsForm.height = Theme.defaultVariablesFormHeight
-		// }
+			factorsForm.height = Theme.defaultVariablesFormHeight + (factorsFormRepeater.count - 2) * (factorsForm.factorListHeight + factorsFormColumn.spacing) + Theme.defaultSingleItemListHeight * 3
 	}
 
 }
