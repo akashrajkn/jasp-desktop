@@ -92,10 +92,11 @@ JASPControl
 				id					: fixedFactors
 				name				: "fixedFactors"
 				title				: qsTr("Fixed Factors")
-				listViewType		: "AssignedVariables"
+//				listViewType		: "AssignedVariables"
 				dropMode			: "Insert"
 				source				: ""
 				suggestedColumns	: ["scale"]
+                listViewType: "Interaction"
 
 				implicitWidth		: listWidth
 				height				: Theme.defaultSingleItemListHeight * 2
@@ -189,6 +190,13 @@ JASPControl
 					allowedColumns		: ["scale"]
 					implicitWidth		: listWidth
 					height				: factorsForm.factorListHeight
+
+                    ExtraControlColumn {
+                        type: "CheckBox"
+                        name: "isNuisance"
+                        title: qsTr("Random Slope")
+                        purpose: "nuisance"
+                    }
 
 					Component.onCompleted:
 					{
