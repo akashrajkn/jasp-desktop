@@ -136,7 +136,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		if (this.imageBeingEdited !== null)
 			this.imageBeingEdited.restoreSize();
 	},
-	
+
 	insertNewImage: function() {
 		if (this.imageBeingEdited !== null)
 			this.imageBeingEdited.reRender();
@@ -420,17 +420,26 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 	notesMenuClicked: function (noteType, visibility) {
 
+        console.log("notesMenuClicked");
+        console.log(noteType);
+        console.log(visibility);
+
 		var scrollIntoView = true;
-		// for (var i = 0; i < this.viewNotes.list.length; i++) {
-		// 	var noteBoxData = this.viewNotes.list[i];
-		// 	if (noteBoxData.noteDetails.level === 0) {
-		// 		var noteBox = noteBoxData.widget;
-		// 		if (noteBox.visible !== visibility) {
-		// 			noteBox.setVisibilityAnimate(visibility, scrollIntoView);
-		// 			scrollIntoView = false;
-		// 		}
-		// 	}
-		// }
+		for (var i = 0; i < this.viewNotes.list.length; i++) {
+			var noteBoxData = this.viewNotes.list[i];
+
+            console.log(noteBoxData);
+            console.log("");
+			if (noteBoxData.noteDetails.level === 0) {
+				var noteBox = noteBoxData.widget;
+				if (noteBox.visible !== visibility) {
+					noteBox.setVisibilityAnimate(visibility, scrollIntoView);
+					scrollIntoView = false;
+				}
+			}
+		}
+
+        return true;
 
 		/*
 			TODO:
@@ -579,7 +588,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		}
 	},
-	
+
 	setErrorOnPreviousResults: function (errorMessage, status, $lastResult, $result) {
 		if (errorMessage == null) // parser.parse() in the engine was unable to parse the R error message
 			errorMessage = "An unknown error occurred.";
@@ -598,11 +607,11 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		$result.append('<div class="' + status + ' analysis-error-message error-message-box ui-state-error"><span class="ui-icon ui-icon-' + (status === "fatalError" ? 'alert' : 'info') + '" style="float: left; margin-right: .3em;"></span>' + errorMessage + '</div>');
 	},
-	
+
 	setHeightErroredAnalysis: function ($result) {
 		// the error box has an absolute position and unknown height, we need to manually verify the container height
 		var $selectedAnalysis = $result.find(".jasp-analysis");
-		var errorBoxHeight = $result.find(".analysis-error-message").outerHeight();	
+		var errorBoxHeight = $result.find(".analysis-error-message").outerHeight();
 		if ($selectedAnalysis.height() < errorBoxHeight)
 			$selectedAnalysis.height(errorBoxHeight);
 	},
@@ -727,7 +736,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		$tempClone.replaceWith($innerElement);
 		$tempClone.empty();
-		
+
 		if (results.error)
 			this.setHeightErroredAnalysis($innerElement);
 

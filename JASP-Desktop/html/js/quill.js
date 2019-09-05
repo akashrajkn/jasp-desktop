@@ -3142,6 +3142,7 @@ var Selection = function () {
           range.setStart(startNode, startOffset);
           range.setEnd(endNode, endOffset);
           selection.removeAllRanges();
+          console.log(range);
           selection.addRange(range);
         }
       } else {

@@ -347,8 +347,11 @@ JASPWidgets.Note = Backbone.Model.extend({
 				this.set('text', '<p><br></p>');
 			else if (text !== '')
 				this.set('text', Mrkdwn.toHtml(text));
+
+            console.log("HERE? why?");
 		}
 	}
+
 });
 
 JASPWidgets.NoteBox = JASPWidgets.View.extend({
@@ -372,10 +375,10 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.internalChange = false;
 
-		if (this.model.get('format') !== 'html')
+		if (this.model.get('format') === 'markdown')
 			this.model.toHtml();
 
-		this.listenTo(this.model, 'change:text', this.textChanged)
+		// this.listenTo(this.model, 'change:text', this.textChanged)
 
 		this.closeButton = new JASPWidgets.ActionView({ className: "jasp-closer" });
 		var self = this;
@@ -408,71 +411,61 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	},
 
 	clear: function () {
-		if (this.isTextboxEmpty() === false)
-			this.$textbox.html('<p><br></p>');
+		// if (this.isTextboxEmpty() === false)
+		// 	this.$textbox.html('<p><br></p>');
 
 		this.model.set('format', 'html');
-		this.model.set('text', '<p><br></p>');
+		this.model.set('text', '');
 	},
 
 	setGhostTextVisible: function(visible) {
 		this.ghostTextVisible = visible;
-		this.updateView();
+		// this.updateView();
 	},
 
 	isTextboxEmpty: function () {
-		var text = this.$textbox.text();
-		return text.length === 0;
+
+        return this.$quill.getLength() === 0;
+
+		// var text = this.$textbox.text();
+		// return text.length === 0;
 	},
 
-	simulatedClickPosition: function () {
-		var offset = this.$textbox.offset();
-		if (this.$ghostText.hasClass('jasp-hide') === false)
-			offset = this.$ghostText.offset();
-
-		var y = 5
-		var x = 5
-
-		var posY = offset.top + y - $(window).scrollTop() + 3;
-		var posX = offset.left + x - $(window).scrollLeft();
-		return { x: posX, y: posY };
-	},
-
-	textChanged: function () {
-		if (this._textedChanging === true)
-			return;
-
-		this._textedChanging = true;
-		if (this.model.get('format') !== 'html')
-			this.model.toHtml();
-		this.updateView();
-		if (this._inited)
-			this.trigger("NoteBox:textChanged");
-		this._textedChanging = false;
-	},
-
-	updateView: function () {
-		if (!this.internalChange && this.model.get('format') === 'html') {
-			if (this.$textbox !== undefined) {
-				if (this.setGhostTextVisible && !this.editing && this.isTextboxEmpty()) {
-					this.$ghostText.removeClass('jasp-hide');
-					this.$textbox.addClass('jasp-hide');
-				}
-				else {
-					this.$ghostText.addClass('jasp-hide');
-					this.$textbox.removeClass('jasp-hide');
-					if (this.editing && this.$textbox !== $(document.activeElement))
-						this.$textbox.focus();
-				}
-			}
-		}
-	},
+	// textChanged: function () {
+	// 	if (this._textedChanging === true)
+	// 		return;
+    //
+	// 	this._textedChanging = true;
+	// 	// if (this.model.get('format') !== 'html')
+	// 	// 	this.model.toHtml();
+	// 	this.updateView();
+	// 	if (this._inited)
+	// 		this.trigger("NoteBox:textChanged");
+	// 	this._textedChanging = false;
+	// },
+    //
+	// updateView: function () {
+	// 	if (!this.internalChange && this.model.get('format') === 'html') {
+	// 		if (this.$textbox !== undefined) {
+	// 			if (this.setGhostTextVisible && !this.editing && this.isTextboxEmpty()) {
+	// 				this.$ghostText.removeClass('jasp-hide');
+	// 				this.$textbox.addClass('jasp-hide');
+	// 			}
+	// 			else {
+	// 				this.$ghostText.addClass('jasp-hide');
+	// 				this.$textbox.removeClass('jasp-hide');
+	// 				if (this.editing && this.$textbox !== $(document.activeElement))
+	// 					this.$textbox.focus();
+	// 			}
+	// 		}
+	// 	}
+	// },
 
 	render: function () {
-		if (this._inited) {
-			this.$textbox.off();
-			delete this.$textbox;
-		}
+		// if (this._inited) {
+		// 	this.$textbox.off();
+		// 	delete this.$textbox;
+		// }
 
 		this.$el.empty();
 
@@ -482,58 +475,113 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.closeButton.render();
 
-		var ghost_text = this.ghostTextDefault;
-		if (this.ghostText)
-			ghost_text = this.ghostText;
+		// var ghost_text = this.ghostTextDefault;
+		// if (this.ghostText)
+		// 	ghost_text = this.ghostText;
 
-		this.$el.append('<div class="jasp-editable jasp-hide" data-button-class="jasp-comment">' + html + '</div>');
-		this.$el.append('<div class="jasp-ghost-text"><p>' + ghost_text + '</p></div>');
 
-		this.$textbox = this.$el.find('.jasp-editable');
-		this.$ghostText = this.$el.find('.jasp-ghost-text');
+		this.$el.append('<div class="jasp-hide" data-button-class="jasp-comment"></div>');
+		// this.$el.append('<div class="jasp-ghost-text"><p>' + ghost_text + '</p></div>');
+        this.$el.append("<div id=\"editor\"></div>");
 
-		this.updateView();
-		this._checkTags();
+		// this.$textbox = this.$el.find('.jasp-editable');
+		// this.$ghostText = this.$el.find('.jasp-ghost-text');
 
-		var self = this;
+        // var quill = new Quill(this.$el.find("#editor").get(0), {
+        //     theme: 'snow'
+        // });
+
+
+        var toolbarOptions = [
+			['bold', 'italic', 'underline', 'image'],
+			// [{ 'size': ['small', false, 'large', 'huge'] }],
+			[{ 'header': [1, 2, 3, 4, false] }],
+			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+			[{ 'color': [] }, { 'background': [] }],
+			[{ 'script': 'sub'}, { 'script': 'super' }],
+			['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
+			// [{ 'font': [] }, { 'align': [] }],
+
+			['clean']
+		];
+
+		let targetDiv = this.$el.find("#editor").get(0)
+		this.$quill = new Quill(targetDiv, {
+			modules: {
+				toolbar: toolbarOptions
+			},
+			theme: 'snow'
+		});
+
+        if (this.model.get('format') === 'html') {
+            if (html.length > 0) {
+                console.log("shouldnt be here");
+                console.log(html);
+                // this.$quill.clipboard.dangerouslyPasteHTML(0, '<p>12344</p>')
+            } else {
+                console.log("aslfjlaskdfjkalsjfl");
+            }
+        } else if(this.model.get('format') === 'delta') {
+            console.log("Format is delta");
+            this.$quill.setContents(this.model.get("text"))
+        } else {
+            this.$quill.setText(this.model.get("text"))
+        }
+
+
+        var self = this;
+
+        this.$quill.on('text-change', function(delta, oldDelta, source) {
+
+            console.log(delta);
+
+            self.onNoteChanged(self.$quill.getContents());
+        });
+
+
+		// this.updateView();
+		// this._checkTags();
+        // var self = this;
+
+
 		//focusin focusout
-		this.$textbox.on("input", function (event) {
-			self._checkTags();
-			if (this.innerHTML != self.model.get("text")) {
-				var html = '';
-				if (self.$textbox.text())
-					html = this.innerHTML;
-				self.onNoteChanged(html);
-			}
-		});
+		// this.$textbox.on("input", function (event) {
+		// 	self._checkTags();
+		// 	if (this.innerHTML != self.model.get("text")) {
+		// 		var html = '';
+		// 		if (self.$textbox.text())
+		// 			html = this.innerHTML;
+		// 		self.onNoteChanged(html);
+		// 	}
+		// });
 
-		this.$ghostText.on("mousedown", null, this, this._mousedown);
-		this.$textbox.on("focusout", null, this, this._looseFocus);
-		this.$textbox.on("mousedown", null, this, this._mousedown);
-		this.$textbox.on("keydown", null, this, this._keydown);
+		// this.$ghostText.on("mousedown", null, this, this._mousedown);
+		// this.$textbox.on("focusout", null, this, this._looseFocus);
+		// this.$textbox.on("mousedown", null, this, this._mousedown);
+		// this.$textbox.on("keydown", null, this, this._keydown);
 
-		this.$textbox.on("copy", function (event) {
-
-			var html;
-			var text;
-			var sel = window.getSelection();
-			if (sel.rangeCount) {
-				var container = document.createElement("div");
-				for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-					container.appendChild(sel.getRangeAt(i).cloneContents());
-				}
-				html = container.innerHTML;
-				text = Mrkdwn.fromDOMElement($(container));
-			}
-
-			if (text)
-				event.originalEvent.clipboardData.setData('text/plain', text);
-			if (html)
-				event.originalEvent.clipboardData.setData('text/html', html);
-
-
-			event.preventDefault();
-		});
+		// this.$textbox.on("copy", function (event) {
+        //
+		// 	var html;
+		// 	var text;
+		// 	var sel = window.getSelection();
+		// 	if (sel.rangeCount) {
+		// 		var container = document.createElement("div");
+		// 		for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+		// 			container.appendChild(sel.getRangeAt(i).cloneContents());
+		// 		}
+		// 		html = container.innerHTML;
+		// 		text = Mrkdwn.fromDOMElement($(container));
+		// 	}
+        //
+		// 	if (text)
+		// 		event.originalEvent.clipboardData.setData('text/plain', text);
+		// 	if (html)
+		// 		event.originalEvent.clipboardData.setData('text/html', html);
+        //
+        //
+		// 	event.preventDefault();
+		// });
 
 		this._inited = true;
 
@@ -542,8 +590,14 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	onNoteChanged: function (html) {
 		this.internalChange = true;
-		this.model.set("text", html);
-		this.internalChange = false;
+		// this.model.set('text', html);
+        // this.model.set('format', 'delta')
+
+        this.model.set({'text': html, 'format': 'delta'});
+
+        this.internalChange = false;
+
+        console.log(this.model);
 	},
 
 	setVisibility: function(value)
@@ -585,62 +639,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	knownTags: ['p', 'br', 'ol', 'ul', 'li', 'b', 'i', 's', 'u', 'sup', 'sub', 'code', 'strong', 'em', 'blockquote', 'hr', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
-	_checkTags: function () {
-
-		var r = this.$textbox.find('*')
-		r.contents().filter(function () { return this.nodeType != 1 && this.nodeType != 3; }).remove(); //removes all non text and non elements
-		r.each(function () { //removes all attributes
-			var attributes = $.map(this.attributes, function (item) {
-				return item.name;
-			});
-
-			var img = $(this);
-			$.each(attributes, function (i, item) {
-				img.removeAttr(item);
-			});
-		});
-
-		/*this.$textbox.find('ol, ul').contents().filter(function () { return this.nodeType !== 1 }).remove(); //removes all non list item nodes from lists*/
-		this.$textbox.find(':not(p, br, ol, ul, li, b, i, s, u, sup, sub, code, strong, em, blockquote, hr, h1, h2, h3, h4, h5, h6, div, pre:has(code))').contents().unwrap();		//flattens the contents of unknown tags eg span, font etc
-		this.$textbox.find(':not(p, br, ol, ul, li, b, i, s, u, sup, sub, code, strong, em, blockquote, hr, h1, h2, h3, h4, h5, h6, div, pre:has(code))').remove();		//removes all unknown tags that had no content to flatten eg <o-l></o-l> from office
-
-		var t = this.$textbox.find('div:not(code div)').contents().unwrap().wrap('<p/>'); //changes all div tags to p tags
-		if (t.length > 0) {
-			var selection = window.getSelection();
-			selection.collapse(t[t.length - 1], 0);
-		}
-
-		var b = this.$textbox.contents().filter(function () { return this.nodeType == 3; }).wrap('<p/>'); //wraps all top level free text in a p tag
-		if (b.length > 0) {
-			var selection = window.getSelection();
-			var node = b[b.length - 1];
-			selection.collapse(node, node.nodeValue.length);
-		}
-
-		this.$textbox.find('p').filter(function () {
-			return $(this).text() === '' && $(this).height() === 0;
-		}).remove(); //remove non displaying paragraphs
-
-		this.$textbox.find('p p').contents().unwrap(); //unwraps any embedded p tags
-
-		var v = this.$textbox.find('p:has(ol),p:has(ul),p:has(blockquote)').contents().unwrap(); // unwrap any p tags around lists
-		if (v.length > 0) {
-			var selection = window.getSelection();
-			selection.collapse(v[v.length - 1], 0);
-		}
-
-		var g = this.$textbox.children().length; // if the textbox is empty put in a <p><br></p>
-		if (g === 0) {
-			var selection = window.getSelection();
-			var node = $(document.createElement('p'));
-			//node.html("&#8203;");
-			var lineBreak = $(document.createElement('br'));
-			node.prepend(lineBreak);
-			this.$textbox.prepend(node);
-			//selection.collapse(node[0], 0);
-			selection.collapse(lineBreak[0], 0);
-		}
-	},
 
 	_keydown: function (e) {
 		var self = e.data;
@@ -710,11 +708,11 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.$textbox.attr('contenteditable', true);
 		this.$textbox.focus();
-		this.updateView();
+		// this.updateView();
 
 		this.$el.addClass('jasp-text-editing');
 
-		this._checkTags();
+		// this._checkTags();
 
 		var self = this;
 
@@ -738,7 +736,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.$el.removeClass('jasp-text-editing');
 
-		this.updateView();
+		// this.updateView();
 		this.$textbox.attr('contenteditable', false);
 		if (this.$editor !== undefined) {
 			this.$editor.off("mousedown", this.editorClicked);
@@ -777,8 +775,11 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		var html = '';
 		if (this.isTextboxEmpty() === false && this.visible === true)
-			html += '<div ' + JASPWidgets.Exporter.getNoteStyles(this.$el, exportParams) + '>' + this.$textbox.html() + '</div>';
+			html += '<div ' + JASPWidgets.Exporter.getNoteStyles(this.$el, exportParams) + '>' + this.$quill.root.innerHTML + '</div>';
 
+        console.log("EXPORT BEGIN");
+
+        console.log(html);
 
 		callback.call(this, exportParams, new JASPWidgets.Exporter.data(null, html));
 	},

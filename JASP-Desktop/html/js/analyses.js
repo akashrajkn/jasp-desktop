@@ -145,12 +145,16 @@ JASPWidgets.Analyses = JASPWidgets.View.extend({
 	},
 
 	getResultsMeta: function () {
+
+        // text: Mrkdwn.fromHtmlText(this.note.get('text')),
+        // format: 'markdown',
+
 		return {
 			title: this.toolbar.title,
 			notes: {
 				first: {
-					text: Mrkdwn.fromHtmlText(this.note.get('text')),
-					format: 'markdown',
+                    text: this.note.get('text'),
+                    format: this.note.get('format'),
 					visible: this.noteBox.visible
 				}
 			}
