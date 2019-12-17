@@ -313,6 +313,8 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 			// firstNoteData.format = 'markdown';
 			firstNoteData.format = 'html';
+			firstNoteData.deltaAvailable = this.viewNotes.firstNoteNoteBox.model.get('deltaAvailable');
+			firstNoteData.delta = this.viewNotes.firstNoteNoteBox.model.get('delta');
 
 			firstNoteData.visible = this.viewNotes.firstNoteNoteBox.visible;
 

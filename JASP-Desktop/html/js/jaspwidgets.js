@@ -346,6 +346,8 @@ JASPWidgets.Note = Backbone.Model.extend({
 	defaults: {
 		text: '<p><br></p>',
 		format: 'markdown',
+		delta: {},
+		deltaAvailable: false,
 	},
 
 	toHtml: function () {
@@ -440,35 +442,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		// return text.length === 0;
 	},
 
-	textChanged: function () {
-		if (this._textedChanging === true)
-			return;
-
-		this._textedChanging = true;
-		if (this.model.get('format') !== 'html')
-			this.model.toHtml();
-		this.updateView();
-		if (this._inited)
-			this.trigger("NoteBox:textChanged");
-		this._textedChanging = false;
-	},
-
-	updateView: function () {
-		if (!this.internalChange && this.model.get('format') === 'html') {
-			if (this.$textbox !== undefined) {
-				if (this.setGhostTextVisible && !this.editing && this.isTextboxEmpty()) {
-					this.$ghostText.removeClass('jasp-hide');
-					this.$textbox.addClass('jasp-hide');
-				} else {
-					this.$ghostText.addClass('jasp-hide');
-					this.$textbox.removeClass('jasp-hide');
-					if (this.editing && this.$textbox !== $(document.activeElement))
-						this.$textbox.focus();
-				}
-			}
-		}
-	},
-
 	render: function () {
 		// if (this._inited) {
 		// 	this.$textbox.off();
@@ -497,8 +470,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		// this.$el.append('<div class="jasp-ghost-text"><p>' + ghost_text + '</p></div>');
 		this.$el.append("<div id=\"editor\"></div>");
 
-		console.log(this.$el)
-
 		// this.$textbox = this.$el.find('.jasp-editable');
 		// this.$ghostText = this.$el.find('.jasp-ghost-text');
 
@@ -508,7 +479,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 
         var toolbarOptions = [
-			['bold', 'italic', 'underline', 'image'],
+			['bold', 'italic', 'underline'],  // image
 			// [{ 'size': ['small', false, 'large', 'huge'] }],
 			[{ 'header': [1, 2, 3, 4, false] }],
 			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -528,100 +499,58 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 			theme: 'snow'
 		});
 
-        if (this.model.get('format') === 'html') {
-            if (html.length > 0) {
-                console.log(html);
-                this.$quill.clipboard.dangerouslyPasteHTML(0, html)
-            } else {
-                console.log("aslfjlaskdfjkalsjfl");
-            }
-        } else if(this.model.get('format') === 'delta') {
-            console.log("Format is delta");
-            this.$quill.setContents(this.model.get("text"))
-        } else {
-			// this.$quill.setText(this.model.get("text"))
-			console.log('format: markdown')
+		var self = this;
 
-			this.model.toHtml();
-			html = this.model.get("text");
-			this.$quill.clipboard.dangerouslyPasteHTML(0, html)
+		if (this.model.get('deltaAvailable')) {
+			this.$quill.setContents(this.model.get('delta'));
+		} else {
+			if (this.model.get('format') === 'html') {
+				if (html.length > 0) {
+
+					// this.$quill.clipboard.dangerouslyPasteHTML(0, html);
+
+					var delt = this.$quill.clipboard.convert(html);
+					this.$quill.setContents(delt);
+
+					// self.onNoteChanged(html, self.$quill.getContents());
+				}
+			} else {
+				// this.$quill.setText(this.model.get("text"))
+				console.log('format: markdown')
+
+				this.model.toHtml();
+				html = this.model.get("text");
+
+				var delt = this.$quill.clipboard.convert(html);
+				this.$quill.setContents(delt);
+				// this.$quill.clipboard.dangerouslyPasteHTML(0, html)
+			}
 		}
 
-
-        var self = this;
-
-        this.$quill.on('text-change', function(delta, oldDelta, source) {
-
-            // console.log(delta);
-
-			self.onNoteChanged(self.$quill.root.innerHTML)
-            // self.onNoteChanged(self.$quill.getText());
-        });
-
-		// this.updateView();
-		// this._checkTags();
-        // var self = this;
-
-
-		//focusin focusout
-		// this.$textbox.on("input", function (event) {
-		// 	self._checkTags();
-		// 	if (this.innerHTML != self.model.get("text")) {
-		// 		var html = '';
-		// 		if (self.$textbox.text())
-		// 			html = this.innerHTML;
-		// 		self.onNoteChanged(html);
-		// 	}
-		// });
-
-		// this.$ghostText.on("mousedown", null, this, this._mousedown);
-		// this.$textbox.on("focusout", null, this, this._looseFocus);
-		// this.$textbox.on("mousedown", null, this, this._mousedown);
-		// this.$textbox.on("keydown", null, this, this._keydown);
-
-		// this.$textbox.on("copy", function (event) {
-
-		// 	var html;
-		// 	var text;
-		// 	var sel = window.getSelection();
-		// 	if (sel.rangeCount) {
-		// 		var container = document.createElement("div");
-		// 		for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-		// 			container.appendChild(sel.getRangeAt(i).cloneContents());
-		// 		}
-		// 		html = container.innerHTML;
-		// 		text = Mrkdwn.fromDOMElement($(container));
-		// 	}
-
-		// 	if (text)
-		// 		event.originalEvent.clipboardData.setData('text/plain', text);
-		// 	if (html)
-		// 		event.originalEvent.clipboardData.setData('text/html', html);
-
-
-		// 	event.preventDefault();
-		// });
+		this.$quill.on('text-change', function(delta, oldDelta, source) {
+			self.onNoteChanged(self.$quill.root.innerHTML, self.$quill.getContents())
+		});
 
 		this._inited = true;
 
 		return this;
 	},
 
-	onNoteChanged: function (html) {
+	onNoteChanged: function (html, quDelta) {
 
-		console.log("_____________")
-		console.log(html)
-		console.log(this.isTextboxEmpty())
+		// console.log("_____________")
+		// console.log(html)
+		// console.log(this.isTextboxEmpty())
 
 		this.internalChange = true;
 		// this.model.set('text', html);
         // this.model.set('format', 'delta')
 
-		this.model.set({'text': html, 'format': 'html'});
+		this.model.set({'text': html, 'format': 'html', 'delta': quDelta, 'deltaAvailable' : true});
 
         this.internalChange = false;
 
-        // console.log(this.model);
+        console.log(this.model);
 	},
 
 	setVisibility: function(value) {
