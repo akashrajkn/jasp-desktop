@@ -60,9 +60,12 @@ JASPWidgets.collectionView = JASPWidgets.View.extend({
 			if (this.noteBox.isTextboxEmpty())
 				noteData.text = '';
 			else
-				noteData.text = Mrkdwn.fromHtmlText(this.noteBox.model.get('text'));
-			noteData.format = 'markdown';
+				noteData.text = this.noteBox.model.get('text');
+
+			noteData.format = 'html';
 			noteData.visible = this.noteBox.visible;
+			noteData.delta = this.noteBox.model.get('delta');
+			noteData.deltaAvailable = this.noteBox.model.get('deltaAvailable')
 
 			userData[this.noteBoxLocalKey] = noteData;
 
@@ -304,7 +307,7 @@ JASPWidgets.collectionView = JASPWidgets.View.extend({
 
 		 for (var i = 0; i < this.views.length; i++)
 		 {
-			
+
 			var optCitation = null;
 			if (this.views[i].getCitations)
 				optCitation = this.views[i].getCitations();

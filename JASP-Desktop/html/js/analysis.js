@@ -309,9 +309,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 				firstNoteData.text = '';
 			else
 				firstNoteData.text = this.viewNotes.firstNoteNoteBox.model.get('text');
-				// firstNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.firstNoteNoteBox.model.get('text'));
 
-			// firstNoteData.format = 'markdown';
 			firstNoteData.format = 'html';
 			firstNoteData.deltaAvailable = this.viewNotes.firstNoteNoteBox.model.get('deltaAvailable');
 			firstNoteData.delta = this.viewNotes.firstNoteNoteBox.model.get('delta');
@@ -330,9 +328,13 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			if (this.viewNotes.lastNoteNoteBox.isTextboxEmpty())
 				lastNoteData.text = '';
 			else
-				lastNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.lastNoteNoteBox.model.get('text'));
-			lastNoteData.format = 'markdown';
+				lastNoteData.text = this.viewNotes.lastNoteNoteBox.model.get('text');
+				// lastNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.lastNoteNoteBox.model.get('text'));
+
+				lastNoteData.format = 'html';
 			lastNoteData.visible = this.viewNotes.lastNoteNoteBox.visible;
+			lastNoteData.deltaAvailable = this.viewNotes.lastNoteNoteBox.model.get('deltaAvailable');
+			lastNoteData.delta = this.viewNotes.lastNoteNoteBox.model.get('delta');
 
 			userData.lastNote = lastNoteData;
 

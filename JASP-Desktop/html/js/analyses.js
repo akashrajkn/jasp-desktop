@@ -155,7 +155,9 @@ JASPWidgets.Analyses = JASPWidgets.View.extend({
 				first: {
                     text: this.note.get('text'),
                     format: this.note.get('format'),
-					visible: this.noteBox.visible
+					visible: this.noteBox.visible,
+					delta: this.note.get('delta'),
+					deltaAvailable: this.note.get('deltaAvailable'),
 				}
 			}
 		};
