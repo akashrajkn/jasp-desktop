@@ -204,9 +204,9 @@ JASPWidgets.Exporter = {
 					completeText += "</div>";
 				}
 
-				// console.log("-------");
-				// console.log(completeText);
-				// console.log("*******");
+				console.log("-------");
+				console.log(completeText);
+				console.log("*******");
 
 				if (parent.exportWrapper)
 					completeText = parent.exportWrapper(completeText);
@@ -808,7 +808,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		console.log("EXPORT BEGIN");
 		console.log(this.visible)
 		console.log(html);
-		console.log(callback);
+		// console.log(callback);
 		// console.log(arguments.callee.caller.toString())
 
 		callback.call(this, exportParams, new JASPWidgets.Exporter.data(null, html));

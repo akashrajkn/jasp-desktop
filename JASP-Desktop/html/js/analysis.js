@@ -308,8 +308,12 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			if (this.viewNotes.firstNoteNoteBox.isTextboxEmpty())
 				firstNoteData.text = '';
 			else
-				firstNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.firstNoteNoteBox.model.get('text'));
-			firstNoteData.format = 'markdown';
+				firstNoteData.text = this.viewNotes.firstNoteNoteBox.model.get('text');
+				// firstNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.firstNoteNoteBox.model.get('text'));
+
+			// firstNoteData.format = 'markdown';
+			firstNoteData.format = 'html';
+
 			firstNoteData.visible = this.viewNotes.firstNoteNoteBox.visible;
 
 			userData.firstNote = firstNoteData;
