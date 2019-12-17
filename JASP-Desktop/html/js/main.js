@@ -146,6 +146,10 @@ $(document).ready(function () {
 		if (filename === "%PREVIEW%") { exportParams.htmlImageFormat = JASPWidgets.ExportProperties.htmlImageFormat.resource; }
 
 		analyses.exportBegin(exportParams, function (exportParams, exportContent) {
+
+
+			console.log("YOLO");
+
 			if (exportParams.process === JASPWidgets.ExportProperties.process.save)
 				jasp.saveTextToFile(filename, wrapHTML(exportContent.html, exportParams));
 		})
@@ -483,6 +487,8 @@ var wrapHTML = function (html, exportParams) {
 };
 
 var pushHTMLToClipboard = function (exportContent, exportParams) {
+
+	console.log('pushHTMLToClipboard');
 
 	jasp.pushToClipboard("text/html", "", wrapHTML(exportContent.html, exportParams));
 }

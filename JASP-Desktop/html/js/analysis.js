@@ -116,6 +116,9 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			}
 		}
 
+		console.log("onUserDataChanged")
+		console.log(this.userdata)
+
 		self.trigger("analysis:userDataChanged");
 	},
 
@@ -210,6 +213,8 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 	getNoteBox: function (noteDetails) {
 
 		var noteData = this.getData(noteDetails, this.userdata);
+
+		console.log(noteDetails);
 
 		if (noteData === null)
 			noteData = new JASPWidgets.Note();
@@ -439,7 +444,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			}
 		}
 
-        return true;
+        // return true;
 
 		/*
 			TODO:
@@ -469,32 +474,32 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		});
 		quill['analysis-id'] = this.id;
 
-		let toolbar = document.getElementById(this.id).getElementsByClassName('ql-toolbar')[0];
-		toolbar.style.display = 'none';  // hide by default
+		// let toolbar = document.getElementById(this.id).getElementsByClassName('ql-toolbar')[0];
+		// toolbar.style.display = 'none';  // hide by default
 
-		quill.on('selection-change', function(range, oldRange, source) {
+		// quill.on('selection-change', function(range, oldRange, source) {
 
-			let toolbar = document.getElementById(quill['analysis-id']).getElementsByClassName('ql-toolbar')[0];
-			if (range) {
-
-				if (range.length == 0) {
-					toolbar.style.display = "block";
-					console.log('User cursor is on', range.index);
-				} else {
-					toolbar.style.display = "block";
-					let text = quill.getText(range.index, range.length);
-					console.log('User has highlighted', text);
-				}
-			} else {
-
-				console.log('Cursor not in the editor');
-				var expandedElements = toolbar.getElementsByClassName('ql-expanded');
-
-				if (expandedElements === undefined || expandedElements.length === 0) {
-					toolbar.style.display = "none";
-				}
-			}
-		});
+			// let toolbar = document.getElementById(quill['analysis-id']).getElementsByClassName('ql-toolbar')[0];
+			// if (range) {
+			//
+			// 	if (range.length == 0) {
+			// 		toolbar.style.display = "block";
+			// 		console.log('User cursor is on', range.index);
+			// 	} else {
+			// 		toolbar.style.display = "block";
+			// 		let text = quill.getText(range.index, range.length);
+			// 		console.log('User has highlighted', text);
+			// 	}
+			// } else {
+			//
+			// 	console.log('Cursor not in the editor');
+			// 	var expandedElements = toolbar.getElementsByClassName('ql-expanded');
+			//
+			// 	if (expandedElements === undefined || expandedElements.length === 0) {
+			// 		toolbar.style.display = "none";
+			// 	}
+			// }
+		// });
 
 		return true;
 	},
@@ -516,17 +521,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		return this.exportBegin(exportParams);
 	},
 
-	exportMenuClicked: function () {
-
-		var exportParams = new JASPWidgets.Exporter.params();
-		exportParams.format = JASPWidgets.ExportProperties.format.html;
-		exportParams.process = JASPWidgets.ExportProperties.process.save;
-		exportParams.htmlImageFormat = JASPWidgets.ExportProperties.htmlImageFormat.embedded;
-		exportParams.includeNotes = true;
-
-		return this.exportBegin(exportParams);
-	},
-
 	exportBegin: function (exportParams, completedCallback) {
 		if (exportParams == undefined)
 			exportParams = new JASPWidgets.Exporter.params();
@@ -537,6 +531,10 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		if (completedCallback !== undefined)
 			callback = completedCallback;
 
+		console.log("CAlled from here");
+		console.log(callback)
+		console.log(exportParams);
+		console.log("----------------");
 		return JASPWidgets.Exporter.begin(this, exportParams, callback, true);
 	},
 
@@ -615,7 +613,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		if ($selectedAnalysis.height() < errorBoxHeight)
 			$selectedAnalysis.height(errorBoxHeight);
 	},
-	
+
 	updateProgressbarInResults: function() {
 		this.progressbar.render();
 		this.$el.find(".jasp-progressbar-container").replaceWith(this.progressbar.$el);
@@ -667,7 +665,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 	render: function () {
 
 		var results = this.model.get("results");
-		
+
 		// once everything becomes jaspResults this is always an object and the following can be removed
 		var progress = this.model.get("progress")
 		if (typeof progress == "number")
@@ -675,9 +673,9 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		else if (!progress)
 			this.model.set("progress", { value: -1, label: "" })
 		// up to here
-		
+
 		if (results == "" || results == null) {
-			progress = this.model.get("progress"); 
+			progress = this.model.get("progress");
 			if (progress.value > -1)
 				this.updateProgressbarInResults();
 			return this;

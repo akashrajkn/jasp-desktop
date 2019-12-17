@@ -144,9 +144,10 @@ JASPWidgets.Exporter = {
 					this._exportView(exportParams, viewList[i], i, exportObj, useNBSP, innerStyle, completedCallback);
 			}
 		}
-		else if (exportObj.exportBegin)
+		else if (exportObj.exportBegin) {
+			console.log("Export begin");
 			exportObj.exportBegin(exportParams, completedCallback);
-		else
+		} else
 			return false;
 
 
@@ -154,6 +155,9 @@ JASPWidgets.Exporter = {
 	},
 
 	_exportView: function (exportParams, view, i, parent, useNBSP, innerStyle, completedCallback) {
+
+		console.log("_exportView");
+
 		var self = parent;
 		var index = i;
 		var callback = completedCallback;
@@ -199,6 +203,11 @@ JASPWidgets.Exporter = {
 					completeText += "</div>";
 					completeText += "</div>";
 				}
+
+				// console.log("-------");
+				// console.log(completeText);
+				// console.log("*******");
+
 				if (parent.exportWrapper)
 					completeText = parent.exportWrapper(completeText);
 
@@ -336,7 +345,7 @@ JASPWidgets.View = Backbone.View.extend({
 JASPWidgets.Note = Backbone.Model.extend({
 	defaults: {
 		text: '<p><br></p>',
-		format: 'markdown'
+		format: 'markdown',
 	},
 
 	toHtml: function () {
@@ -347,11 +356,8 @@ JASPWidgets.Note = Backbone.Model.extend({
 				this.set('text', '<p><br></p>');
 			else if (text !== '')
 				this.set('text', Mrkdwn.toHtml(text));
-
-            console.log("HERE? why?");
 		}
-	}
-
+	},
 });
 
 JASPWidgets.NoteBox = JASPWidgets.View.extend({
@@ -360,6 +366,9 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	//#F2F7FD
 
 	initialize: function () {
+
+		console.log("INITIALIZE")
+		console.log(this.model)
 
 		this.ghostTextDefault = 'Click here to add text...';
 
@@ -431,41 +440,45 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		// return text.length === 0;
 	},
 
-	// textChanged: function () {
-	// 	if (this._textedChanging === true)
-	// 		return;
-    //
-	// 	this._textedChanging = true;
-	// 	// if (this.model.get('format') !== 'html')
-	// 	// 	this.model.toHtml();
-	// 	this.updateView();
-	// 	if (this._inited)
-	// 		this.trigger("NoteBox:textChanged");
-	// 	this._textedChanging = false;
-	// },
-    //
-	// updateView: function () {
-	// 	if (!this.internalChange && this.model.get('format') === 'html') {
-	// 		if (this.$textbox !== undefined) {
-	// 			if (this.setGhostTextVisible && !this.editing && this.isTextboxEmpty()) {
-	// 				this.$ghostText.removeClass('jasp-hide');
-	// 				this.$textbox.addClass('jasp-hide');
-	// 			}
-	// 			else {
-	// 				this.$ghostText.addClass('jasp-hide');
-	// 				this.$textbox.removeClass('jasp-hide');
-	// 				if (this.editing && this.$textbox !== $(document.activeElement))
-	// 					this.$textbox.focus();
-	// 			}
-	// 		}
-	// 	}
-	// },
+	textChanged: function () {
+		if (this._textedChanging === true)
+			return;
+
+		this._textedChanging = true;
+		if (this.model.get('format') !== 'html')
+			this.model.toHtml();
+		this.updateView();
+		if (this._inited)
+			this.trigger("NoteBox:textChanged");
+		this._textedChanging = false;
+	},
+
+	updateView: function () {
+		if (!this.internalChange && this.model.get('format') === 'html') {
+			if (this.$textbox !== undefined) {
+				if (this.setGhostTextVisible && !this.editing && this.isTextboxEmpty()) {
+					this.$ghostText.removeClass('jasp-hide');
+					this.$textbox.addClass('jasp-hide');
+				} else {
+					this.$ghostText.addClass('jasp-hide');
+					this.$textbox.removeClass('jasp-hide');
+					if (this.editing && this.$textbox !== $(document.activeElement))
+						this.$textbox.focus();
+				}
+			}
+		}
+	},
 
 	render: function () {
 		// if (this._inited) {
 		// 	this.$textbox.off();
 		// 	delete this.$textbox;
 		// }
+
+		if (this._inited) {
+			this.$quill.off();
+			delete this.$quill;
+		}
 
 		this.$el.empty();
 
@@ -482,7 +495,9 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.$el.append('<div class="jasp-hide" data-button-class="jasp-comment"></div>');
 		// this.$el.append('<div class="jasp-ghost-text"><p>' + ghost_text + '</p></div>');
-        this.$el.append("<div id=\"editor\"></div>");
+		this.$el.append("<div id=\"editor\"></div>");
+
+		console.log(this.$el)
 
 		// this.$textbox = this.$el.find('.jasp-editable');
 		// this.$ghostText = this.$el.find('.jasp-ghost-text');
@@ -515,9 +530,8 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
         if (this.model.get('format') === 'html') {
             if (html.length > 0) {
-                console.log("shouldnt be here");
                 console.log(html);
-                // this.$quill.clipboard.dangerouslyPasteHTML(0, '<p>12344</p>')
+                this.$quill.clipboard.dangerouslyPasteHTML(0, html)
             } else {
                 console.log("aslfjlaskdfjkalsjfl");
             }
@@ -525,19 +539,24 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
             console.log("Format is delta");
             this.$quill.setContents(this.model.get("text"))
         } else {
-            this.$quill.setText(this.model.get("text"))
-        }
+			// this.$quill.setText(this.model.get("text"))
+			console.log('format: markdown')
+
+			this.model.toHtml();
+			html = this.model.get("text");
+			this.$quill.clipboard.dangerouslyPasteHTML(0, html)
+		}
 
 
         var self = this;
 
         this.$quill.on('text-change', function(delta, oldDelta, source) {
 
-            console.log(delta);
+            // console.log(delta);
 
-            self.onNoteChanged(self.$quill.getContents());
+			self.onNoteChanged(self.$quill.root.innerHTML)
+            // self.onNoteChanged(self.$quill.getText());
         });
-
 
 		// this.updateView();
 		// this._checkTags();
@@ -561,7 +580,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		// this.$textbox.on("keydown", null, this, this._keydown);
 
 		// this.$textbox.on("copy", function (event) {
-        //
+
 		// 	var html;
 		// 	var text;
 		// 	var sel = window.getSelection();
@@ -573,13 +592,13 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		// 		html = container.innerHTML;
 		// 		text = Mrkdwn.fromDOMElement($(container));
 		// 	}
-        //
+
 		// 	if (text)
 		// 		event.originalEvent.clipboardData.setData('text/plain', text);
 		// 	if (html)
 		// 		event.originalEvent.clipboardData.setData('text/html', html);
-        //
-        //
+
+
 		// 	event.preventDefault();
 		// });
 
@@ -589,19 +608,23 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	},
 
 	onNoteChanged: function (html) {
+
+		console.log("_____________")
+		console.log(html)
+		console.log(this.isTextboxEmpty())
+
 		this.internalChange = true;
 		// this.model.set('text', html);
         // this.model.set('format', 'delta')
 
-        this.model.set({'text': html, 'format': 'delta'});
+		this.model.set({'text': html, 'format': 'html'});
 
         this.internalChange = false;
 
-        console.log(this.model);
+        // console.log(this.model);
 	},
 
-	setVisibility: function(value)
-	{
+	setVisibility: function(value) {
 		this.visible = value;
 
 		if (value)
@@ -638,7 +661,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	},
 
 	knownTags: ['p', 'br', 'ol', 'ul', 'li', 'b', 'i', 's', 'u', 'sup', 'sub', 'code', 'strong', 'em', 'blockquote', 'hr', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-
 
 	_keydown: function (e) {
 		var self = e.data;
@@ -764,6 +786,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	},
 
 	exportBegin: function (exportParams, completedCallback) {
+
 		if (exportParams == undefined)
 			exportParams = new JASPWidgets.Exporter.params();
 		else if (exportParams.error)
@@ -774,23 +797,32 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 			callback = completedCallback;
 
 		var html = '';
-		if (this.isTextboxEmpty() === false && this.visible === true)
+		if (this.isTextboxEmpty() === false && this.visible === true) {
+
+			// console.log(this.$quill.root.innerHTML); this.$quill.getText()
+
 			html += '<div ' + JASPWidgets.Exporter.getNoteStyles(this.$el, exportParams) + '>' + this.$quill.root.innerHTML + '</div>';
+		}
 
-        console.log("EXPORT BEGIN");
-
-        console.log(html);
+		console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&")
+		console.log("EXPORT BEGIN");
+		console.log(this.visible)
+		console.log(html);
+		console.log(callback);
+		// console.log(arguments.callee.caller.toString())
 
 		callback.call(this, exportParams, new JASPWidgets.Exporter.data(null, html));
 	},
 
 	exportComplete: function (exportParams, exportContent) {
+
+		console.log(exportContent)
+
 		if (!exportParams.error)
 			pushHTMLToClipboard(exportContent, exportParams);
 	},
 
-	useExportNSBF: function()
-	{
+	useExportNSBF: function() {
 		return false;
 	},
 
@@ -1078,7 +1110,7 @@ JASPWidgets.Progressbar = Backbone.Model.extend({
 		value: -1,
 		maxValue: 100
 	},
-	
+
 	getFromAnalysis: function(item) {
 		return this.attributes.analysis.model.get(item);
 	}
@@ -1089,7 +1121,7 @@ JASPWidgets.ProgressbarView = JASPWidgets.View.extend({
 		this.fadeOutActive = false;
 		this.fadeOutDuration = 500;
 	},
-	
+
 	render: function() {
 		var label = this.model.getFromAnalysis("progress").label
 		var value = this.model.getFromAnalysis("progress").value
@@ -1103,18 +1135,18 @@ JASPWidgets.ProgressbarView = JASPWidgets.View.extend({
 			if (value > maxValue)
 				value = maxValue;
 		}
-		
+
 		this.model.set("value", value);
 		this.model.set("label", label);
-		
+
 		if (value == -1 && this.fadeOutActive)
 			return this; // allow previously started fade out to complete, avoid calling .clear()
-		
+
 		this.clear();
-		
+
 		if (value != -1) {
 			this._insertBar();
-		
+
 			if (this._isComplete()) {
 				this._resetModel();
 				this._fadeOut();
@@ -1123,78 +1155,78 @@ JASPWidgets.ProgressbarView = JASPWidgets.View.extend({
 
 		return this;
 	},
-	
+
 	isActive: function() {
 		return this.model.get("value") != -1;
 	},
-	
+
 	clear: function() {
 		this.$el.empty();
 		this.$el.addClass("jasp-progressbar-container");
 		this.fadeOutActive = false;
 	},
-	
+
 	_isComplete: function() {
 		return this.model.get("value") >= this.model.get("maxValue");
 	},
-	
+
 	_progressbarNeedsToComplete(value) {
 		analysisStatus	= this.model.getFromAnalysis("status");
 		return this.isActive() && (value == -1 || analysisStatus == "complete");
 	},
-	
+
 	_resetModel: function() {
 		var defaults = this.model.defaults;
 		defaults.analysis = this.model.get("analysis");
 		this.model.clear().set(defaults);
 	},
-	
+
 	_fadeOut: function() {
 		this.fadeOutActive = true;
 		var self = this;
-		window.setTimeout(function() { 
+		window.setTimeout(function() {
 			self._getCurrent().fadeOut();
 			self.fadeOutActive = false;
 		}, this.fadeOutDuration);
 	},
-	
+
 	_getCurrent: function() {
 		return this.$el.find(".jasp-progressbar");
 	},
-	
+
 	_insertBar: function() {
 		$progressbar = $("<div/>");
 		$progressbar.attr({
 			class: "jasp-progressbar",
 			id: "progressbar-" + this.model.getFromAnalysis("id")
 		});
-		
+
 		$bar = $("<progress class=''></progress>");
 		$bar.attr({
 			value: this.model.get("value"),
 			max: this.model.get("maxValue")
 		});
-		
+
 		$label = $("<span/>");
 		$label.attr({
 			class: "jasp-progressbar-label"
 		});
 		$label.html(this.model.get("label"));
-		
+
 		$progressbar.append($bar);
 		$progressbar.append($label);
 
 		this.$el.append($progressbar);
 	},
-	
+
 	_ellipsify: function(label) {
 		if (label.length == 0)
 			return label;
-		
+
 		var alphaNumericOrDotEnding = label.match(/[a-z0-9.]$/i)||[];
 		if (alphaNumericOrDotEnding.length == 0)
 			return label; // might look weird otherwise, e.g., ~~~...
-			
+
 		var endingDots = label.match(/\.+$/g)||[""];
 		var numDotsToAdd = 3 - endingDots[0].length;
 		if (numDotsToAdd < 0)
