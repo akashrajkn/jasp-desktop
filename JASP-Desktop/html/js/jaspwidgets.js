@@ -500,7 +500,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.quillToolbarClicked = false;
 		this.$quillToolbar.addEventListener('click', function() {
-
 			this.quillToolbarClicked = true;
 		}, false);
 
@@ -523,6 +522,14 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		});
 
 		this.internalChange = false;
+
+		if (this._textedChanging === true)
+			return;
+
+		this._textedChanging = true;
+		if (this._inited)
+			this.trigger("NoteBox:textChanged");
+		this._textedChanging = false;
 	},
 
 	setQuillToolbarVisibility: function(display) {
@@ -641,8 +648,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.$el.addClass('jasp-text-editing');
 
-		// this._checkTags();
-
 		var self = this;
 
 		window.setTimeout(function () { self.editingSetup = false; }, 0); //needsd to wait for all ui events to finish before ending
@@ -665,7 +670,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.$el.removeClass('jasp-text-editing');
 
-		// this.updateView();
 		this.$textbox.attr('contenteditable', false);
 		if (this.$editor !== undefined) {
 			this.$editor.off("mousedown", this.editorClicked);
