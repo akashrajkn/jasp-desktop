@@ -98,6 +98,7 @@ JASPWidgets.objectView = JASPWidgets.View.extend({
 	events: {
 		'mouseenter': '_hoveringStart',
 		'mouseleave': '_hoveringEnd',
+		'click': '_mouseClicked'
 	},
 
 	setNoteBox: function (key, localKey, noteBox) {
@@ -187,6 +188,12 @@ JASPWidgets.objectView = JASPWidgets.View.extend({
 
 	_hoveringEnd: function (e) {
 		this.toolbar.setVisibility(false);
+	},
+
+	_mouseClicked: function (e) {
+		if (!this.noteBox.$quill.hasFocus()) {
+			// this.noteBox.setQuillToolbarVisibility('none');
+		}
 	},
 
 	constructChildren: function (constructor, data) {

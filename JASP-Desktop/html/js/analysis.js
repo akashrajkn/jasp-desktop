@@ -116,9 +116,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			}
 		}
 
-		console.log("onUserDataChanged")
-		console.log(this.userdata)
-
 		self.trigger("analysis:userDataChanged");
 	},
 
@@ -133,6 +130,7 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 	events: {
 		'mouseenter': '_hoveringStart',
 		'mouseleave': '_hoveringEnd',
+		'click': '_mouseClicked',
 	},
 
 	undoImageResize: function() {
@@ -213,8 +211,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 	getNoteBox: function (noteDetails) {
 
 		var noteData = this.getData(noteDetails, this.userdata);
-
-		console.log(noteDetails);
 
 		if (noteData === null)
 			noteData = new JASPWidgets.Note();
@@ -431,18 +427,26 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		this.toolbar.setVisibility(false);
 	},
 
-	notesMenuClicked: function (noteType, visibility) {
+	_mouseClicked: function (e) {
 
-        console.log("notesMenuClicked");
-        console.log(noteType);
-        console.log(visibility);
+		for (var i = 0; i < this.viewNotes.list.length; i++) {
+			var noteBoxData = this.viewNotes.list[i];
+
+			if (noteBoxData.noteDetails.level === 0) {
+				var noteBox = noteBoxData.widget;
+				if (!noteBox.$quill.hasFocus()) {
+					// noteBox.setQuillToolbarVisibility('none');
+				}
+			}
+		}
+	},
+
+	notesMenuClicked: function (noteType, visibility) {
 
 		var scrollIntoView = true;
 		for (var i = 0; i < this.viewNotes.list.length; i++) {
 			var noteBoxData = this.viewNotes.list[i];
 
-            console.log(noteBoxData);
-            console.log("");
 			if (noteBoxData.noteDetails.level === 0) {
 				var noteBox = noteBoxData.widget;
 				if (noteBox.visible !== visibility) {
@@ -452,35 +456,32 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			}
 		}
 
-        // return true;
-
 		/*
 			TODO:
 				3. Fix Font size option
-				4. Add close button, to remove note
 		*/
 
-		var toolbarOptions = [
-			['bold', 'italic', 'underline', 'image'],
-			// [{ 'size': ['small', false, 'large', 'huge'] }],
-			[{ 'header': [1, 2, 3, 4, false] }],
-			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-			[{ 'color': [] }, { 'background': [] }],
-			[{ 'script': 'sub'}, { 'script': 'super' }],
-			['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
-			// [{ 'font': [] }, { 'align': [] }],
+		// var toolbarOptions = [
+		// 	['bold', 'italic', 'underline', 'image'],
+		// 	// [{ 'size': ['small', false, 'large', 'huge'] }],
+		// 	[{ 'header': [1, 2, 3, 4, false] }],
+		// 	[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+		// 	[{ 'color': [] }, { 'background': [] }],
+		// 	[{ 'script': 'sub'}, { 'script': 'super' }],
+		// 	['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
+		// 	// [{ 'font': [] }, { 'align': [] }],
 
-			['clean']
-		];
+		// 	['clean']
+		// ];
 
-		let targetDiv = document.getElementById(this.id).getElementsByClassName('editor')[0]
-		let quill = new Quill(targetDiv, {
-			modules: {
-				toolbar: toolbarOptions
-			},
-			theme: 'snow'
-		});
-		quill['analysis-id'] = this.id;
+		// let targetDiv = document.getElementById(this.id).getElementsByClassName('editor')[0]
+		// let quill = new Quill(targetDiv, {
+		// 	modules: {
+		// 		toolbar: toolbarOptions
+		// 	},
+		// 	theme: 'snow'
+		// });
+		// quill['analysis-id'] = this.id;
 
 		// let toolbar = document.getElementById(this.id).getElementsByClassName('ql-toolbar')[0];
 		// toolbar.style.display = 'none';  // hide by default
@@ -539,10 +540,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		if (completedCallback !== undefined)
 			callback = completedCallback;
 
-		console.log("CAlled from here");
-		console.log(callback)
-		console.log(exportParams);
-		console.log("----------------");
 		return JASPWidgets.Exporter.begin(this, exportParams, callback, true);
 	},
 
@@ -705,9 +702,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		this.views.push(this.viewNotes.firstNoteNoteBox);
 
 		$innerElement.empty();
-
-		// For Quill js
-		$innerElement.append('<div class="editor"> </div>')
 
 		if (!results.error) {
 			$innerElement.removeClass("error-state");

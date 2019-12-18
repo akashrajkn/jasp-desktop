@@ -369,9 +369,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	initialize: function () {
 
-		console.log("INITIALIZE")
-		console.log(this.model)
-
 		this.ghostTextDefault = 'Click here to add text...';
 
 		if (JASPWidgets.NoteBox.activeNoteBox === undefined)
@@ -406,6 +403,7 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 	events: {
 		'mouseenter': '_hoveringStart',
 		'mouseleave': '_hoveringEnd',
+		'click'     : '_mouseClicked',
 	},
 
 	detach: function() {
@@ -415,38 +413,41 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	_hoveringStart: function (e) {
 		this.closeButton.setVisibility(true);
+
+		if (!this.$quill.hasFocus()) {
+			this.setQuillToolbarVisibility('none');
+		}
 	},
 
 	_hoveringEnd: function (e) {
 		this.closeButton.setVisibility(false);
+
+		if (!this.$quill.hasFocus()) {
+			this.setQuillToolbarVisibility('none');
+		}
+	},
+
+	_mouseClicked: function (e) {
+		this.setQuillToolbarVisibility('block');
 	},
 
 	clear: function () {
-		// if (this.isTextboxEmpty() === false)
-		// 	this.$textbox.html('<p><br></p>');
 
 		this.model.set('format', 'html');
 		this.model.set('text', '');
+		this.model.set('delta', {});
+		this.model.set('deltaAvailable', false);
 	},
 
 	setGhostTextVisible: function(visible) {
 		this.ghostTextVisible = visible;
-		// this.updateView();
 	},
 
 	isTextboxEmpty: function () {
-
-        return this.$quill.getLength() === 0;
-
-		// var text = this.$textbox.text();
-		// return text.length === 0;
+		return this.$quill.getLength() === 0;
 	},
 
 	render: function () {
-		// if (this._inited) {
-		// 	this.$textbox.off();
-		// 	delete this.$textbox;
-		// }
 
 		if (this._inited) {
 			this.$quill.off();
@@ -461,24 +462,10 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.closeButton.render();
 
-		// var ghost_text = this.ghostTextDefault;
-		// if (this.ghostText)
-		// 	ghost_text = this.ghostText;
-
-
 		this.$el.append('<div class="jasp-hide" data-button-class="jasp-comment"></div>');
-		// this.$el.append('<div class="jasp-ghost-text"><p>' + ghost_text + '</p></div>');
 		this.$el.append("<div id=\"editor\"></div>");
 
-		// this.$textbox = this.$el.find('.jasp-editable');
-		// this.$ghostText = this.$el.find('.jasp-ghost-text');
-
-        // var quill = new Quill(this.$el.find("#editor").get(0), {
-        //     theme: 'snow'
-        // });
-
-
-        var toolbarOptions = [
+		var toolbarOptions = [
 			['bold', 'italic', 'underline'],  // image
 			// [{ 'size': ['small', false, 'large', 'huge'] }],
 			[{ 'header': [1, 2, 3, 4, false] }],
@@ -487,7 +474,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 			[{ 'script': 'sub'}, { 'script': 'super' }],
 			['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
 			// [{ 'font': [] }, { 'align': [] }],
-
 			['clean']
 		];
 
@@ -500,36 +486,35 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		});
 
 		var self = this;
+		var delt;
 
 		if (this.model.get('deltaAvailable')) {
-			this.$quill.setContents(this.model.get('delta'));
+			delt = this.model.get('delta');
 		} else {
-			if (this.model.get('format') === 'html') {
-				if (html.length > 0) {
-
-					// this.$quill.clipboard.dangerouslyPasteHTML(0, html);
-
-					var delt = this.$quill.clipboard.convert(html);
-					this.$quill.setContents(delt);
-
-					// self.onNoteChanged(html, self.$quill.getContents());
-				}
-			} else {
-				// this.$quill.setText(this.model.get("text"))
-				console.log('format: markdown')
-
+			if (this.model.get('format') === 'markdown') {
 				this.model.toHtml();
 				html = this.model.get("text");
-
-				var delt = this.$quill.clipboard.convert(html);
-				this.$quill.setContents(delt);
-				// this.$quill.clipboard.dangerouslyPasteHTML(0, html)
 			}
+			delt = this.$quill.clipboard.convert(html);
 		}
+		this.$quill.setContents(delt);
+		self.onNoteChanged(self.$quill.root.innerHTML, self.$quill.getContents());
 
 		this.$quill.on('text-change', function(delta, oldDelta, source) {
-			self.onNoteChanged(self.$quill.root.innerHTML, self.$quill.getContents())
+			self.onNoteChanged(self.$quill.root.innerHTML, self.$quill.getContents());
 		});
+
+		this.$quillToolbar = this.$el.find(".ql-toolbar").get(0)
+
+		this.quillToolbarClicked = false;
+		this.$quillToolbar.addEventListener('click', function() {
+
+			console.log("____");
+			console.log(this.quillToolbarClicked);
+			this.quillToolbarClicked = true;
+		}, false);
+
+		this.setQuillToolbarVisibility('none');
 
 		this._inited = true;
 
@@ -538,19 +523,24 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	onNoteChanged: function (html, quDelta) {
 
-		// console.log("_____________")
-		// console.log(html)
-		// console.log(this.isTextboxEmpty())
-
 		this.internalChange = true;
-		// this.model.set('text', html);
-        // this.model.set('format', 'delta')
 
-		this.model.set({'text': html, 'format': 'html', 'delta': quDelta, 'deltaAvailable' : true});
+		this.model.set({
+			'text': html,
+			'format': 'html',
+			'delta': quDelta,
+			'deltaAvailable' : true
+		});
 
-        this.internalChange = false;
+		this.internalChange = false;
+	},
 
-        console.log(this.model);
+	setQuillToolbarVisibility: function(display) {
+		// display: ['block', 'none']
+
+		console.log(this.$quill.hasFocus());
+
+		this.$quillToolbar.style.display = display;
 	},
 
 	setVisibility: function(value) {
