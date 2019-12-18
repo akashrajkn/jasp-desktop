@@ -456,60 +456,6 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			}
 		}
 
-		/*
-			TODO:
-				3. Fix Font size option
-		*/
-
-		// var toolbarOptions = [
-		// 	['bold', 'italic', 'underline', 'image'],
-		// 	// [{ 'size': ['small', false, 'large', 'huge'] }],
-		// 	[{ 'header': [1, 2, 3, 4, false] }],
-		// 	[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-		// 	[{ 'color': [] }, { 'background': [] }],
-		// 	[{ 'script': 'sub'}, { 'script': 'super' }],
-		// 	['blockquote', { 'indent': '-1'}, { 'indent': '+1' }],
-		// 	// [{ 'font': [] }, { 'align': [] }],
-
-		// 	['clean']
-		// ];
-
-		// let targetDiv = document.getElementById(this.id).getElementsByClassName('editor')[0]
-		// let quill = new Quill(targetDiv, {
-		// 	modules: {
-		// 		toolbar: toolbarOptions
-		// 	},
-		// 	theme: 'snow'
-		// });
-		// quill['analysis-id'] = this.id;
-
-		// let toolbar = document.getElementById(this.id).getElementsByClassName('ql-toolbar')[0];
-		// toolbar.style.display = 'none';  // hide by default
-
-		// quill.on('selection-change', function(range, oldRange, source) {
-
-			// let toolbar = document.getElementById(quill['analysis-id']).getElementsByClassName('ql-toolbar')[0];
-			// if (range) {
-			//
-			// 	if (range.length == 0) {
-			// 		toolbar.style.display = "block";
-			// 		console.log('User cursor is on', range.index);
-			// 	} else {
-			// 		toolbar.style.display = "block";
-			// 		let text = quill.getText(range.index, range.length);
-			// 		console.log('User has highlighted', text);
-			// 	}
-			// } else {
-			//
-			// 	console.log('Cursor not in the editor');
-			// 	var expandedElements = toolbar.getElementsByClassName('ql-expanded');
-			//
-			// 	if (expandedElements === undefined || expandedElements.length === 0) {
-			// 		toolbar.style.display = "none";
-			// 	}
-			// }
-		// });
-
 		return true;
 	},
 

@@ -145,18 +145,14 @@ JASPWidgets.Exporter = {
 			}
 		}
 		else if (exportObj.exportBegin) {
-			console.log("Export begin");
 			exportObj.exportBegin(exportParams, completedCallback);
 		} else
 			return false;
-
 
 		return true;
 	},
 
 	_exportView: function (exportParams, view, i, parent, useNBSP, innerStyle, completedCallback) {
-
-		console.log("_exportView");
 
 		var self = parent;
 		var index = i;
@@ -203,10 +199,6 @@ JASPWidgets.Exporter = {
 					completeText += "</div>";
 					completeText += "</div>";
 				}
-
-				console.log("-------");
-				console.log(completeText);
-				console.log("*******");
 
 				if (parent.exportWrapper)
 					completeText = parent.exportWrapper(completeText);
@@ -509,8 +501,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		this.quillToolbarClicked = false;
 		this.$quillToolbar.addEventListener('click', function() {
 
-			console.log("____");
-			console.log(this.quillToolbarClicked);
 			this.quillToolbarClicked = true;
 		}, false);
 
@@ -537,8 +527,6 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 	setQuillToolbarVisibility: function(display) {
 		// display: ['block', 'none']
-
-		console.log(this.$quill.hasFocus());
 
 		this.$quillToolbar.style.display = display;
 	},
@@ -718,24 +706,13 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 		var html = '';
 		if (this.isTextboxEmpty() === false && this.visible === true) {
 
-			// console.log(this.$quill.root.innerHTML); this.$quill.getText()
-
 			html += '<div ' + JASPWidgets.Exporter.getNoteStyles(this.$el, exportParams) + '>' + this.$quill.root.innerHTML + '</div>';
 		}
-
-		console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&")
-		console.log("EXPORT BEGIN");
-		console.log(this.visible)
-		console.log(html);
-		// console.log(callback);
-		// console.log(arguments.callee.caller.toString())
 
 		callback.call(this, exportParams, new JASPWidgets.Exporter.data(null, html));
 	},
 
 	exportComplete: function (exportParams, exportContent) {
-
-		console.log(exportContent)
 
 		if (!exportParams.error)
 			pushHTMLToClipboard(exportContent, exportParams);

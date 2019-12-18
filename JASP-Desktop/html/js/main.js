@@ -147,9 +147,6 @@ $(document).ready(function () {
 
 		analyses.exportBegin(exportParams, function (exportParams, exportContent) {
 
-
-			console.log("YOLO");
-
 			if (exportParams.process === JASPWidgets.ExportProperties.process.save)
 				jasp.saveTextToFile(filename, wrapHTML(exportContent.html, exportParams));
 		})
@@ -435,7 +432,6 @@ $(document).ready(function () {
 			jaspWidget.on("toolbar:showMenu", function (obj, options) {
 
 				jasp.showAnalysesMenu(JSON.stringify(options));
-				console.log(options);
 				window.menuObject = obj;
 			});
 		}
@@ -487,8 +483,6 @@ var wrapHTML = function (html, exportParams) {
 };
 
 var pushHTMLToClipboard = function (exportContent, exportParams) {
-
-	console.log('pushHTMLToClipboard');
 
 	jasp.pushToClipboard("text/html", "", wrapHTML(exportContent.html, exportParams));
 }
