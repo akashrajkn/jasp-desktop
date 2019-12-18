@@ -494,9 +494,6 @@ td.squash-left
 .jasp-closer {
     background: top left no-repeat url(images/closer.png);
     background-size: 16px;
-    /* right: 1px;
-    top: 5px; */
-    position: -webkit-sticky;
 	position: absolute;
 	right: 5px;
 	top: 5px;
