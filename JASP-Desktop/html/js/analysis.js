@@ -92,6 +92,11 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		var firstNoteBox		= this.getNoteBox(firstNoteDetails);
 		var lastNoteDetails		= new JASPWidgets.DataDetails('lastNote');
 		var lastNoteBox			= this.getNoteBox(lastNoteDetails);
+		var volatileNoteDetails = new JASPWidgets.DataDetails('volatileNote');
+		var volatileNoteBox     = this.getNoteBox(volatileNoteDetails);
+
+		// 1. Should be "orphanedNotes" instead of volatileNote.
+		// 2. orphanedNotes should be an object - note_id : note
 
 		this.toolbar.setParent(this);
 
@@ -339,6 +344,23 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 			hasData = true;
 		}
+
+		var volatileNoteData = {};
+
+		if (this.viewNotes.volatileNoteNoteBox.isTextboxEmpty())
+			volatileNoteData.text = '';
+		else
+			volatileNoteData.text = this.viewNotes.volatileNoteNoteBox.model.get('text');
+			// lastNoteData.text = Mrkdwn.fromHtmlText(this.viewNotes.lastNoteNoteBox.model.get('text'));
+
+			volatileNoteData.format = 'html';
+			volatileNoteData.visible = this.viewNotes.volatileNoteNoteBox.visible;
+			volatileNoteData.deltaAvailable = this.viewNotes.volatileNoteNoteBox.model.get('deltaAvailable');
+			volatileNoteData.delta = this.viewNotes.volatileNoteNoteBox.model.get('delta');
+
+		userData.volatileNote = volatileNoteData;
+
+		hasData = true;
 
 		if (hasData)
 			return userData;
@@ -684,7 +706,14 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		this.toolbar.render();
 		$innerElement.prepend(this.toolbar.$el);
 
+		this.viewNotes.volatileNoteNoteBox.render();
+		$innerElement.append(this.viewNotes.volatileNoteNoteBox.$el);
+
 		this.views.push(this.viewNotes.lastNoteNoteBox);
+
+		this.views.push(this.viewNotes.volatileNoteNoteBox);
+
+
 
 		$tempClone.replaceWith($innerElement);
 		$tempClone.empty();
