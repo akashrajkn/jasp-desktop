@@ -222,6 +222,8 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		var key = noteDetails.GetFullKey();
 
+		// console.log(key + 'NoteBox')
+
 		var widget = this.viewNotes[key + 'NoteBox'];
 		if (widget === undefined || widget === null) {
 			widget = new JASPWidgets.NoteBox({ className: "jasp-display-primitive jasp-notes jasp-" + key + "-note", model: noteData });
@@ -388,19 +390,30 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 	   pushTextToClipboard(exportContent, exportParams);
 	   return true;
-   },
+    },
 
 	passUserDataToView: function (path, itemView) {
 
 		if (itemView.views !== undefined) {
-			for (var i = 0; i < itemView.views.length; i++) {
-				var subView = itemView.views[i]
+
+			var self = this;
+			itemView.views.forEach(function(item, i) {
+				var subView = item;
 				var name = subView.model.get('name');
 				if (name !== null)
-					this.passUserDataToView(path.concat([name]), subView);
+					self.passUserDataToView(path.concat([name]), subView);
 				else
-					throw "there must be a name parameter."
-			}
+					throw "there must be a name parameter."				
+			});
+
+			// for (var i = 0; i < itemView.views.length; i++) {
+			// 	var subView = itemView.views[i]
+			// 	var name = subView.model.get('name');
+			// 	if (name !== null)
+			// 		this.passUserDataToView(path.concat([name]), subView);
+			// 	else
+			// 		throw "there must be a name parameter."
+			// }
 		}
 
 		var dataDetails = new JASPWidgets.DataDetails("", path);
@@ -411,15 +424,23 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 			return;
 
 		var noteKeys = ['note'];
-		//if (itemView.avaliableNoteKeys) //Commented out because it wasn't defined anywhere so it probably isn't functional...
-		//	noteKeys = itemView.avaliableNoteKeys();
 
-		for (var i = 0; i < noteKeys.length; i++) {
-			var noteKey = noteKeys[i];
+		// for loop can sometimes give problems if async ops are involved
+		var self = this;
+		noteKeys.forEach(function(item, i){
+			var noteKey = item;
 			var noteDetails = dataDetails.GetExtended(noteKey)
-			var noteBox = this.getNoteBox(noteDetails)
+			var noteBox = self.getNoteBox(noteDetails)
 			itemView.setNoteBox(noteDetails.GetFullKey(), noteKey, noteBox);
-		}
+		});
+
+		// for (var i = 0; i < noteKeys.length; i++) {
+		// 	var noteKey = noteKeys[i];
+		// 	var noteDetails = dataDetails.GetExtended(noteKey)
+		// 	var noteBox = this.getNoteBox(noteDetails)
+		// 	itemView.setNoteBox(noteDetails.GetFullKey(), noteKey, noteBox);
+		// }
+
 	},
 
 	_hoveringStart: function (e) {
@@ -506,36 +527,62 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 	menuName: "Analysis",
 
 	createResultsViewFromMeta: function (results, resultsMeta, $result) {
-		for (let i = 0; i < resultsMeta.length; i++) {
 
-			let meta = resultsMeta[i];
+		// console.log("createResltsViewFromMeta")
+		// console.log(resultsMeta.length)
+
+		let self = this;
+		resultsMeta.forEach(function(item, i) {
+			let meta = item;
 			let name = meta.name;
 
-			if (!_.has(results, name))
-				continue
-			let data = results[name];
+			if (_.has(results, name)) {
+				let data = results[name];
 
-			/*if (meta.type == 'collection' && data.title == "") {  // remove collections without a title from view
-				let collectionMeta = meta.meta;
-				if (Array.isArray(collectionMeta)) { // the meta comes from a jaspResult analysis
-					this.createResultsViewFromMeta(data["collection"], collectionMeta, $result);
-					continue;
+				let itemView = self.createChild(data, self.model.get("status"), meta);
+				if (itemView !== null) {
+					self.passUserDataToView([name], itemView);
+	
+					self.views.push(itemView);
+					self.volatileViews.push(itemView);
+		
+					itemView.render();
+					$result.append(itemView.$el);
 				}
-			}*/
+			}
 
-			let itemView = this.createChild(data, this.model.get("status"), meta);
-			if (itemView === null)
-				continue;
+		});
 
-			this.passUserDataToView([name], itemView);
+		// for (let i = 0; i < resultsMeta.length; i++) {
 
-			this.views.push(itemView);
-			this.volatileViews.push(itemView);
+		// 	let meta = resultsMeta[i];
+		// 	let name = meta.name;
 
-			itemView.render();
-			$result.append(itemView.$el);
+		// 	if (!_.has(results, name))
+		// 		continue
+		// 	let data = results[name];
 
-		}
+		// 	/*if (meta.type == 'collection' && data.title == "") {  // remove collections without a title from view
+		// 		let collectionMeta = meta.meta;
+		// 		if (Array.isArray(collectionMeta)) { // the meta comes from a jaspResult analysis
+		// 			this.createResultsViewFromMeta(data["collection"], collectionMeta, $result);
+		// 			continue;
+		// 		}
+		// 	}*/
+
+		// 	let itemView = this.createChild(data, this.model.get("status"), meta);
+		// 	if (itemView === null)
+		// 		continue;
+
+		// 	this.passUserDataToView([name], itemView);
+
+		// 	this.views.push(itemView);
+		// 	this.volatileViews.push(itemView);
+
+		// 	itemView.render();
+		// 	$result.append(itemView.$el);
+
+		// }
 	},
 
 	setErrorOnPreviousResults: function (errorMessage, status, $lastResult, $result) {
@@ -593,8 +640,9 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		else {
 
 			if (_.isArray(result)) {
-
+				// console.log("inside _.isArray(result)")
 				result = { collection: result };
+
 				if (this.labelRequest) {
 					result.title = this.labelRequest.title;
 					result.titleFormat = this.labelRequest.titleFormat;
@@ -617,6 +665,12 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 	render: function () {
 
+		// this.userdata = this.model.get('userdata');
+		// if (this.userdata === undefined || this.userdata === null)
+		// 	this.userdata = {};
+
+
+
 		var results = this.model.get("results");
 
 		// once everything becomes jaspResults this is always an object and the following can be removed
@@ -635,8 +689,14 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 		}
 
 		var userdataCPP = this.model.get("userdata"); //This might have been changed by Analysis::fitOldUserDataEtc to accomodate loading old files. And otherwise should be the same as local stored userdata
+
 		if (userdataCPP !== undefined && userdataCPP !== null)
 			this.userdata = userdataCPP;
+
+		// var firstNoteDetails	= new JASPWidgets.DataDetails('firstNote');
+		// var firstNoteBox		= this.getNoteBox(firstNoteDetails);
+		// var lastNoteDetails		= new JASPWidgets.DataDetails('lastNote');
+		// var lastNoteBox			= this.getNoteBox(lastNoteDetails);
 
 		this.imageBeingEdited = null;
 
@@ -655,9 +715,13 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		$innerElement.empty();
 
+		// console.log(this.viewNotes)
+
 		if (!results.error) {
 			$innerElement.removeClass("error-state");
 			meta = results[".meta"]
+
+			// console.log(meta)
 			if (meta)
 				this.createResultsViewFromMeta(results, meta, $innerElement);
 		} else {
@@ -673,6 +737,8 @@ JASPWidgets.AnalysisView = JASPWidgets.View.extend({
 
 		this.progressbar.render();
 		$innerElement.prepend(this.progressbar.$el);
+
+		// console.log(this.viewNotes)
 
 		this.viewNotes.lastNoteNoteBox.render();
 		$innerElement.append(this.viewNotes.lastNoteNoteBox.$el);

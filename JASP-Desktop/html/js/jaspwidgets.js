@@ -344,13 +344,16 @@ JASPWidgets.Note = Backbone.Model.extend({
 	},
 
 	toHtml: function () {
+
 		if (this.get('format') === 'markdown') {
 			this.set('format', 'html');
 			var text = this.get('text');
 			if (text === null || text === '')
 				this.set('text', '<p><br></p>');
-			else if (text !== '')
+			else if (text !== '') { 
+
 				this.set('text', Mrkdwn.toHtml(text));
+			}
 		}
 	},
 });
@@ -373,8 +376,8 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 
 		this.internalChange = false;
 
-		if (this.model.get('format') === 'markdown')
-			this.model.toHtml();
+		// if (this.model.get('format') === 'markdown')
+		// 	this.model.toHtml();
 
 		// this.listenTo(this.model, 'change:text', this.textChanged)
 
@@ -440,6 +443,9 @@ JASPWidgets.NoteBox = JASPWidgets.View.extend({
 			this.$quill.off();
 			delete this.$quill;
 		}
+
+		if (this.model.get('format') === 'markdown')
+			this.model.toHtml();
 
 		this.$el.empty();
 
